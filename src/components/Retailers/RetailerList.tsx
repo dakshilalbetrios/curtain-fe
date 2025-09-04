@@ -160,7 +160,7 @@ export const RetailerList: React.FC = () => {
                 <Col xs={24} sm={12} lg={8} xl={6} key={retailer.id}>
                   <Card
                     hoverable
-                    onClick={() => handleRetailerClick(retailer.id)}
+                    // onClick={() => handleRetailerClick(retailer.id)}
                     className="bg-gray-800 border-gray-700 cursor-pointer transition-all duration-300 hover:scale-105"
                   >
                     <div className="space-y-4">
