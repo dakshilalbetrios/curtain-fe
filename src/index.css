@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark theme customizations for Ant Design */
+.ant-card {
+  @apply bg-gray-800 border-gray-700;
+}
+
+.ant-input {
+  @apply bg-gray-700 border-gray-600 text-white;
+}
+
+.ant-input:focus {
+  @apply border-purple-500 shadow-purple-500/25;
+}
+
+.ant-select-selector {
+  @apply bg-gray-700 border-gray-600 text-white;
+}
+
+.ant-timeline-item-tail {
+  @apply border-l-gray-600;
+}
+
+.ant-timeline-item-head {
+  @apply bg-gray-800 border-gray-600;
+}
+
+.custom-timeline .ant-timeline-item-content {
+  @apply text-gray-300;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 767px) {
+  .ant-card-body {
+    padding: 16px;
+  }
+}
+
+/* Ensure proper spacing for mobile bottom navigation */
+body {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Custom button hover effects */
+.ant-btn:not(.ant-btn-primary):hover {
+  @apply border-purple-500 text-purple-400;
+}
+
+/* Status badge animations */
+.ant-tag {
+  @apply transition-all duration-200;
+}
+
+.ant-tag:hover {
+  @apply scale-105;
+}
+
+/* Card hover effects */
+.ant-card-hoverable:hover {
+  @apply shadow-lg shadow-purple-500/10;
+}
+
+/* Timeline customization */
+.ant-timeline-item-head-blue {
+  @apply border-blue-500 bg-blue-500;
+}
+
+.ant-timeline-item-head-green {
+  @apply border-green-500 bg-green-500;
+}
+
+.ant-timeline-item-head-orange {
+  @apply border-orange-500 bg-orange-500;
+}
+
+.ant-timeline-item-head-purple {
+  @apply border-purple-500 bg-purple-500;
+}
+
+.ant-timeline-item-head-red {
+  @apply border-red-500 bg-red-500;
+}
+
+/* Modal dark theme */
+.dark-modal .ant-modal-content {
+  @apply bg-gray-800 border border-gray-700;
+}
+
+.dark-modal .ant-modal-header {
+  @apply bg-gray-800 border-b border-gray-700;
+}
+
+.dark-modal .ant-modal-title {
+  @apply text-white;
+}
+
+.dark-modal .ant-modal-close {
+  @apply text-gray-400 hover:text-white;
+}
+
+/* Upload component dark theme */
+.ant-upload-drag {
+  @apply bg-gray-700 border-gray-600;
+}
+
+.ant-upload-drag:hover {
+  @apply border-purple-500;
+}
+
+.ant-upload-drag .ant-upload-drag-container {
+  @apply text-gray-300;
+}
+
+/* Progress bar customization */
+.ant-progress-bg {
+  transition: all 0.3s ease;
+}
+
+/* Fixed sidebar styles */
+.ant-layout-sider-zero-width-trigger {
+  @apply bg-gray-800 border-gray-700;
+}
