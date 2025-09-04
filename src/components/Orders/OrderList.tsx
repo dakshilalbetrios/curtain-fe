@@ -72,42 +72,30 @@ export const OrderList: React.FC = () => {
   return (
     <MainLayout title="My Orders">
       <div className="space-y-4">
-        {/* Filter */}
-        {isWholesaler && (
-          <Card className="bg-gray-800 border-gray-700">
-            <Row gutter={[16, 16]} align="middle">
-              <Col xs={24} sm={12}>
-                <Space>
-                  <Text className="text-gray-300">Filter by status:</Text>
-                  <Select
-                    value={statusFilter}
-                    onChange={setStatusFilter}
-                    className="w-32"
-                    size="small"
-                  >
-                    <Option value="ALL">All</Option>
-                    <Option value="PENDING">Pending</Option>
-                    <Option value="APPROVED">Approved</Option>
-                    <Option value="SHIPPED">Shipped</Option>
-                    <Option value="DELIVERED">Delivered</Option>
-                    <Option value="CANCELLED">Cancelled</Option>
-                  </Select>
-                </Space>
-              </Col>
-              <Col xs={24} sm={12} className="text-right">
-                <Text className="text-gray-400">
-                  {filteredOrders.length} orders found
-                </Text>
-              </Col>
-            </Row>
-          </Card>
-        )}
-
         {/* Order History */}
         <div>
-          <Title level={4} className="!text-white !mb-4">
-            Order History
-          </Title>
+          <div className="flex sticky top-0 z-10 justify-between items-center">
+            <div className="flex items-center space-x-2">
+              <Title level={4} className="!text-white">
+                Orders
+              </Title>
+              <Tag color="green">{filteredOrders.length}</Tag>
+            </div>
+
+            <Select
+              value={statusFilter}
+              onChange={setStatusFilter}
+              className="w-32"
+              size="small"
+            >
+              <Option value="ALL">All</Option>
+              <Option value="PENDING">Pending</Option>
+              <Option value="APPROVED">Approved</Option>
+              <Option value="SHIPPED">Shipped</Option>
+              <Option value="DELIVERED">Delivered</Option>
+              <Option value="CANCELLED">Cancelled</Option>
+            </Select>
+          </div>
 
           {loading ? (
             <div className="space-y-3">

@@ -34,7 +34,7 @@ export interface OrderResponse {
 }
 
 export interface CreateOrderRequest {
-  items: {
+  order_items: {
     collection_sr_no_id: number;
     quantity: number;
   }[];
