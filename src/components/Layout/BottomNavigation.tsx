@@ -1,13 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Home,
-  Package,
-  ShoppingBag,
-  CreditCard,
-  User,
-  Users,
-} from "lucide-react";
+import { Home, Package, ShoppingBag, User, Users } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 export const BottomNavigation: React.FC = () => {
@@ -41,6 +34,41 @@ export const BottomNavigation: React.FC = () => {
     navigate(path);
   };
 
+  // Function to determine if a navigation item should be active
+  const isNavItemActive = (navItem: any) => {
+    const currentPath = location.pathname;
+
+    switch (navItem.key) {
+      case "dashboard":
+        return currentPath === "/dashboard";
+
+      case "collections":
+        return (
+          currentPath === "/collections" ||
+          currentPath.startsWith("/collections/") ||
+          currentPath === "/cart"
+        );
+
+      case "orders":
+        return currentPath === "/orders" || currentPath.startsWith("/orders/");
+
+      case "retailers":
+        return (
+          currentPath === "/retailers" || currentPath.startsWith("/retailers/")
+        );
+
+      case "profile":
+        return (
+          currentPath === "/profile" ||
+          currentPath === "/profile/edit" ||
+          currentPath === "/profile/change-password"
+        );
+
+      default:
+        return currentPath === navItem.path;
+    }
+  };
+
   return (
     <>
       {/* Main navigation bar */}
@@ -49,7 +77,7 @@ export const BottomNavigation: React.FC = () => {
           <div className="flex justify-around items-center py-3 px-2">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path;
+              const isActive = isNavItemActive(item);
 
               return (
                 <button
