@@ -168,16 +168,49 @@ export const OrderDetail: React.FC = () => {
 
           {/* Order Items Skeleton */}
           <Card className="bg-gray-800 border-gray-700">
-            <Skeleton.Input
-              active
-              size="default"
-              className="!w-32 !h-6 !mb-4"
-            />
-            <div className="space-y-3">
-              {[...Array(2)].map((_, index) => (
-                <OrderItemSkeleton key={index} />
-              ))}
+            <div className="flex justify-between items-center mb-4">
+              <Skeleton.Input active size="default" className="!w-32 !h-6" />
+              <Skeleton.Button active size="small" className="!w-16 !h-6" />
             </div>
+            <Row gutter={[16, 16]}>
+              {[...Array(4)].map((_, index) => (
+                <Col xs={24} sm={12} lg={8} xl={6} key={index}>
+                  <Card className="bg-gray-700 border-gray-600">
+                    <div className="space-y-3">
+                      <div className="flex items-start space-x-3">
+                        <Skeleton.Avatar active size="default" />
+                        <div className="flex-1">
+                          <Skeleton.Input
+                            active
+                            size="small"
+                            className="!w-24 !h-4 !mb-2"
+                          />
+                          <Skeleton.Input
+                            active
+                            size="small"
+                            className="!w-16 !h-3"
+                          />
+                        </div>
+                      </div>
+                      <div className="pt-2 border-t border-gray-600">
+                        <div className="flex justify-between items-center">
+                          <Skeleton.Input
+                            active
+                            size="small"
+                            className="!w-12 !h-3"
+                          />
+                          <Skeleton.Input
+                            active
+                            size="small"
+                            className="!w-16 !h-4"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
           </Card>
         </div>
       </MainLayout>
@@ -401,28 +434,51 @@ export const OrderDetail: React.FC = () => {
         {/* Order Items */}
         {order.order_items && order.order_items.length > 0 && (
           <Card className="bg-gray-800 border-gray-700">
-            <Title level={4} className="!text-white !mb-4">
-              Order Items
-            </Title>
-            <div className="space-y-3">
-              {order.order_items.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex justify-between items-center p-3 bg-gray-700 rounded-lg"
-                >
-                  <div>
-                    <Text className="text-white font-medium">
-                      {item.collection_details.name} -{" "}
-                      {item.collection_details.sr_no}
-                    </Text>
-                    <br />
-                    <Text className="text-gray-400 text-sm">
-                      Quantity: {item.quantity} {item.collection_details.unit}
-                    </Text>
-                  </div>
-                </div>
-              ))}
+            <div className="flex justify-between items-center mb-4">
+              <Title level={4} className="!text-white !mb-0">
+                Order Items
+              </Title>
+              <Tag color="blue" className="px-2 py-1 text-sm font-medium">
+                {order.order_items.length} item
+                {order.order_items.length > 1 ? "s" : ""}
+              </Tag>
             </div>
+            <Row gutter={[16, 16]}>
+              {order.order_items.map((item) => (
+                <Col xs={24} sm={12} lg={8} xl={6} key={item.id}>
+                  <Card className="bg-gray-700 border-gray-600 hover:border-purple-500 transition-all duration-300 h-full">
+                    <div className="space-y-3">
+                      {/* Collection Info */}
+                      <div className="flex items-start space-x-3">
+                        <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Package className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <Text className="text-white font-medium text-sm block truncate">
+                            {item.collection_details.name}
+                          </Text>
+                          <Text className="text-gray-400 text-xs">
+                            {item.collection_details.sr_no}
+                          </Text>
+                        </div>
+                      </div>
+
+                      {/* Quantity and Unit */}
+                      <div className="pt-2 border-t border-gray-600">
+                        <div className="flex justify-between items-center">
+                          <Text className="text-gray-400 text-sm">
+                            Quantity
+                          </Text>
+                          <Text className="text-white font-semibold">
+                            {item.quantity} {item.collection_details.unit}
+                          </Text>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
           </Card>
         )}
       </div>
