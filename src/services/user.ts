@@ -1,4 +1,4 @@
-import { BaseService, ApiResponse } from './types';
+import { BaseService, ApiResponse, CollectionAccess, CollectionAccessResponse, AddCollectionAccessRequest, UpdateCollectionAccessRequest } from './types';
 
 // User interfaces
 export interface UserResponse {
@@ -272,6 +272,87 @@ export class UserService extends BaseService {
         throw error;
       }
       throw new Error('An unexpected error occurred while deleting user');
+    }
+  }
+
+  // Collection Access Management Methods
+  async getUserCollectionAccess(userId: number): Promise<CollectionAccess[]> {
+    try {
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/users/${userId}/collections?status=ACTIVE`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: ApiResponse<CollectionAccessResponse> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse.data.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while fetching user collection access');
+    }
+  }
+
+  async addCollectionAccess(userId: number, request: AddCollectionAccessRequest): Promise<boolean> {
+    try {
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/users/${userId}/collections`, {
+        method: 'POST',
+        body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: ApiResponse<{ success: boolean }> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse.data.success;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while adding collection access');
+    }
+  }
+
+  async updateCollectionAccess(userId: number, request: UpdateCollectionAccessRequest): Promise<boolean> {
+    try {
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/users/${userId}/collections/bulk`, {
+        method: 'PUT',
+        body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: ApiResponse<{ success: boolean }> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse.data.success;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while updating collection access');
     }
   }
 }

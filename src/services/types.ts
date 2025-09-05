@@ -1,8 +1,59 @@
+import dotenv from 'dotenv';
+
+
 // Common API response wrapper
 export interface ApiResponse<T> {
   error: boolean;
   message: string;
   data: T;
+}
+
+// Collection Access Management Types
+export interface CollectionAccess {
+  id: number;
+  customer_user_id: number;
+  collection_id: number;
+  status: 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'SUSPENDED' | 'EXPIRED';
+  created_at: string;
+  created_by: number;
+  updated_at: string | null;
+  updated_by: number | null;
+  customer: {
+    name: string;
+    mobile_no: string;
+    role: string;
+  };
+  collection: {
+    name: string;
+    description: string;
+  };
+  creator: {
+    name: string;
+    mobile_no: string;
+    role: string;
+  };
+  updater: {
+    name: string | null;
+    mobile_no: string | null;
+    role: string | null;
+  };
+}
+
+export interface CollectionAccessResponse {
+  data: CollectionAccess[];
+  pagination: any;
+}
+
+export interface AddCollectionAccessRequest {
+  collectionIds: number[];
+  status: 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'SUSPENDED' | 'EXPIRED';
+}
+
+export interface UpdateCollectionAccessRequest {
+  updates: Array<{
+    collectionId: number;
+    status: 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'SUSPENDED' | 'EXPIRED';
+  }>;
 }
 
 // Base service class for common functionality

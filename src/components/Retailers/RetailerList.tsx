@@ -68,6 +68,10 @@ export const RetailerList: React.FC = () => {
     navigate(`/retailers/${retailerId}`);
   };
 
+  const handleManageCollections = (retailerId: number) => {
+    navigate(`/retailers/manage-collection-access/${retailerId}`);
+  };
+
   const handleEditRetailer = (retailerId: number) => {
     navigate(`/retailers/edit/${retailerId}`);
   };
@@ -213,7 +217,7 @@ export const RetailerList: React.FC = () => {
                           className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleRetailerClick(retailer.id);
+                            handleManageCollections(retailer.id);
                           }}
                         >
                           Manage Collections →
