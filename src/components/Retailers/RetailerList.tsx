@@ -110,7 +110,7 @@ export const RetailerList: React.FC = () => {
     <MainLayout title="Retailers">
       <div className="space-y-2">
         {/* Search and Add Button - Fixed Position */}
-        <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700/50 pb-4 mb-4">
+        <div className="sticky top-0 z-10 bg-gray-900/95 pt-4 -mx-4 px-4 backdrop-blur-sm border-b border-gray-700/50 pb-4 mb-4">
           <div className="flex gap-4 items-center">
             <AntSearch
               placeholder="Search retailers..."

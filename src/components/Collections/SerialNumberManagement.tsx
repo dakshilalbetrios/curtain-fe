@@ -181,7 +181,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
     <div className="space-y-4">
       {/* Header with Add Button */}
       {isWholesaler && (
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center sticky top-0 z-10 bg-gray-900 backdrop-blur-sm border-b border-gray-700/50 pb-4 pt-4 -mx-4 px-4">
           <Title level={4} className="!text-white !mb-0">
             Serial Numbers ({serialNumbers.length})
           </Title>

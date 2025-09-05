@@ -74,7 +74,7 @@ export const OrderList: React.FC = () => {
       <div className="space-y-4">
         {/* Order History */}
         <div>
-          <div className="flex sticky top-0 z-10 justify-between items-center">
+          <div className="flex sticky top-0 z-10 justify-between items-center bg-gray-900 backdrop-blur-sm border-b border-gray-700/50 pb-4 pt-4 -mx-4 px-4">
             <div className="flex items-center space-x-2">
               <Title level={4} className="!text-white">
                 Orders

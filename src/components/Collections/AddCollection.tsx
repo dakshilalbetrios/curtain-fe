@@ -619,11 +619,14 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
           </Title>
 
           <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex justify-between items-center mb-4">
+              <Text className="text-gray-300">
+                Upload CSV file to add multiple collections at once
+              </Text>
               <Button
                 icon={<Download className="w-4 h-4" />}
                 onClick={downloadTemplate}
-                className="border-purple-500 text-purple-400 hover:border-purple-400"
+                className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
               >
                 Download Template
               </Button>
@@ -638,15 +641,15 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
               showUploadList={false}
               className="bg-gray-700 border-gray-600 hover:border-purple-500"
             >
-              <p className="ant-upload-drag-icon">
-                <UploadIcon className="w-12 h-12 text-purple-400" />
-              </p>
-              <p className="ant-upload-text text-white">
-                Click or drag CSV file to this area to upload
-              </p>
-              <p className="ant-upload-hint text-gray-400">
-                Support for CSV files with collections and serial numbers
-              </p>
+              <div className="p-6 text-center">
+                <UploadIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <Text className="text-white text-lg block mb-2">
+                  Click or drag CSV file to upload
+                </Text>
+                <Text className="text-gray-400">
+                  Supports CSV files with collections data
+                </Text>
+              </div>
             </Dragger>
 
             {uploading && (

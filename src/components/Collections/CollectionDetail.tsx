@@ -84,21 +84,6 @@ export const CollectionDetail: React.FC = () => {
   return (
     <MainLayout title={collection.name} showBack={true} showCart={true}>
       <div className="space-y-6">
-        {/* Collection Header */}
-        <Card className="bg-gray-800 border-gray-700">
-          <div className="flex items-start space-x-4">
-            <div className="flex-1">
-              <Title level={3} className="!text-white !mb-2">
-                {collection.name}
-              </Title>
-              <Text className="text-gray-400">{collection.description}</Text>
-              <div className="mt-2">
-                <Tag color="blue">{serialNumbers.length} Items Available</Tag>
-              </div>
-            </div>
-          </div>
-        </Card>
-
         {/* Serial Numbers */}
         <SerialNumberManagement
           collectionId={collection?.id || 0}

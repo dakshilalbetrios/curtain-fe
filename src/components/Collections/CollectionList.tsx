@@ -106,7 +106,7 @@ export const CollectionList: React.FC = () => {
     <MainLayout title="Collections" showCart={true}>
       <div className="space-y-2">
         {/* Search and Add Button - Fixed Position */}
-        <div className="sticky top-0 z-10 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700/50 pb-4 mb-4">
+        <div className="sticky top-0 z-50 bg-gray-900 backdrop-blur-sm border-b border-gray-700/50 pb-4 pt-4 -mx-4 px-4">
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <AntSearch
               placeholder="Search collections..."

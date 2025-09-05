@@ -458,13 +458,13 @@ Mike Johnson,9876543212,1234,JohnsonBlinds,SALES,ACTIVE`;
         <Card className="bg-gray-800 border-gray-700">
           <Title level={4} className="!text-white !mb-4 flex items-center">
             <UploadIcon className="w-5 h-5 mr-2" />
-            Bulk Import
+            Bulk Upload Users
           </Title>
 
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mb-4">
               <Text className="text-gray-300">
-                Upload CSV file to add multiple retailers at once
+                Upload CSV file to add multiple user at once
               </Text>
               <Button
                 icon={<Download className="w-4 h-4" />}
@@ -487,7 +487,7 @@ Mike Johnson,9876543212,1234,JohnsonBlinds,SALES,ACTIVE`;
                   Click or drag CSV file to upload
                 </Text>
                 <Text className="text-gray-400">
-                  Supports CSV files with retailer data
+                  Supports CSV files with users data
                 </Text>
               </div>
             </Dragger>
