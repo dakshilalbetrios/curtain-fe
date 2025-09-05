@@ -129,9 +129,9 @@ export const RetailerList: React.FC = () => {
               icon={<Plus className="w-4 h-4" />}
               onClick={handleAddRetailer}
               size="large"
-              className="bg-purple-600 hover:bg-purple-700 border-purple-600 whitespace-nowrap"
+              className="bg-purple-600 hover:bg-purple-700 border-purple-600"
             >
-              Add User
+              <span className="hidden sm:inline">Add User</span>
             </Button>
           </div>
         </div>

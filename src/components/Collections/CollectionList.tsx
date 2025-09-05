@@ -107,7 +107,7 @@ export const CollectionList: React.FC = () => {
       <div className="space-y-2">
         {/* Search and Add Button - Fixed Position */}
         <div className="sticky top-0 z-50 bg-gray-900 backdrop-blur-sm border-b border-gray-700/50 pb-4 pt-4 -mx-4 px-4">
-          <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+          <div className="flex gap-4 items-center">
             <AntSearch
               placeholder="Search collections..."
               value={searchText}
@@ -122,9 +122,9 @@ export const CollectionList: React.FC = () => {
                 icon={<Plus className="w-4 h-4" />}
                 onClick={handleAddCollection}
                 size="large"
-                className="bg-purple-600 hover:bg-purple-700 border-purple-600 whitespace-nowrap w-full sm:w-auto"
+                className="bg-purple-600 hover:bg-purple-700 border-purple-600"
               >
-                Add Collection
+                <span className="hidden sm:inline">Add Collection</span>
               </Button>
             )}
           </div>
