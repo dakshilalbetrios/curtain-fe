@@ -161,7 +161,7 @@ export const RetailerList: React.FC = () => {
               </Col>
             ) : (
               filteredRetailers.map((retailer) => (
-                <Col xs={24} sm={12} lg={8} xl={6} key={retailer.id}>
+                <Col xs={24} sm={12} md={12} lg={12} xl={8} key={retailer.id}>
                   <Card
                     hoverable
                     // onClick={() => handleRetailerClick(retailer.id)}
@@ -211,10 +211,18 @@ export const RetailerList: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-2 justify-between">
+                      <div className="flex items-center justify-between">
+                        <div className="flex flex-wrap gap-2">
+                          {/* {isWholesaler && lowStockItems.length > 0 && (
+                              <Tag color="orange">
+                                Low Stock ({lowStockItems.length})
+                              </Tag>
+                            )} */}
+                        </div>
+
                         <Button
                           type="link"
-                          className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto"
+                          className="!text-purple-400 !p-0 !h-auto"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleManageCollections(retailer.id);
@@ -222,7 +230,34 @@ export const RetailerList: React.FC = () => {
                         >
                           Manage Collections →
                         </Button>
+                      </div>
 
+                      <div className="flex items-center justify-end space-x-2 pt-2 border-t border-gray-700">
+                        <Button
+                          type="link"
+                          icon={<Edit className="w-4 h-4" />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditRetailer(retailer.id);
+                          }}
+                          className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto flex items-center gap-1"
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          type="link"
+                          icon={<Trash2 className="w-4 h-4" />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteRetailer(retailer.id, retailer.name);
+                          }}
+                          className="!text-red-400 hover:!text-red-300 !p-0 !h-auto flex items-center gap-1"
+                        >
+                          Delete
+                        </Button>
+                      </div>
+
+                      {/* <div className="flex items-center space-x-2 justify-between">
                         <div className="flex items-center space-x-3">
                           <Button
                             type="link"
@@ -247,7 +282,7 @@ export const RetailerList: React.FC = () => {
                             Delete
                           </Button>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </Card>
                 </Col>
