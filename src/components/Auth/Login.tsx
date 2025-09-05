@@ -94,6 +94,17 @@ export const Login: React.FC = () => {
           </div>
 
           <Form onFinish={handleSubmit} layout="vertical">
+            {/* Hidden fake fields to trick browsers */}
+            <div style={{ display: "none" }}>
+              <input type="text" name="fake_username" autoComplete="username" />
+              <input
+                type="password"
+                name="fake_password"
+                autoComplete="current-password"
+              />
+              <input type="tel" name="fake_mobile" autoComplete="tel" />
+            </div>
+
             <Form.Item
               label={
                 <span className="text-gray-300 font-medium">Mobile Number</span>
@@ -112,6 +123,9 @@ export const Login: React.FC = () => {
                 placeholder="Enter mobile number"
                 className="bg-gray-700 border-gray-600 text-white h-12 rounded-md focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                 size="large"
+                autoComplete="off"
+                name="mobile_number"
+                type="tel"
               />
             </Form.Item>
 

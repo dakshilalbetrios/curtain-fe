@@ -345,7 +345,20 @@ Mike Johnson,9876543212,1234,JohnsonBlinds,SALES,ACTIVE`;
             layout="vertical"
             onFinish={handleSubmit}
             initialValues={{ role: "CUSTOMER", status: "ACTIVE" }}
+            autoComplete="off"
           >
+            {/* Hidden fake fields to trick browsers */}
+            <div style={{ display: "none" }}>
+              <input type="text" name="fake_username" autoComplete="username" />
+              <input
+                type="password"
+                name="fake_password"
+                autoComplete="current-password"
+              />
+              <input type="tel" name="fake_mobile" autoComplete="tel" />
+              <input type="email" name="fake_email" autoComplete="email" />
+            </div>
+
             <Form.Item
               label={<span className="text-gray-300">Name</span>}
               name="name"
@@ -357,6 +370,7 @@ Mike Johnson,9876543212,1234,JohnsonBlinds,SALES,ACTIVE`;
                 placeholder="Enter retailer name"
                 className="bg-gray-700 border-gray-600 text-white"
                 size="large"
+                autoComplete="off"
               />
             </Form.Item>
 
@@ -375,6 +389,8 @@ Mike Johnson,9876543212,1234,JohnsonBlinds,SALES,ACTIVE`;
                 placeholder="Enter mobile number"
                 className="bg-gray-700 border-gray-600 text-white"
                 size="large"
+                autoComplete="off"
+                type="tel"
               />
             </Form.Item>
 
