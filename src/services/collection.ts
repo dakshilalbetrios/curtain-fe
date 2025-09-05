@@ -48,6 +48,20 @@ export interface CreateCollectionRequest {
   }[];
 }
 
+export interface UpdateCollectionRequest {
+  name: string;
+  description: string;
+  serial_numbers: Array<{
+    _action: 'create' | 'update' | 'delete';
+    sr_no?: string;
+    min_stock?: string;
+    max_stock?: string;
+    current_stock?: string;
+    unit?: 'mtr' | 'pcs';
+    id?: number;
+  }>;
+}
+
 export interface UpdateStockRequest {
   collection_sr_no_id: number;
   current_stock: string;
@@ -188,7 +202,7 @@ export class CollectionService extends BaseService {
     }
   }
 
-  async updateCollection(id: number, collectionData: CreateCollectionRequest): Promise<CollectionResponse> {
+  async updateCollection(id: number, collectionData: UpdateCollectionRequest): Promise<CollectionResponse> {
     try {
       const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/collections/${id}`, {
         method: 'PUT',

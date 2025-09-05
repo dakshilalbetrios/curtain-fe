@@ -1,7 +1,8 @@
 // Import all services for local use
 import { authService, type AuthUser, type LoginRequest, type LoginResponse } from './auth';
 import { userService, type UserResponse, type CreateRetailerRequest, type UpdateProfileRequest } from './user';
-import { collectionService, type CollectionResponse, type CollectionSerialNumber, type CreateCollectionRequest, type UpdateStockRequest } from './collection';
+import { collectionService, type CollectionResponse, type CollectionSerialNumber, type CreateCollectionRequest, type UpdateCollectionRequest, type UpdateStockRequest } from './collection';
+import { type ApiResponse } from './types';
 import { orderService, type OrderResponse, type OrderItem, type CreateOrderRequest, type UpdateOrderStatusRequest } from './order';
 
 // Re-export services
@@ -18,6 +19,7 @@ export type {
   CollectionResponse,
   CollectionSerialNumber,
   CreateCollectionRequest,
+  UpdateCollectionRequest,
   UpdateStockRequest,
   OrderResponse,
   OrderItem,

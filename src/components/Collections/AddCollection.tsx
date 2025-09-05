@@ -23,6 +23,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   collectionService,
   CreateCollectionRequest,
+  UpdateCollectionRequest,
   CollectionResponse,
 } from "../../services";
 import { MainLayout } from "../Layout/MainLayout";
@@ -33,11 +34,13 @@ const { TextArea } = Input;
 const { Dragger } = Upload;
 
 interface SerialNumberFormData {
+  id?: number;
   sr_no: string;
   min_stock: string;
   max_stock: string;
   current_stock: string;
   unit: "mtr" | "pcs";
+  isExisting?: boolean;
 }
 
 interface CollectionFormData {
@@ -74,11 +77,13 @@ export const AddCollection: React.FC = () => {
         description: collection.description,
         serial_numbers:
           collection.serial_numbers?.map((sr) => ({
+            id: sr.id,
             sr_no: sr.sr_no,
             min_stock: sr.min_stock,
             max_stock: sr.max_stock,
             current_stock: sr.current_stock,
             unit: sr.unit,
+            isExisting: true,
           })) || [],
       });
     } catch (error) {
@@ -92,8 +97,56 @@ export const AddCollection: React.FC = () => {
     setLoading(true);
     try {
       if (editMode && editingCollection) {
-        // Update existing collection
-        await collectionService.updateCollection(editingCollection.id, values);
+        // Update existing collection with action-based payload
+        const updatePayload: UpdateCollectionRequest = {
+          name: values.name,
+          description: values.description,
+          serial_numbers: values.serial_numbers.map((sr) => {
+            if (sr.isExisting) {
+              // Existing serial number - update action
+              return {
+                _action: "update" as const,
+                id: sr.id!,
+                min_stock: sr.min_stock,
+                max_stock: sr.max_stock,
+                // Note: current_stock is not included as it should not be editable
+              };
+            } else {
+              // New serial number - create action
+              return {
+                _action: "create" as const,
+                sr_no: sr.sr_no,
+                min_stock: sr.min_stock,
+                max_stock: sr.max_stock,
+                current_stock: sr.current_stock,
+                unit: sr.unit,
+              };
+            }
+          }),
+        };
+
+        // Add delete actions for removed serial numbers
+        const originalSerialNumbers = editingCollection.serial_numbers || [];
+        const currentSerialIds = values.serial_numbers
+          .filter((sr) => sr.isExisting)
+          .map((sr) => sr.id);
+
+        const deletedSerialNumbers = originalSerialNumbers
+          .filter((sr) => !currentSerialIds.includes(sr.id))
+          .map((sr) => ({
+            _action: "delete" as const,
+            id: sr.id,
+          }));
+
+        updatePayload.serial_numbers = [
+          ...updatePayload.serial_numbers,
+          ...deletedSerialNumbers,
+        ];
+
+        await collectionService.updateCollection(
+          editingCollection.id,
+          updatePayload
+        );
         message.success("Collection updated successfully!");
       } else {
         // Create new collection
@@ -121,6 +174,7 @@ export const AddCollection: React.FC = () => {
           max_stock: "",
           current_stock: "",
           unit: "pcs",
+          isExisting: false,
         },
       ],
     });
@@ -384,6 +438,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                   max_stock: "",
                   current_stock: "",
                   unit: "pcs",
+                  isExisting: false,
                 },
               ],
             }}
@@ -586,6 +641,20 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                               <Input
                                 placeholder="50"
                                 className="bg-gray-600 border-gray-500 text-white"
+                                disabled={form.getFieldValue([
+                                  "serial_numbers",
+                                  name,
+                                  "isExisting",
+                                ])}
+                                title={
+                                  form.getFieldValue([
+                                    "serial_numbers",
+                                    name,
+                                    "isExisting",
+                                  ])
+                                    ? "Current stock cannot be edited for existing items"
+                                    : ""
+                                }
                               />
                             </Form.Item>
                           </Col>
