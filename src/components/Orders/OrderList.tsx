@@ -74,27 +74,36 @@ export const OrderList: React.FC = () => {
       <div className="space-y-4">
         {/* Order History */}
         <div>
-          <div className="flex sticky top-0 z-10 justify-between items-center bg-gray-900 backdrop-blur-sm border-b border-gray-700/50 pb-4 pt-4 -mx-4 px-4">
-            <div className="flex items-center space-x-2">
-              <Title level={4} className="!text-white">
-                Orders
-              </Title>
-              <Tag color="green">{filteredOrders.length}</Tag>
-            </div>
+          <div className="sticky top-0 z-50 bg-gray-900 backdrop-blur-sm border-b border-gray-700/50 pb-4 pt-4 -mx-4 px-4 mb-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-3">
+                <Title level={4} className="!text-white !mb-0">
+                  Orders
+                </Title>
+                <Tag color="green" className="px-2 py-1 text-sm font-medium">
+                  {filteredOrders.length}
+                </Tag>
+              </div>
 
-            <Select
-              value={statusFilter}
-              onChange={setStatusFilter}
-              className="w-32"
-              size="small"
-            >
-              <Option value="ALL">All</Option>
-              <Option value="PENDING">Pending</Option>
-              <Option value="APPROVED">Approved</Option>
-              <Option value="SHIPPED">Shipped</Option>
-              <Option value="DELIVERED">Delivered</Option>
-              <Option value="CANCELLED">Cancelled</Option>
-            </Select>
+              <Select
+                value={statusFilter}
+                onChange={setStatusFilter}
+                className="w-32"
+                size="middle"
+                style={{
+                  backgroundColor: "#374151",
+                  borderColor: "#4B5563",
+                  color: "white",
+                }}
+              >
+                <Option value="ALL">All</Option>
+                <Option value="PENDING">Pending</Option>
+                <Option value="APPROVED">Approved</Option>
+                <Option value="SHIPPED">Shipped</Option>
+                <Option value="DELIVERED">Delivered</Option>
+                <Option value="CANCELLED">Cancelled</Option>
+              </Select>
+            </div>
           </div>
 
           {loading ? (

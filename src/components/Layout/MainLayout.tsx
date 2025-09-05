@@ -38,7 +38,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         <Header title={title} showBack={showBack} showCart={showCart} />
 
         {/* Main Content */}
-        <Content className="pb-[100px] bg-gray-900 min-h-screen overflow-y-auto w-full">
+        <Content className="pb-[140px] bg-gray-900 min-h-screen overflow-y-auto w-full">
           <div className="px-4 py-4 w-full mx-auto">{children}</div>
         </Content>
 
