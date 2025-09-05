@@ -96,6 +96,32 @@ export class CollectionService extends BaseService {
     }
   }
 
+  async searchCollections(searchTerm: string): Promise<CollectionResponse[]> {
+    try {
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/collections?name_like=${encodeURIComponent(searchTerm)}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: ApiResponse<CollectionResponse[]> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while searching collections');
+    }
+  }
+
   async getCollectionById(id: number): Promise<CollectionResponse> {
     try {
       const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/collections/${id}`, {

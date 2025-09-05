@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Card,
   Row,
@@ -24,10 +24,49 @@ export const CollectionList: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [collections, setCollections] = useState<CollectionResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const isWholesaler = user?.role === "ADMIN" || user?.role === "SALES";
+
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId: number;
+      return (searchTerm: string) => {
+        clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(async () => {
+          if (searchTerm.trim()) {
+            setSearchLoading(true);
+            try {
+              const data = await collectionService.searchCollections(
+                searchTerm
+              );
+              setCollections(data);
+            } catch (error) {
+              console.error("Failed to search collections:", error);
+              message.error("Failed to search collections. Please try again.");
+            } finally {
+              setSearchLoading(false);
+            }
+          } else {
+            // If search is empty, fetch all collections
+            setLoading(true);
+            try {
+              const data = await collectionService.getAllCollections();
+              setCollections(data);
+            } catch (error) {
+              console.error("Failed to fetch collections:", error);
+            } finally {
+              setLoading(false);
+            }
+          }
+        }, 500); // 500ms debounce
+      };
+    })(),
+    []
+  );
 
   useEffect(() => {
     const fetchCollections = async () => {
@@ -44,11 +83,12 @@ export const CollectionList: React.FC = () => {
     fetchCollections();
   }, []);
 
-  const filteredCollections = collections.filter(
-    (collection) =>
-      collection.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      collection.description.toLowerCase().includes(searchText.toLowerCase())
-  );
+  // Handle search input change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchText(value);
+    debouncedSearch(value);
+  };
 
   const handleCollectionClick = (collectionId: number) => {
     navigate(`/collections/${collectionId}`);
@@ -111,9 +151,10 @@ export const CollectionList: React.FC = () => {
             <AntSearch
               placeholder="Search collections..."
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={handleSearchChange}
               className="flex-1"
               size="large"
+              loading={searchLoading}
               prefix={<Search className="w-4 h-4 text-gray-400" />}
             />
             {isWholesaler && (
@@ -131,7 +172,7 @@ export const CollectionList: React.FC = () => {
         </div>
 
         {/* Collections Grid */}
-        {loading ? (
+        {loading || searchLoading ? (
           <Row gutter={[16, 16]}>
             {[...Array(6)].map((_, index) => (
               <CollectionSkeleton key={index} />
@@ -139,7 +180,7 @@ export const CollectionList: React.FC = () => {
           </Row>
         ) : (
           <Row gutter={[16, 16]}>
-            {filteredCollections.length === 0 ? (
+            {collections.length === 0 ? (
               <Col span={24}>
                 <Card className="bg-gray-800 border-gray-700 text-center py-12">
                   <Package className="w-16 h-16 text-gray-500 mx-auto mb-4" />
@@ -154,7 +195,7 @@ export const CollectionList: React.FC = () => {
                 </Card>
               </Col>
             ) : (
-              filteredCollections.map((collection) => {
+              collections.map((collection) => {
                 const lowStockItems =
                   collection.serial_numbers?.filter(
                     (sr) =>

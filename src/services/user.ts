@@ -70,6 +70,32 @@ export class UserService extends BaseService {
     }
   }
 
+  async searchUsers(searchTerm: string): Promise<UserResponse[]> {
+    try {
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/users?name_like=${encodeURIComponent(searchTerm)}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: ApiResponse<UserResponse[]> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while searching users');
+    }
+  }
+
   async getUserById(id: number): Promise<UserResponse> {
     try {
       const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/users/${id}`, {

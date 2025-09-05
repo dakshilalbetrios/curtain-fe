@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Card,
   Row,
@@ -33,7 +33,44 @@ export const RetailerList: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId: number;
+      return (searchTerm: string) => {
+        clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(async () => {
+          if (searchTerm.trim()) {
+            setSearchLoading(true);
+            try {
+              const data = await userService.searchUsers(searchTerm);
+              setUsers(data);
+            } catch (error) {
+              console.error("Failed to search users:", error);
+              message.error("Failed to search users. Please try again.");
+            } finally {
+              setSearchLoading(false);
+            }
+          } else {
+            // If search is empty, fetch all users
+            setLoading(true);
+            try {
+              const data = await userService.getAllUsers();
+              setUsers(data);
+            } catch (error) {
+              console.error("Failed to fetch users:", error);
+            } finally {
+              setLoading(false);
+            }
+          }
+        }, 500); // 500ms debounce
+      };
+    })(),
+    []
+  );
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -50,22 +87,19 @@ export const RetailerList: React.FC = () => {
     fetchUsers();
   }, []);
 
+  // Handle search input change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchText(value);
+    debouncedSearch(value);
+  };
+
   const retailers = users.filter(
     (user) => user.role === "CUSTOMER" || user.role === "SALES"
-  );
-  const filteredRetailers = retailers.filter(
-    (retailer) =>
-      retailer.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      retailer.shop_name.toLowerCase().includes(searchText.toLowerCase()) ||
-      retailer.mobile_no.includes(searchText)
   );
 
   const handleAddRetailer = () => {
     navigate("/retailers/add");
-  };
-
-  const handleRetailerClick = (retailerId: number) => {
-    navigate(`/retailers/${retailerId}`);
   };
 
   const handleManageCollections = (retailerId: number) => {
@@ -119,9 +153,10 @@ export const RetailerList: React.FC = () => {
             <AntSearch
               placeholder="Search retailers..."
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={handleSearchChange}
               className="flex-1"
               size="large"
+              loading={searchLoading}
               prefix={<Search className="w-4 h-4 text-gray-400" />}
             />
             <Button
@@ -137,7 +172,7 @@ export const RetailerList: React.FC = () => {
         </div>
 
         {/* Retailers Grid */}
-        {loading ? (
+        {loading || searchLoading ? (
           <Row gutter={[16, 16]}>
             {[...Array(6)].map((_, index) => (
               <RetailerSkeleton key={index} />
@@ -145,7 +180,7 @@ export const RetailerList: React.FC = () => {
           </Row>
         ) : (
           <Row gutter={[16, 16]}>
-            {filteredRetailers.length === 0 ? (
+            {retailers.length === 0 ? (
               <Col span={24}>
                 <Card className="bg-gray-800 border-gray-700 text-center py-12">
                   <Users className="w-16 h-16 text-gray-500 mx-auto mb-4" />
@@ -160,7 +195,7 @@ export const RetailerList: React.FC = () => {
                 </Card>
               </Col>
             ) : (
-              filteredRetailers.map((retailer) => (
+              retailers.map((retailer) => (
                 <Col xs={24} sm={12} md={12} lg={12} xl={8} key={retailer.id}>
                   <Card
                     hoverable
