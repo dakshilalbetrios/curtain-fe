@@ -14,11 +14,17 @@ import {
   message,
   Space,
 } from "antd";
-import { Plus, Edit, Trash2, Package, Minus, ShoppingCart } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Package,
+  Minus,
+  ShoppingCart,
+  PlusCircle,
+} from "lucide-react";
 import { collectionService, CollectionSerialNumber } from "../../services";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
-
 const { Title, Text } = Typography;
 const { Option } = Select;
 const { TextArea } = Input;
@@ -209,12 +215,14 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
 
           return (
             <Col xs={24} sm={12} lg={8} key={srNo.id}>
-              <Card className="bg-gray-800 border-gray-700 h-80">
+              <Card className="bg-gray-800 border-gray-700 h-full">
                 <div className="space-y-4 h-full flex flex-col">
                   {/* Header */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <Package className="w-5 h-5 text-purple-400" />
+                      <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                        <Package className="w-4 h-4 text-white" />
+                      </div>
                       <Title level={5} className="!text-white !mb-0">
                         {srNo.sr_no}
                       </Title>
@@ -223,7 +231,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                       <Space>
                         <Button
                           type="link"
-                          icon={<Edit className="w-4 h-4" />}
+                          icon={<PlusCircle className="w-4 h-4" />}
                           onClick={() => openEditModal(srNo)}
                           className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto"
                         />
@@ -237,13 +245,16 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                     )}
                   </div>
 
-                  {/* Stock Status */}
+                  {/* Stock Status and Unit */}
                   {isWholesaler && (
                     <div className="flex items-center justify-between">
-                      <Tag color={stockStatus.color}>
+                      <Tag
+                        color={stockStatus.color}
+                        className="px-3 py-1 rounded-full text-xs font-medium"
+                      >
                         {stockStatus.level.toUpperCase()}
                       </Tag>
-                      <Text className="text-gray-400 text-sm">
+                      <Text className="text-gray-400 text-sm font-medium">
                         {srNo.unit.toUpperCase()}
                       </Text>
                     </div>
@@ -251,82 +262,50 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
 
                   {/* Stock Progress */}
                   {isWholesaler && (
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <Text className="text-gray-400">Stock Level</Text>
-                        <Text className="text-white">
-                          {srNo.current_stock} / {srNo.max_stock}
-                        </Text>
-                      </div>
-                      <div className="w-full bg-gray-700 rounded-full h-2">
-                        <div
-                          className={`h-2 rounded-full ${
-                            stockStatus.level === "low"
-                              ? "bg-red-500"
-                              : stockStatus.level === "high"
-                              ? "bg-green-500"
-                              : "bg-orange-500"
-                          }`}
-                          style={{
-                            width: `${Math.min(stockPercentage, 100)}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Stock Details */}
-                  {isWholesaler ? (
-                    <div className="grid grid-cols-2 gap-2 text-sm flex-1">
-                      <div>
-                        <Text className="text-gray-400">Min Stock:</Text>
-                        <br />
-                        <Text className="text-white font-medium">
-                          {srNo.min_stock} {srNo.unit}
-                        </Text>
-                      </div>
-                      <div>
-                        <Text className="text-gray-400">Max Stock:</Text>
-                        <br />
-                        <Text className="text-white font-medium">
-                          {srNo.max_stock} {srNo.unit}
-                        </Text>
-                      </div>
-                      <div>
-                        <Text className="text-gray-400">Current:</Text>
-                        <br />
-                        <Text className="text-white font-medium">
-                          {srNo.current_stock} {srNo.unit}
-                        </Text>
-                      </div>
-                      <div>
-                        <Text className="text-gray-400">Available:</Text>
-                        <br />
-                        <Text className="text-white font-medium">
-                          {srNo.current_stock} {srNo.unit}
-                        </Text>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center flex-1 flex items-center justify-center">
-                      <div>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
                         <Text className="text-gray-400 text-sm">
-                          Available:
+                          Stock Level
                         </Text>
-                        <br />
-                        <Text className="text-white font-medium text-lg">
-                          {srNo.current_stock} {srNo.unit}
+                        <Text className="text-white font-semibold">
+                          {srNo.current_stock}
                         </Text>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="w-full bg-gray-700 rounded-full h-2.5">
+                          <div
+                            className={`h-2.5 rounded-full transition-all duration-300 ${
+                              stockStatus.level === "low"
+                                ? "bg-red-500"
+                                : stockStatus.level === "high"
+                                ? "bg-green-500"
+                                : "bg-orange-500"
+                            }`}
+                            style={{
+                              width: `${Math.min(stockPercentage, 100)}%`,
+                            }}
+                          />
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <Text className="text-gray-500">
+                            {srNo.min_stock}
+                          </Text>
+                          <Text className="text-gray-500">
+                            {srNo.max_stock}
+                          </Text>
+                        </div>
                       </div>
                     </div>
                   )}
 
                   {/* Cart Functionality for Retailers */}
                   {isRetailer && parseFloat(srNo.current_stock) > 0 && (
-                    <div className="space-y-3 pt-3 border-t border-gray-700">
-                      <div className="flex items-center justify-between">
-                        <Text className="text-gray-300">Quantity:</Text>
-                        <Space.Compact>
+                    <div className="space-y-4 pt-4 border-t border-gray-700 mt-auto">
+                      <div className="space-y-2">
+                        <Text className="text-gray-300 text-sm font-medium">
+                          Quantity:
+                        </Text>
+                        <Space.Compact className="w-full">
                           <Button
                             icon={<Minus className="w-4 h-4" />}
                             onClick={() =>
@@ -336,7 +315,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                               )
                             }
                             disabled={(quantities[srNo.id] || 0) <= 0}
-                            className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                            className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600 h-10"
                           />
                           <InputNumber
                             min={0}
@@ -346,7 +325,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                             onChange={(value) =>
                               handleQuantityChange(srNo.id, value)
                             }
-                            className="w-20 text-center bg-gray-700 border-gray-600"
+                            className="flex-1 text-center bg-gray-700 border-gray-600 h-10"
                             controls={false}
                           />
                           <Button
@@ -364,7 +343,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                               (quantities[srNo.id] || 0) >=
                               parseFloat(srNo.current_stock)
                             }
-                            className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                            className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600 h-10"
                           />
                         </Space.Compact>
                       </div>
@@ -374,7 +353,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                         icon={<ShoppingCart className="w-4 h-4" />}
                         onClick={() => handleAddToCart(srNo)}
                         disabled={(quantities[srNo.id] || 0) <= 0}
-                        className="w-full bg-purple-600 hover:bg-purple-700 border-purple-600"
+                        className="w-full bg-purple-600 hover:bg-purple-700 border-purple-600 h-10 font-medium"
                       >
                         Add to Cart
                       </Button>
@@ -382,8 +361,11 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                   )}
 
                   {isRetailer && parseFloat(srNo.current_stock) === 0 && (
-                    <div className="pt-3 border-t border-gray-700">
-                      <Button disabled className="w-full">
+                    <div className="pt-4 border-t border-gray-700 mt-auto">
+                      <Button
+                        disabled
+                        className="w-full h-10 bg-gray-600 text-gray-400 border-gray-600"
+                      >
                         Out of Stock
                       </Button>
                     </div>

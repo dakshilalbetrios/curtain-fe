@@ -681,7 +681,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
         </Card>
 
         {/* Bulk Upload Section */}
-        <Card className="bg-gray-800 border-gray-700">
+        {/* <Card className="bg-gray-800 border-gray-700">
           <Title level={4} className="!text-white !mb-4 flex items-center">
             <UploadIcon className="w-5 h-5 mr-2" />
             Bulk Upload Collections
@@ -729,7 +729,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
               </div>
             )}
           </div>
-        </Card>
+        </Card> */}
       </div>
     </MainLayout>
   );
