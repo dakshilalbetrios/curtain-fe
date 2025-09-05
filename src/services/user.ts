@@ -278,7 +278,7 @@ export class UserService extends BaseService {
   // Collection Access Management Methods
   async getUserCollectionAccess(userId: number): Promise<CollectionAccess[]> {
     try {
-      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/users/${userId}/collections?status=ACTIVE`, {
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/users/${userId}/collections`, {
         method: 'GET',
       });
 
