@@ -1,5 +1,4 @@
 import React from "react";
-import { Menu } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Home, Package, ShoppingBag, Users, User } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
@@ -10,51 +9,133 @@ export const Sidebar: React.FC = () => {
   const { user } = useAuth();
 
   const menuItems = [
+    { key: "dashboard", icon: Home, label: "Dashboard", path: "/dashboard" },
     {
-      key: "/dashboard",
-      icon: <Home className="w-5 h-5" />,
-      label: "Dashboard",
-    },
-    {
-      key: "/collections",
-      icon: <Package className="w-5 h-5" />,
+      key: "collections",
+      icon: Package,
       label: "Collections",
+      path: "/collections",
     },
     {
-      key: "/orders",
-      icon: <ShoppingBag className="w-5 h-5" />,
+      key: "orders",
+      icon: ShoppingBag,
       label: "Orders",
+      path: "/orders",
     },
     ...(user?.role === "ADMIN" || user?.role === "SALES"
       ? [
           {
-            key: "/retailers",
-            icon: <Users className="w-5 h-5" />,
+            key: "retailers",
+            icon: Users,
             label: "Retailers",
+            path: "/retailers",
           },
         ]
       : []),
     {
-      key: "/profile",
-      icon: <User className="w-5 h-5" />,
+      key: "profile",
+      icon: User,
       label: "Profile",
+      path: "/profile",
     },
   ];
 
-  const handleMenuClick = ({ key }: { key: string }) => {
-    navigate(key);
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
+  // Function to determine if a navigation item should be active
+  const isNavItemActive = (navItem: any) => {
+    const currentPath = location.pathname;
+
+    switch (navItem.key) {
+      case "dashboard":
+        return currentPath === "/dashboard";
+
+      case "collections":
+        return (
+          currentPath === "/collections" ||
+          currentPath.startsWith("/collections/") ||
+          currentPath === "/cart"
+        );
+
+      case "orders":
+        return currentPath === "/orders" || currentPath.startsWith("/orders/");
+
+      case "retailers":
+        return (
+          currentPath === "/retailers" || currentPath.startsWith("/retailers/")
+        );
+
+      case "profile":
+        return (
+          currentPath === "/profile" ||
+          currentPath === "/profile/edit" ||
+          currentPath === "/profile/change-password"
+        );
+
+      default:
+        return currentPath === navItem.path;
+    }
   };
 
   return (
     <div className="h-full bg-gray-800 pt-[4rem]">
-      <Menu
-        mode="inline"
-        selectedKeys={[location.pathname]}
-        onClick={handleMenuClick}
-        theme="dark"
-        items={menuItems}
-        className="border-0 bg-gray-800"
-      />
+      <div className="px-4 py-2">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = isNavItemActive(item);
+
+          return (
+            <button
+              key={item.key}
+              onClick={() => handleNavigation(item.path)}
+              className={`group relative flex items-center w-full px-4 py-3 mb-2 rounded-xl transition-all duration-300 ease-out ${
+                isActive ? "text-white" : "text-gray-400 hover:text-gray-200"
+              }`}
+            >
+              {/* Icon container with active state */}
+              <div
+                className={`relative mr-3 transition-all duration-300 ${
+                  isActive ? "scale-110" : "group-hover:scale-105"
+                }`}
+              >
+                <div
+                  className={`p-2 rounded-xl transition-all duration-300 ${
+                    isActive
+                      ? "bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg shadow-purple-500/25"
+                      : "group-hover:bg-gray-700/50"
+                  }`}
+                >
+                  <Icon
+                    className={`w-5 h-5 transition-all duration-300 ${
+                      isActive
+                        ? "text-white drop-shadow-sm"
+                        : "group-hover:text-gray-200"
+                    }`}
+                  />
+                </div>
+              </div>
+
+              {/* Label */}
+              <span
+                className={`font-medium transition-all duration-300 ${
+                  isActive
+                    ? "text-white"
+                    : "text-gray-400 group-hover:text-gray-200"
+                }`}
+              >
+                {item.label}
+              </span>
+
+              {/* Hover effect */}
+              {!isActive && (
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              )}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };
