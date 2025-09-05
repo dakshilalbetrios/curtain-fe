@@ -54,78 +54,83 @@ export const EditProfile: React.FC = () => {
 
   return (
     <MainLayout title="Edit Profile" showBack={true}>
-      <Card className="bg-gray-800 border-gray-700">
-        <Title level={4} className="!text-white !mb-4 flex items-center">
-          <User className="w-5 h-5 mr-2" />
-          Edit Profile Information
-        </Title>
+      <div className="max-w-lg">
+        <Card className="bg-gray-800 border-gray-700">
+          <Title level={4} className="!text-white !mb-6 flex items-center">
+            <User className="w-5 h-5 mr-2" />
+            Edit Profile Information
+          </Title>
 
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          initialValues={{
-            name: user?.name,
-            mobile_no: user?.mobile_no,
-            shop_name: user?.shop_name,
-          }}
-        >
-          <Form.Item
-            label={<span className="text-gray-300">Name</span>}
-            name="name"
-            rules={[{ required: true, message: "Please enter your name" }]}
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            initialValues={{
+              name: user?.name,
+              mobile_no: user?.mobile_no,
+              shop_name: user?.shop_name,
+            }}
+            className="space-y-4"
           >
-            <Input
-              placeholder="Enter your name"
-              className="bg-gray-700 border-gray-600 text-white"
-              size="large"
-            />
-          </Form.Item>
-
-          <Form.Item
-            label={<span className="text-gray-300">Mobile Number</span>}
-            name="mobile_no"
-            rules={[
-              { required: true, message: "Please enter mobile number" },
-              {
-                pattern: /^\d{10}$/,
-                message: "Please enter valid 10-digit mobile number",
-              },
-            ]}
-          >
-            <Input
-              placeholder="Enter mobile number"
-              className="bg-gray-700 border-gray-600 text-white"
-              size="large"
-            />
-          </Form.Item>
-
-          <Form.Item
-            label={<span className="text-gray-300">Shop Name</span>}
-            name="shop_name"
-            rules={[{ required: true, message: "Please enter shop name" }]}
-          >
-            <Input
-              placeholder="Enter shop name"
-              className="bg-gray-700 border-gray-600 text-white"
-              size="large"
-            />
-          </Form.Item>
-
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              size="large"
-              icon={<Save className="w-4 h-4" />}
-              className="w-full bg-purple-600 hover:bg-purple-700 border-purple-600"
+            <Form.Item
+              label={<span className="text-gray-300">Name</span>}
+              name="name"
+              rules={[{ required: true, message: "Please enter your name" }]}
             >
-              Save Changes
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
+              <Input
+                placeholder="Enter your name"
+                className="bg-gray-700 border-gray-600 text-white"
+                size="large"
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={<span className="text-gray-300">Mobile Number</span>}
+              name="mobile_no"
+              rules={[
+                { required: true, message: "Please enter mobile number" },
+                {
+                  pattern: /^\d{10}$/,
+                  message: "Please enter valid 10-digit mobile number",
+                },
+              ]}
+            >
+              <Input
+                placeholder="Enter mobile number"
+                className="bg-gray-700 border-gray-600 text-white"
+                size="large"
+                disabled
+                title="Mobile number cannot be changed"
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={<span className="text-gray-300">Shop Name</span>}
+              name="shop_name"
+              rules={[{ required: true, message: "Please enter shop name" }]}
+            >
+              <Input
+                placeholder="Enter shop name"
+                className="bg-gray-700 border-gray-600 text-white"
+                size="large"
+              />
+            </Form.Item>
+
+            <Form.Item className="!mb-0">
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                size="large"
+                icon={<Save className="w-4 h-4" />}
+                className="w-full bg-purple-600 hover:bg-purple-700 border-purple-600 mt-2"
+              >
+                Save Changes
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      </div>
     </MainLayout>
   );
 };

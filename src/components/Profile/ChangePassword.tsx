@@ -12,11 +12,12 @@ export const ChangePassword: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [oldPassword, setOldPassword] = useState(["", "", "", ""]);
   const [newPassword, setNewPassword] = useState(["", "", "", ""]);
+  const [confirmPassword, setConfirmPassword] = useState(["", "", "", ""]);
   const navigate = useNavigate();
   const { user } = useAuth();
 
   const handlePasswordChange = (
-    type: "old" | "new",
+    type: "old" | "new" | "confirm",
     index: number,
     value: string
   ) => {
@@ -25,10 +26,14 @@ export const ChangePassword: React.FC = () => {
         const newOldPassword = [...oldPassword];
         newOldPassword[index] = value;
         setOldPassword(newOldPassword);
-      } else {
+      } else if (type === "new") {
         const newNewPassword = [...newPassword];
         newNewPassword[index] = value;
         setNewPassword(newNewPassword);
+      } else {
+        const newConfirmPassword = [...confirmPassword];
+        newConfirmPassword[index] = value;
+        setConfirmPassword(newConfirmPassword);
       }
 
       // Auto-focus next input
@@ -42,12 +47,18 @@ export const ChangePassword: React.FC = () => {
   };
 
   const handleKeyDown = (
-    type: "old" | "new",
+    type: "old" | "new" | "confirm",
     index: number,
     e: React.KeyboardEvent
   ) => {
     if (e.key === "Backspace") {
-      const currentPassword = type === "old" ? oldPassword : newPassword;
+      const currentPassword =
+        type === "old"
+          ? oldPassword
+          : type === "new"
+          ? newPassword
+          : confirmPassword;
+
       if (!currentPassword[index] && index > 0) {
         const prevInput = document.getElementById(
           `${type}-password-${index - 1}`
@@ -60,6 +71,7 @@ export const ChangePassword: React.FC = () => {
   const handleSubmit = async () => {
     const oldPass = oldPassword.join("");
     const newPass = newPassword.join("");
+    const confirmPass = confirmPassword.join("");
 
     if (oldPass.length !== 4) {
       message.error("Please enter your current 4-digit password");
@@ -68,6 +80,16 @@ export const ChangePassword: React.FC = () => {
 
     if (newPass.length !== 4) {
       message.error("Please enter a new 4-digit password");
+      return;
+    }
+
+    if (confirmPass.length !== 4) {
+      message.error("Please confirm your new 4-digit password");
+      return;
+    }
+
+    if (newPass !== confirmPass) {
+      message.error("New password and confirm password do not match");
       return;
     }
 
@@ -89,6 +111,7 @@ export const ChangePassword: React.FC = () => {
       // Clear the form
       setOldPassword(["", "", "", ""]);
       setNewPassword(["", "", "", ""]);
+      setConfirmPassword(["", "", "", ""]);
 
       navigate("/profile");
     } catch (error) {
@@ -101,69 +124,95 @@ export const ChangePassword: React.FC = () => {
 
   return (
     <MainLayout title="Change Password" showBack={true}>
-      <Card className="bg-gray-800 border-gray-700">
-        <Title level={4} className="!text-white !mb-4 flex items-center">
-          <Lock className="w-5 h-5 mr-2" />
-          Change Password
-        </Title>
-
-        <div className="space-y-6">
-          {/* Current Password */}
-          <div>
-            <Text className="text-gray-300 block mb-3">Current Password</Text>
-            <Space size="small">
-              {oldPassword.map((digit, index) => (
-                <input
-                  key={index}
-                  id={`old-password-${index}`}
-                  type="password"
-                  value={digit}
-                  onChange={(e) =>
-                    handlePasswordChange("old", index, e.target.value)
-                  }
-                  onKeyDown={(e) => handleKeyDown("old", index, e)}
-                  className="w-12 h-12 text-center text-lg bg-gray-700 border border-gray-600 text-white rounded focus:border-purple-500 focus:outline-none"
-                  maxLength={1}
-                  placeholder="•"
-                />
-              ))}
-            </Space>
-          </div>
-
-          {/* New Password */}
-          <div>
-            <Text className="text-gray-300 block mb-3">New Password</Text>
-            <Space size="small">
-              {newPassword.map((digit, index) => (
-                <input
-                  key={index}
-                  id={`new-password-${index}`}
-                  type="password"
-                  value={digit}
-                  onChange={(e) =>
-                    handlePasswordChange("new", index, e.target.value)
-                  }
-                  onKeyDown={(e) => handleKeyDown("new", index, e)}
-                  className="w-12 h-12 text-center text-lg bg-gray-700 border border-gray-600 text-white rounded focus:border-purple-500 focus:outline-none"
-                  maxLength={1}
-                  placeholder="•"
-                />
-              ))}
-            </Space>
-          </div>
-
-          <Button
-            type="primary"
-            loading={loading}
-            size="large"
-            icon={<Save className="w-4 h-4" />}
-            onClick={handleSubmit}
-            className="w-full bg-purple-600 hover:bg-purple-700 border-purple-600"
-          >
+      <div className="max-w-lg">
+        <Card className="bg-gray-800 border-gray-700">
+          <Title level={4} className="!text-white !mb-6 flex items-center">
+            <Lock className="w-5 h-5 mr-2" />
             Change Password
-          </Button>
-        </div>
-      </Card>
+          </Title>
+
+          <div className="space-y-6">
+            {/* Current Password */}
+            <div>
+              <Text className="text-gray-300 block mb-3">Current Password</Text>
+              <Space size="small">
+                {oldPassword.map((digit, index) => (
+                  <input
+                    key={index}
+                    id={`old-password-${index}`}
+                    type="password"
+                    value={digit}
+                    onChange={(e) =>
+                      handlePasswordChange("old", index, e.target.value)
+                    }
+                    onKeyDown={(e) => handleKeyDown("old", index, e)}
+                    className="w-12 h-12 text-center text-lg bg-gray-700 border border-gray-600 text-white rounded focus:border-purple-500 focus:outline-none"
+                    maxLength={1}
+                    placeholder="•"
+                  />
+                ))}
+              </Space>
+            </div>
+
+            {/* New Password */}
+            <div>
+              <Text className="text-gray-300 block mb-3">New Password</Text>
+              <Space size="small">
+                {newPassword.map((digit, index) => (
+                  <input
+                    key={index}
+                    id={`new-password-${index}`}
+                    type="password"
+                    value={digit}
+                    onChange={(e) =>
+                      handlePasswordChange("new", index, e.target.value)
+                    }
+                    onKeyDown={(e) => handleKeyDown("new", index, e)}
+                    className="w-12 h-12 text-center text-lg bg-gray-700 border border-gray-600 text-white rounded focus:border-purple-500 focus:outline-none"
+                    maxLength={1}
+                    placeholder="•"
+                  />
+                ))}
+              </Space>
+            </div>
+
+            {/* Confirm New Password */}
+            <div>
+              <Text className="text-gray-300 block mb-3">
+                Confirm New Password
+              </Text>
+              <Space size="small">
+                {confirmPassword.map((digit, index) => (
+                  <input
+                    key={index}
+                    id={`confirm-password-${index}`}
+                    type="password"
+                    value={digit}
+                    onChange={(e) =>
+                      handlePasswordChange("confirm", index, e.target.value)
+                    }
+                    onKeyDown={(e) => handleKeyDown("confirm", index, e)}
+                    className="w-12 h-12 text-center text-lg bg-gray-700 border border-gray-600 text-white rounded focus:border-purple-500 focus:outline-none"
+                    maxLength={1}
+                    placeholder="•"
+                  />
+                ))}
+              </Space>
+            </div>
+
+            <Button
+              type="primary"
+              loading={loading}
+              size="large"
+              icon={<Save className="w-4 h-4" />}
+              onClick={handleSubmit}
+              className="w-full bg-purple-600 hover:bg-purple-700 border-purple-600 mt-2"
+            >
+              Change Password
+            </Button>
+          </div>
+        </Card>
+      </div>
     </MainLayout>
   );
 };
