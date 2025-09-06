@@ -1,11 +1,26 @@
-import React from 'react';
-import { Card, Row, Col, Typography, Statistic, Button, Spin } from 'antd';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Package, ShoppingBag, TrendingUp, Users, Plus, Eye } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { orderService, userService, collectionService } from '../../services';
-import { MainLayout } from '../Layout/MainLayout';
+import React from "react";
+import { Card, Row, Col, Typography, Statistic, Button, Spin } from "antd";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  Package,
+  ShoppingBag,
+  TrendingUp,
+  Users,
+  Plus,
+  Eye,
+} from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { orderService, userService, collectionService } from "../../services";
+import { MainLayout } from "../Layout/MainLayout";
 
 const { Title, Text } = Typography;
 
@@ -17,7 +32,7 @@ export const Dashboard: React.FC = () => {
     pendingOrders: 0,
     totalRetailers: 0,
     totalCollections: 0,
-    loading: true
+    loading: true,
   });
 
   React.useEffect(() => {
@@ -26,100 +41,104 @@ export const Dashboard: React.FC = () => {
         const [orders, users, collections] = await Promise.all([
           orderService.getAllOrders(),
           userService.getAllUsers(),
-          collectionService.getAllCollections()
+          collectionService.getAllCollections(),
         ]);
 
-        const pendingOrders = orders.filter(order => order.status === 'PENDING').length;
-        const retailers = users.filter(user => user.role === 'CUSTOMER');
+        const pendingOrders = orders.filter(
+          (order) => order.status === "PENDING"
+        ).length;
+        const retailers = users.filter((user) => user.role === "CUSTOMER");
 
         setStats({
           totalOrders: orders.length,
           pendingOrders,
           totalRetailers: retailers.length,
           totalCollections: collections.length,
-          loading: false
+          loading: false,
         });
       } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
-        setStats(prev => ({ ...prev, loading: false }));
+        console.error("Failed to fetch dashboard data:", error);
+        setStats((prev) => ({ ...prev, loading: false }));
       }
     };
 
     fetchDashboardData();
   }, []);
 
-  const isWholesaler = user?.role === 'ADMIN' || user?.role === 'SALES';
-  const isRetailer = user?.role === 'CUSTOMER';
+  const isWholesaler = user?.role === "ADMIN" || user?.role === "SALES";
+  const isRetailer = user?.role === "CUSTOMER";
 
   // Chart data for visualization
   const chartData = [
-    { month: 'Jan', orders: 12 },
-    { month: 'Feb', orders: 19 },
-    { month: 'Mar', orders: 15 },
-    { month: 'Apr', orders: 25 },
-    { month: 'May', orders: 18 },
-    { month: 'Jun', orders: 22 }
+    { month: "Jan", orders: 12 },
+    { month: "Feb", orders: 19 },
+    { month: "Mar", orders: 15 },
+    { month: "Apr", orders: 25 },
+    { month: "May", orders: 18 },
+    { month: "Jun", orders: 22 },
   ];
 
-  const quickActions = isRetailer ? [
-    {
-      title: 'My Orders',
-      description: 'View your order history',
-      icon: <ShoppingBag className="w-8 h-8 text-purple-400" />,
-      action: () => navigate('/orders'),
-      color: 'bg-purple-900/20 border-purple-500/30'
-    },
-    {
-      title: 'Collections',
-      description: 'Browse available collections',
-      icon: <Package className="w-8 h-8 text-blue-400" />,
-      action: () => navigate('/collections'),
-      color: 'bg-blue-900/20 border-blue-500/30'
-    },
-    {
-      title: 'New Order',
-      description: 'Place a new order',
-      icon: <Plus className="w-8 h-8 text-green-400" />,
-      action: () => navigate('/collections'),
-      color: 'bg-green-900/20 border-green-500/30'
-    },
-    {
-      title: 'Profile',
-      description: 'View your profile',
-      icon: <Eye className="w-8 h-8 text-orange-400" />,
-      action: () => navigate('/profile'),
-      color: 'bg-orange-900/20 border-orange-500/30'
-    }
-  ] : [
-    {
-      title: 'Orders',
-      description: 'Manage all orders',
-      icon: <ShoppingBag className="w-8 h-8 text-purple-400" />,
-      action: () => navigate('/orders'),
-      color: 'bg-purple-900/20 border-purple-500/30'
-    },
-    {
-      title: 'Collections',
-      description: 'Manage collections',
-      icon: <Package className="w-8 h-8 text-blue-400" />,
-      action: () => navigate('/collections'),
-      color: 'bg-blue-900/20 border-blue-500/30'
-    },
-    {
-      title: 'Retailers',
-      description: 'Manage retailers',
-      icon: <Users className="w-8 h-8 text-green-400" />,
-      action: () => navigate('/retailers'),
-      color: 'bg-green-900/20 border-green-500/30'
-    },
-    {
-      title: 'Analytics',
-      description: 'View business insights',
-      icon: <TrendingUp className="w-8 h-8 text-orange-400" />,
-      action: () => {},
-      color: 'bg-orange-900/20 border-orange-500/30'
-    }
-  ];
+  const quickActions = isRetailer
+    ? [
+        {
+          title: "My Orders",
+          description: "View your order history",
+          icon: <ShoppingBag className="w-8 h-8 text-purple-400" />,
+          action: () => navigate("/orders"),
+          color: "bg-purple-900/20 border-purple-500/30",
+        },
+        {
+          title: "Collections",
+          description: "Browse available collections",
+          icon: <Package className="w-8 h-8 text-blue-400" />,
+          action: () => navigate("/collections"),
+          color: "bg-blue-900/20 border-blue-500/30",
+        },
+        {
+          title: "New Order",
+          description: "Place a new order",
+          icon: <Plus className="w-8 h-8 text-green-400" />,
+          action: () => navigate("/collections"),
+          color: "bg-green-900/20 border-green-500/30",
+        },
+        {
+          title: "Profile",
+          description: "View your profile",
+          icon: <Eye className="w-8 h-8 text-orange-400" />,
+          action: () => navigate("/profile"),
+          color: "bg-orange-900/20 border-orange-500/30",
+        },
+      ]
+    : [
+        {
+          title: "Orders",
+          description: "Manage all orders",
+          icon: <ShoppingBag className="w-8 h-8 text-purple-400" />,
+          action: () => navigate("/orders"),
+          color: "bg-purple-900/20 border-purple-500/30",
+        },
+        {
+          title: "Collections",
+          description: "Manage collections",
+          icon: <Package className="w-8 h-8 text-blue-400" />,
+          action: () => navigate("/collections"),
+          color: "bg-blue-900/20 border-blue-500/30",
+        },
+        {
+          title: "Retailers",
+          description: "Manage retailers",
+          icon: <Users className="w-8 h-8 text-green-400" />,
+          action: () => navigate("/users"),
+          color: "bg-green-900/20 border-green-500/30",
+        },
+        {
+          title: "Analytics",
+          description: "View business insights",
+          icon: <TrendingUp className="w-8 h-8 text-orange-400" />,
+          action: () => {},
+          color: "bg-orange-900/20 border-orange-500/30",
+        },
+      ];
 
   if (stats.loading) {
     return (
@@ -138,12 +157,12 @@ export const Dashboard: React.FC = () => {
         <Card className="bg-gradient-to-r from-purple-600 to-blue-600 border-0 text-white">
           <div className="p-4">
             <Title level={3} className="!text-white !mb-2">
-              {isRetailer ? 'Exclusive Summer Sale' : `Welcome, ${user?.name}`}
+              {isRetailer ? "Exclusive Summer Sale" : `Welcome, ${user?.name}`}
             </Title>
             <Text className="text-purple-100">
-              {isRetailer 
-                ? 'Up to 50% off on selected items!' 
-                : 'Manage your business efficiently'}
+              {isRetailer
+                ? "Up to 50% off on selected items!"
+                : "Manage your business efficiently"}
             </Text>
           </div>
         </Card>
@@ -157,7 +176,7 @@ export const Dashboard: React.FC = () => {
                   <Statistic
                     title={<span className="text-gray-300">Total Orders</span>}
                     value={stats.totalOrders}
-                    valueStyle={{ color: '#8B5CF6' }}
+                    valueStyle={{ color: "#8B5CF6" }}
                   />
                 </Card>
               </Col>
@@ -166,7 +185,7 @@ export const Dashboard: React.FC = () => {
                   <Statistic
                     title={<span className="text-gray-300">Pending</span>}
                     value={stats.pendingOrders}
-                    valueStyle={{ color: '#F59E0B' }}
+                    valueStyle={{ color: "#F59E0B" }}
                   />
                 </Card>
               </Col>
@@ -175,7 +194,7 @@ export const Dashboard: React.FC = () => {
                   <Statistic
                     title={<span className="text-gray-300">Retailers</span>}
                     value={stats.totalRetailers}
-                    valueStyle={{ color: '#10B981' }}
+                    valueStyle={{ color: "#10B981" }}
                   />
                 </Card>
               </Col>
@@ -184,7 +203,7 @@ export const Dashboard: React.FC = () => {
                   <Statistic
                     title={<span className="text-gray-300">Collections</span>}
                     value={stats.totalCollections}
-                    valueStyle={{ color: '#3B82F6' }}
+                    valueStyle={{ color: "#3B82F6" }}
                   />
                 </Card>
               </Col>
@@ -194,27 +213,39 @@ export const Dashboard: React.FC = () => {
               <Col xs={8}>
                 <Card className="bg-gray-800 border-gray-700 text-center">
                   <Statistic
-                    title={<span className="text-gray-300 text-xs">Orders in Progress</span>}
+                    title={
+                      <span className="text-gray-300 text-xs">
+                        Orders in Progress
+                      </span>
+                    }
                     value={stats.pendingOrders}
-                    valueStyle={{ color: '#8B5CF6', fontSize: '24px' }}
+                    valueStyle={{ color: "#8B5CF6", fontSize: "24px" }}
                   />
                 </Card>
               </Col>
               <Col xs={8}>
                 <Card className="bg-gray-800 border-gray-700 text-center">
                   <Statistic
-                    title={<span className="text-gray-300 text-xs">Latest Collection</span>}
+                    title={
+                      <span className="text-gray-300 text-xs">
+                        Latest Collection
+                      </span>
+                    }
                     value={stats.totalCollections}
-                    valueStyle={{ color: '#10B981', fontSize: '24px' }}
+                    valueStyle={{ color: "#10B981", fontSize: "24px" }}
                   />
                 </Card>
               </Col>
               <Col xs={8}>
                 <Card className="bg-gray-800 border-gray-700 text-center">
                   <Statistic
-                    title={<span className="text-gray-300 text-xs">Exclusive Offers</span>}
+                    title={
+                      <span className="text-gray-300 text-xs">
+                        Exclusive Offers
+                      </span>
+                    }
                     value="20%"
-                    valueStyle={{ color: '#F59E0B', fontSize: '24px' }}
+                    valueStyle={{ color: "#F59E0B", fontSize: "24px" }}
                   />
                 </Card>
               </Col>
@@ -264,12 +295,12 @@ export const Dashboard: React.FC = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                   <XAxis dataKey="month" stroke="#9CA3AF" />
                   <YAxis stroke="#9CA3AF" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1F2937', 
-                      border: '1px solid #374151',
-                      color: '#F9FAFB'
-                    }} 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#1F2937",
+                      border: "1px solid #374151",
+                      color: "#F9FAFB",
+                    }}
                   />
                   <Bar dataKey="orders" fill="#8B5CF6" />
                 </BarChart>

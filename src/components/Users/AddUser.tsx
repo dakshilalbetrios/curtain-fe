@@ -62,7 +62,7 @@ export const AddRetailer: React.FC = () => {
     } catch (error) {
       console.error("Failed to load user data:", error);
       message.error("Failed to load user data");
-      navigate("/retailers");
+      navigate("/users");
     }
   };
 
@@ -90,7 +90,7 @@ export const AddRetailer: React.FC = () => {
         await userService.addRetailer(values);
         message.success("Retailer added successfully!");
       }
-      navigate("/retailers");
+      navigate("/users");
     } catch (error) {
       message.error(
         editMode ? "Failed to update retailer" : "Failed to add retailer"
@@ -184,7 +184,7 @@ export const AddRetailer: React.FC = () => {
 
       // Always redirect to retailers list after showing the message
       setTimeout(() => {
-        navigate("/retailers");
+        navigate("/users");
       }, 2000);
     } catch (error) {
       console.error("Bulk upload error:", error);
@@ -330,12 +330,12 @@ Mike Johnson,9876543212,1234,JohnsonBlinds,SALES,ACTIVE`;
             {editMode ? (
               <>
                 <Edit className="w-5 h-5 mr-2" />
-                Edit Retailer
+                Edit User
               </>
             ) : (
               <>
                 <UserPlus className="w-5 h-5 mr-2" />
-                Add New Retailer
+                Add New User
               </>
             )}
           </Title>
@@ -471,7 +471,7 @@ Mike Johnson,9876543212,1234,JohnsonBlinds,SALES,ACTIVE`;
         </Card>
 
         {/* CSV Import */}
-        <Card className="bg-gray-800 border-gray-700">
+        {/* <Card className="bg-gray-800 border-gray-700">
           <Title level={4} className="!text-white !mb-4 flex items-center">
             <UploadIcon className="w-5 h-5 mr-2" />
             Bulk Upload Users
@@ -514,7 +514,7 @@ Mike Johnson,9876543212,1234,JohnsonBlinds,SALES,ACTIVE`;
               </div>
             )}
           </div>
-        </Card>
+        </Card> */}
       </div>
     </MainLayout>
   );

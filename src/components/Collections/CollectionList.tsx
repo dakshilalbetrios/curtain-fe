@@ -395,7 +395,6 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
               className="flex-1"
               size="large"
               loading={searchLoading}
-              prefix={<Search className="w-4 h-4 text-gray-400" />}
             />
             {isWholesaler && (
               <Dropdown

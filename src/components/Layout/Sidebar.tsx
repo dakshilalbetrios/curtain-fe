@@ -25,10 +25,10 @@ export const Sidebar: React.FC = () => {
     ...(user?.role === "ADMIN" || user?.role === "SALES"
       ? [
           {
-            key: "retailers",
+            key: "users",
             icon: Users,
-            label: "Retailers",
-            path: "/retailers",
+            label: "Users",
+            path: "/users",
           },
         ]
       : []),
@@ -62,10 +62,8 @@ export const Sidebar: React.FC = () => {
       case "orders":
         return currentPath === "/orders" || currentPath.startsWith("/orders/");
 
-      case "retailers":
-        return (
-          currentPath === "/retailers" || currentPath.startsWith("/retailers/")
-        );
+      case "users":
+        return currentPath === "/users" || currentPath.startsWith("/users/");
 
       case "profile":
         return (

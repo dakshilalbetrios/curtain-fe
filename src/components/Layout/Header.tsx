@@ -46,8 +46,8 @@ export const Header: React.FC<HeaderProps> = ({
         return "Collections";
       case "/orders":
         return "My Orders";
-      case "/retailers":
-        return "Retailers";
+      case "/users":
+        return "Users";
       case "/profile":
         return "Profile";
       case "/cart":

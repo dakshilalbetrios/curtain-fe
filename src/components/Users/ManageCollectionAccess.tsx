@@ -84,7 +84,7 @@ export const ManageCollectionAccess: React.FC = () => {
     } catch (error) {
       console.error("Failed to load data:", error);
       message.error("Failed to load data. Please try again.");
-      navigate("/retailers");
+      navigate("/users");
     } finally {
       setLoading(false);
     }
@@ -160,7 +160,7 @@ export const ManageCollectionAccess: React.FC = () => {
       await Promise.all(promises);
 
       message.success("Collection access updated successfully!");
-      navigate("/retailers");
+      navigate("/users");
     } catch (error) {
       console.error("Failed to save collection access:", error);
       message.error("Failed to save collection access. Please try again.");

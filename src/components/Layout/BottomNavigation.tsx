@@ -23,7 +23,7 @@ export const BottomNavigation: React.FC = () => {
             key: "retailers",
             icon: Users,
             label: "Retailers",
-            path: "/retailers",
+            path: "/users",
           },
         ]
       : []),
@@ -53,9 +53,7 @@ export const BottomNavigation: React.FC = () => {
         return currentPath === "/orders" || currentPath.startsWith("/orders/");
 
       case "retailers":
-        return (
-          currentPath === "/retailers" || currentPath.startsWith("/retailers/")
-        );
+        return currentPath === "/users" || currentPath.startsWith("/users/");
 
       case "profile":
         return (

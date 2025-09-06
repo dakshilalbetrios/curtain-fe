@@ -16,9 +16,9 @@ import { AddCollection } from "./components/Collections/AddCollection";
 import { OrderList } from "./components/Orders/OrderList";
 import { OrderDetail } from "./components/Orders/OrderDetail";
 import { OrderManagement } from "./components/Orders/OrderManagement";
-import { RetailerList } from "./components/Retailers/RetailerList";
-import { AddRetailer } from "./components/Retailers/AddRetailer";
-import { ManageCollectionAccess } from "./components/Retailers/ManageCollectionAccess";
+import { RetailerList } from "./components/Users/UserList";
+import { AddRetailer } from "./components/Users/AddUser";
+import { ManageCollectionAccess } from "./components/Users/ManageCollectionAccess";
 import { Profile } from "./components/Profile/Profile";
 import { EditProfile } from "./components/Profile/EditProfile";
 import { ChangePassword } from "./components/Profile/ChangePassword";
@@ -105,7 +105,7 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/retailers"
+        path="/users"
         element={
           <PrivateRoute>
             <RetailerList />
@@ -113,7 +113,7 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/retailers/add"
+        path="/users/add"
         element={
           <PrivateRoute>
             <AddRetailer />
@@ -121,7 +121,7 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/retailers/edit/:id"
+        path="/users/edit/:id"
         element={
           <PrivateRoute>
             <AddRetailer />
@@ -129,7 +129,7 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/retailers/manage-collection-access/:userId"
+        path="/users/manage-collection-access/:userId"
         element={
           <PrivateRoute>
             <ManageCollectionAccess />
