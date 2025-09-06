@@ -572,7 +572,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                         </Button>
                       </div>
 
-                      <div className="flex items-center justify-end space-x-2 pt-2 border-t border-gray-700">
+                      <div className="flex items-center justify-between space-x-2 pt-2 border-t border-gray-700">
                         <Button
                           type="link"
                           icon={<Edit className="w-4 h-4" />}
