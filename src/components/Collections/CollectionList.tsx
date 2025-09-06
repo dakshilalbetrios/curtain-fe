@@ -15,7 +15,6 @@ import {
 } from "antd";
 import {
   Package,
-  Search,
   Plus,
   Edit,
   Trash2,
@@ -387,12 +386,12 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
       <div className="space-y-2">
         {/* Search and Add Button - Fixed Position */}
         <div className="sticky top-0 z-50 bg-gray-900 backdrop-blur-sm border-b border-gray-700/50 pb-4 pt-4 -mx-4 px-4">
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center justify-end">
             <AntSearch
               placeholder="Search collections..."
               value={searchText}
               onChange={handleSearchChange}
-              className="flex-1"
+              className="w-full md:w-80 lg:w-96"
               size="large"
               loading={searchLoading}
             />
@@ -467,7 +466,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                     <Card
                       hoverable
                       onClick={() => handleCollectionClick(collection.id)}
-                      className="bg-gray-800 border-gray-700 cursor-pointer transition-all duration-300 hover:scale-105"
+                      className="bg-gray-800 border-gray-700 cursor-pointer"
                     >
                       <div className="space-y-3">
                         <div>

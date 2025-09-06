@@ -9,6 +9,7 @@ import { ConfigProvider, theme } from "antd";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { Login } from "./components/Auth/Login";
+import { SetPassword } from "./components/Auth/SetPassword";
 import { Dashboard } from "./components/Dashboard/Dashboard";
 import { CollectionList } from "./components/Collections/CollectionList";
 import { CollectionDetail } from "./components/Collections/CollectionDetail";
@@ -17,11 +18,8 @@ import { OrderList } from "./components/Orders/OrderList";
 import { OrderDetail } from "./components/Orders/OrderDetail";
 import { OrderManagement } from "./components/Orders/OrderManagement";
 import { RetailerList } from "./components/Users/UserList";
-import { AddRetailer } from "./components/Users/AddUser";
 import { ManageCollectionAccess } from "./components/Users/ManageCollectionAccess";
 import { Profile } from "./components/Profile/Profile";
-import { EditProfile } from "./components/Profile/EditProfile";
-import { ChangePassword } from "./components/Profile/ChangePassword";
 import { Cart } from "./components/Cart/Cart";
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
@@ -39,6 +37,12 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/login"
         element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />}
+      />
+      <Route
+        path="/set-password"
+        element={
+          isAuthenticated ? <Navigate to="/dashboard" /> : <SetPassword />
+        }
       />
       <Route
         path="/dashboard"
@@ -113,22 +117,6 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
-        path="/users/add"
-        element={
-          <PrivateRoute>
-            <AddRetailer />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/users/edit/:id"
-        element={
-          <PrivateRoute>
-            <AddRetailer />
-          </PrivateRoute>
-        }
-      />
-      <Route
         path="/users/manage-collection-access/:userId"
         element={
           <PrivateRoute>
@@ -141,22 +129,6 @@ const AppRoutes: React.FC = () => {
         element={
           <PrivateRoute>
             <Profile />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/profile/edit"
-        element={
-          <PrivateRoute>
-            <EditProfile />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/profile/change-password"
-        element={
-          <PrivateRoute>
-            <ChangePassword />
           </PrivateRoute>
         }
       />

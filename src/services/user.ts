@@ -27,7 +27,7 @@ export interface UserResponse {
 export interface CreateRetailerRequest {
   name: string;
   mobile_no: string;
-  password: string;
+  password?: string | null;
   shop_name: string;
   role: 'ADMIN' | 'SALES' | 'CUSTOMER';
   status: 'ACTIVE' | 'INACTIVE';
@@ -39,6 +39,34 @@ export interface UpdateProfileRequest {
   shop_name: string;
   role?: "ADMIN" | "SALES" | "CUSTOMER";
   status?: "ACTIVE" | "INACTIVE";
+}
+
+export interface UserExistsResponse {
+  error: boolean;
+  message: string;
+  data?: {
+    id: number;
+    name: string;
+    mobile_no: string;
+    shop_name: string;
+    hashed_password: string | null;
+    status: string;
+    role: string;
+    created_at: string;
+    created_by: number;
+    updated_at: string;
+    updated_by: number;
+  };
+}
+
+export interface SetPasswordRequest {
+  mobile_no: string;
+  password: string;
+}
+
+export interface ChangePasswordRequest {
+  oldPassword: string;
+  newPassword: string;
 }
 
 
@@ -203,13 +231,11 @@ export class UserService extends BaseService {
     }
   }
 
-  async changePassword(userId: number, newPassword: string): Promise<boolean> {
+  async changePassword(request: ChangePasswordRequest): Promise<boolean> {
     try {
-      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/users/${userId}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          password: newPassword,
-        }),
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/users/change-password`, {
+        method: 'POST',
+        body: JSON.stringify(request),
       });
 
       if (!response.ok) {
@@ -381,6 +407,61 @@ export class UserService extends BaseService {
       throw new Error('An unexpected error occurred while updating collection access');
     }
   }
+
+  async checkUserExists(mobileNo: string): Promise<UserExistsResponse> {
+    try {
+      const response = await fetch(`${this.BASE_URL}/users/is-exists?mobileNo=${mobileNo}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: UserExistsResponse = await response.json();
+      return apiResponse;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while checking user existence');
+    }
+  }
+
+  async setPassword(request: SetPasswordRequest): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.BASE_URL}/users/set-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: ApiResponse<{ success: boolean }> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse.data.success;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while setting password');
+    }
+  }
+
 }
 
 export const userService = new UserService();

@@ -13,6 +13,8 @@ import {
   message,
   Dropdown,
   Upload,
+  Form,
+  Select,
 } from "antd";
 import {
   Users,
@@ -36,7 +38,7 @@ import { MainLayout } from "../Layout/MainLayout";
 
 const { Title, Text } = Typography;
 const { Search: AntSearch } = Input;
-
+const { Option } = Select;
 const { Dragger } = Upload;
 
 export const RetailerList: React.FC = () => {
@@ -45,7 +47,10 @@ export const RetailerList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
   const [bulkModalVisible, setBulkModalVisible] = useState(false);
+  const [singleModalVisible, setSingleModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserResponse | null>(null);
+  const [form] = Form.useForm();
   const navigate = useNavigate();
 
   // Debounced search function
@@ -111,11 +116,72 @@ export const RetailerList: React.FC = () => {
   );
 
   const handleAddRetailer = () => {
-    navigate("/users/add");
+    setEditingUser(null);
+    setSingleModalVisible(true);
+    form.resetFields();
+  };
+
+  const handleEditRetailer = async (retailerId: number) => {
+    try {
+      const user = await userService.getUserById(retailerId);
+      setEditingUser(user);
+      setSingleModalVisible(true);
+      form.setFieldsValue({
+        name: user.name,
+        mobile_no: user.mobile_no,
+        shop_name: user.shop_name,
+        role: user.role,
+        status: user.status,
+      });
+    } catch (error) {
+      console.error("Failed to load user data:", error);
+      message.error("Failed to load user data");
+    }
   };
 
   const handleBulkUser = () => {
     setBulkModalVisible(true);
+  };
+
+  const handleSingleUserSubmit = async (values: any) => {
+    try {
+      if (editingUser) {
+        // Update existing user
+        await userService.updateProfile(editingUser.id, {
+          name: values.name,
+          mobile_no: values.mobile_no,
+          shop_name: values.shop_name,
+          role: values.role,
+          status: values.status,
+        });
+        message.success("User updated successfully!");
+      } else {
+        // Create new user
+        const userData: CreateRetailerRequest = {
+          name: values.name,
+          mobile_no: values.mobile_no,
+          shop_name: values.shop_name,
+          role: values.role,
+          status: values.status,
+        };
+
+        await userService.addRetailer(userData);
+        message.success("User created successfully!");
+      }
+
+      setSingleModalVisible(false);
+      setEditingUser(null);
+      form.resetFields();
+
+      // Refresh users list
+      const updatedUsers = await userService.getAllUsers();
+      setUsers(updatedUsers);
+    } catch (error) {
+      console.error("Failed to save user:", error);
+      message.error(
+        `Failed to ${editingUser ? "update" : "create"} user. Please try again.`
+      );
+    }
   };
 
   const readFileContent = (file: File): Promise<string> => {
@@ -234,7 +300,6 @@ export const RetailerList: React.FC = () => {
         shop_name: shopName,
         role: role.toUpperCase() as "ADMIN" | "SALES" | "CUSTOMER",
         status: status.toUpperCase() as "ACTIVE" | "INACTIVE",
-        password: "123456", // Default password for bulk users
       });
     }
 
@@ -330,10 +395,6 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
     navigate(`/users/manage-collection-access/${retailerId}`);
   };
 
-  const handleEditRetailer = (retailerId: number) => {
-    navigate(`/users/edit/${retailerId}`);
-  };
-
   const handleDeleteRetailer = (retailerId: number, retailerName: string) => {
     Modal.confirm({
       title: "Delete Retailer",
@@ -373,12 +434,12 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
       <div className="space-y-2">
         {/* Search and Add Button - Fixed Position */}
         <div className="sticky top-0 z-10 bg-gray-900/95 pt-4 -mx-4 px-4 backdrop-blur-sm border-b border-gray-700/50 pb-4 mb-4">
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center justify-end">
             <AntSearch
               placeholder="Search users..."
               value={searchText}
               onChange={handleSearchChange}
-              className="flex-1"
+              className="w-full md:w-80 lg:w-96"
               size="large"
               loading={searchLoading}
             />
@@ -444,7 +505,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                   <Card
                     hoverable
                     // onClick={() => handleRetailerClick(retailer.id)}
-                    className="bg-gray-800 border-gray-700 cursor-pointer transition-all duration-300 hover:scale-105"
+                    className="bg-gray-800 border-gray-700 cursor-pointer"
                   >
                     <div className="space-y-4">
                       <div className="flex items-center justify-between space-x-2">
@@ -639,6 +700,139 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
               </ul>
             </div>
           </div>
+        </Modal>
+
+        {/* Single User Modal */}
+        <Modal
+          title={
+            <div className="flex items-center mb-2">
+              {editingUser ? (
+                <Edit className="w-5 h-5 mr-2 text-purple-400" />
+              ) : (
+                <Plus className="w-5 h-5 mr-2 text-purple-400" />
+              )}
+              <span className="text-white">
+                {editingUser ? "Edit User" : "Add New User"}
+              </span>
+            </div>
+          }
+          open={singleModalVisible}
+          onCancel={() => {
+            setSingleModalVisible(false);
+            setEditingUser(null);
+            form.resetFields();
+          }}
+          footer={null}
+          width={600}
+          className="single-user-modal"
+        >
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSingleUserSubmit}
+            initialValues={{ role: "CUSTOMER", status: "ACTIVE" }}
+            autoComplete="off"
+          >
+            <Form.Item
+              label={<span className="text-gray-300">Name</span>}
+              name="name"
+              rules={[{ required: true, message: "Please enter user name" }]}
+            >
+              <Input
+                placeholder="Enter user name"
+                className="bg-gray-700 border-gray-600 text-white"
+                size="large"
+                autoComplete="off"
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={<span className="text-gray-300">Mobile Number</span>}
+              name="mobile_no"
+              rules={[
+                { required: true, message: "Please enter mobile number" },
+                {
+                  pattern: /^\d{10}$/,
+                  message: "Please enter valid 10-digit mobile number",
+                },
+              ]}
+            >
+              <Input
+                placeholder="Enter mobile number"
+                className="bg-gray-700 border-gray-600 text-white"
+                size="large"
+                autoComplete="off"
+                type="tel"
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={<span className="text-gray-300">Shop Name</span>}
+              name="shop_name"
+              rules={[{ required: true, message: "Please enter shop name" }]}
+            >
+              <Input
+                placeholder="Enter shop name"
+                className="bg-gray-700 border-gray-600 text-white"
+                size="large"
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={<span className="text-gray-300">Role</span>}
+              name="role"
+              rules={[{ required: true, message: "Please select role" }]}
+            >
+              <Select
+                placeholder="Select role"
+                className="bg-gray-700 border-gray-600"
+                size="large"
+              >
+                <Option value="ADMIN">Administrator</Option>
+                <Option value="SALES">Sales Manager</Option>
+                <Option value="CUSTOMER">Retailer</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label={<span className="text-gray-300">Status</span>}
+              name="status"
+              rules={[{ required: true, message: "Please select status" }]}
+            >
+              <Select
+                placeholder="Select status"
+                className="bg-gray-700 border-gray-600"
+                size="large"
+              >
+                <Option value="ACTIVE">Active</Option>
+                <Option value="INACTIVE">Inactive</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item className="mb-0">
+              <div className="flex gap-3 justify-end">
+                <Button
+                  onClick={() => {
+                    setSingleModalVisible(false);
+                    setEditingUser(null);
+                    form.resetFields();
+                  }}
+                  size="large"
+                  className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  size="large"
+                  className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+                >
+                  {editingUser ? "Update User" : "Add User"}
+                </Button>
+              </div>
+            </Form.Item>
+          </Form>
         </Modal>
       </div>
     </MainLayout>
