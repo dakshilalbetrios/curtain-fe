@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Card, Typography, message } from "antd";
-import { Eye, EyeOff, User, AlertCircle } from "lucide-react";
+import { User, AlertCircle } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { userService } from "../../services";
@@ -11,7 +11,6 @@ export const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [checkingUser, setCheckingUser] = useState(false);
   const [password, setPassword] = useState(["", "", "", ""]);
-  const [showPassword, setShowPassword] = useState(false);
   const [mobileNo, setMobileNo] = useState("");
   const [userExists, setUserExists] = useState<boolean | null>(null);
   const [userData, setUserData] = useState<any>(null);
@@ -143,14 +142,14 @@ export const Login: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-gray-800 border-gray-700 shadow-2xl">
-        <div className="px-6 py-8">
-          <div className="text-center mb-8">
-            <Title level={2} className="!text-white !mb-2 !font-bold">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <Card className="w-full max-w-[25rem] bg-gray-800 border-gray-700 shadow-2xl">
+        <div className="px-[2rem] py-10">
+          <div className="text-center mb-10">
+            <Title level={2} className="!text-white !mb-3 !font-bold">
               Welcome Back
             </Title>
-            <Text className="text-gray-400 text-base">
+            <Text className="text-gray-400 text-lg">
               Sign in to your account
             </Text>
           </div>
@@ -169,15 +168,17 @@ export const Login: React.FC = () => {
 
             <Form.Item
               label={
-                <span className="text-gray-300 font-medium">Mobile Number</span>
+                <span className="text-gray-300 font-medium text-base">
+                  Mobile Number
+                </span>
               }
-              className="mb-6"
+              className="mb-8"
             >
               <Input
                 placeholder="Enter mobile number"
                 value={mobileNo}
                 onChange={handleMobileChange}
-                className="bg-gray-700 border-gray-600 text-white h-12 rounded-md focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                className="bg-gray-700 border-gray-600 text-white h-14 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-lg"
                 size="large"
                 autoComplete="off"
                 name="mobile_number"
@@ -185,7 +186,7 @@ export const Login: React.FC = () => {
                 maxLength={10}
                 suffix={
                   checkingUser ? (
-                    <div className="animate-spin w-4 h-4 border-2 border-purple-500 border-t-transparent rounded-full" />
+                    <div className="animate-spin w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full" />
                   ) : null
                 }
               />
@@ -217,51 +218,38 @@ export const Login: React.FC = () => {
             {showPasswordField && (
               <Form.Item
                 label={
-                  <span className="text-gray-300 font-medium">
-                    4-Digit Password
-                  </span>
+                  <span className="text-gray-300 font-medium">Password</span>
                 }
                 className="mb-8"
               >
-                <div className="flex items-center justify-center gap-3">
+                <div className="flex items-center justify-center gap-4">
                   {password.map((digit, index) => (
                     <Input
                       key={index}
                       id={`password-${index}`}
-                      type={showPassword ? "text" : "password"}
+                      type="password"
                       value={digit}
                       onChange={(e) =>
                         handlePasswordChange(index, e.target.value)
                       }
                       onKeyDown={(e) => handleKeyDown(index, e)}
-                      className="w-12 h-12 text-center text-lg bg-gray-700 border-gray-600 text-white rounded-md focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                      className="w-14 h-14 text-center text-xl font-semibold bg-gray-700 border-gray-600 text-white rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200"
                       maxLength={1}
                       placeholder="•"
                     />
                   ))}
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="ml-2 text-gray-400 hover:text-gray-300 transition-colors p-2"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
-                  </button>
                 </div>
               </Form.Item>
             )}
 
-            <Form.Item className="mb-6">
+            <Form.Item className="mb-0">
               <Button
                 type="primary"
                 onClick={handleSubmit}
                 loading={loading}
                 disabled={!showPasswordField}
                 size="large"
-                className="w-full h-12 bg-purple-600 hover:bg-purple-700 border-purple-600 rounded-md font-medium text-base disabled:bg-gray-600 disabled:border-gray-600"
+                className="w-full h-14 bg-purple-600 hover:bg-purple-700 border-purple-600 rounded-lg font-semibold text-lg disabled:bg-gray-600 disabled:border-gray-600 transition-all duration-200"
               >
                 {showPasswordField ? "Sign In" : "Enter Mobile Number"}
               </Button>
