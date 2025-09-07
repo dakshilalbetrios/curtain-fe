@@ -25,12 +25,22 @@ import { Cart } from "./components/Cart/Cart";
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+
+  // Show loading while authentication is being verified
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
+
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 };
 
 const AppRoutes: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const { isDark } = useTheme();
 
   return (
@@ -51,12 +61,30 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route
           path="/login"
-          element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />}
+          element={
+            loading ? (
+              <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+              </div>
+            ) : isAuthenticated ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <Login />
+            )
+          }
         />
         <Route
           path="/set-password"
           element={
-            isAuthenticated ? <Navigate to="/dashboard" /> : <SetPassword />
+            loading ? (
+              <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+              </div>
+            ) : isAuthenticated ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <SetPassword />
+            )
           }
         />
         <Route
@@ -139,7 +167,18 @@ const AppRoutes: React.FC = () => {
             </PrivateRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route
+          path="/"
+          element={
+            loading ? (
+              <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+              </div>
+            ) : (
+              <Navigate to="/dashboard" />
+            )
+          }
+        />
       </Routes>
     </ConfigProvider>
   );
