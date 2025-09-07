@@ -3,7 +3,6 @@ import { Layout } from "antd";
 import { Header } from "./Header";
 import { BottomNavigation } from "./BottomNavigation";
 import { Sidebar } from "./Sidebar";
-import { useAuth } from "../../context/AuthContext";
 
 const { Content, Sider } = Layout;
 
@@ -20,14 +19,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   showBack = false,
   showCart = true,
 }) => {
-  const { user } = useAuth();
-
   return (
-    <Layout className="h-screen bg-gray-900 overflow-hidden">
+    <Layout className="h-screen theme-bg-primary overflow-hidden">
       {/* Desktop Sidebar */}
       <Sider
         width={240}
-        className="hidden lg:block bg-gray-800 border-r border-gray-700 fixed left-0 top-0 bottom-0 z-40"
+        className="hidden lg:block theme-bg-secondary border-r theme-border-primary fixed left-0 top-0 bottom-0 z-40"
         breakpoint="lg"
       >
         <Sidebar />
@@ -38,7 +35,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         <Header title={title} showBack={showBack} showCart={showCart} />
 
         {/* Main Content */}
-        <Content className="pb-[140px] bg-gray-900 min-h-screen overflow-y-auto w-full">
+        <Content className="pb-[140px] theme-bg-primary min-h-screen overflow-y-auto w-full">
           <div className="px-4 py-4 w-full mx-auto">{children}</div>
         </Content>
 

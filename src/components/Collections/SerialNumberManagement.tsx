@@ -187,8 +187,8 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
     <div className="space-y-4">
       {/* Header with Add Button */}
       {isWholesaler && (
-        <div className="flex justify-between items-center sticky top-0 z-10 bg-gray-900 backdrop-blur-sm border-b border-gray-700/50 pb-4 pt-4 -mx-4 px-4">
-          <Title level={4} className="!text-white !mb-0">
+        <div className="flex justify-between items-center sticky top-0 z-10 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4">
+          <Title level={4} className="!theme-text-primary !mb-0">
             Serial Numbers ({serialNumbers.length})
           </Title>
           <Button
@@ -215,7 +215,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
 
           return (
             <Col xs={24} sm={12} lg={8} key={srNo.id}>
-              <Card className="bg-gray-800 border-gray-700 h-full">
+              <Card className="theme-card h-full">
                 <div className="space-y-4 h-full flex flex-col">
                   {/* Header */}
                   <div className="flex items-center justify-between">
@@ -223,7 +223,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                       <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
                         <Package className="w-4 h-4 text-white" />
                       </div>
-                      <Title level={5} className="!text-white !mb-0">
+                      <Title level={5} className="!theme-text-primary !mb-0">
                         {srNo.sr_no}
                       </Title>
                     </div>
@@ -254,7 +254,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                       >
                         {stockStatus.level.toUpperCase()}
                       </Tag>
-                      <Text className="text-gray-400 text-sm font-medium">
+                      <Text className="theme-text-secondary text-sm font-medium">
                         {srNo.unit.toUpperCase()}
                       </Text>
                     </div>
@@ -264,15 +264,15 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                   {isWholesaler && (
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <Text className="text-gray-400 text-sm">
+                        <Text className="theme-text-secondary text-sm">
                           Stock Level
                         </Text>
-                        <Text className="text-white font-semibold">
+                        <Text className="theme-text-primary font-semibold">
                           {srNo.current_stock}
                         </Text>
                       </div>
                       <div className="space-y-2">
-                        <div className="w-full bg-gray-700 rounded-full h-2.5">
+                        <div className="w-full theme-bg-tertiary rounded-full h-2.5">
                           <div
                             className={`h-2.5 rounded-full transition-all duration-300 ${
                               stockStatus.level === "low"
@@ -287,10 +287,10 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                           />
                         </div>
                         <div className="flex justify-between text-xs">
-                          <Text className="text-gray-500">
+                          <Text className="theme-text-tertiary">
                             {srNo.min_stock}
                           </Text>
-                          <Text className="text-gray-500">
+                          <Text className="theme-text-tertiary">
                             {srNo.max_stock}
                           </Text>
                         </div>
@@ -300,9 +300,9 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
 
                   {/* Cart Functionality for Retailers */}
                   {isRetailer && parseFloat(srNo.current_stock) > 0 && (
-                    <div className="space-y-4 pt-4 border-t border-gray-700 mt-auto">
+                    <div className="space-y-4 pt-4 border-t theme-border-secondary mt-auto">
                       <div className="space-y-2">
-                        <Text className="text-gray-300 text-sm font-medium">
+                        <Text className="theme-text-secondary text-sm font-medium">
                           Quantity:
                         </Text>
                         <Space.Compact className="w-full">
@@ -315,7 +315,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                               )
                             }
                             disabled={(quantities[srNo.id] || 0) <= 0}
-                            className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600 h-10"
+                            className="theme-button h-10"
                           />
                           <InputNumber
                             min={0}
@@ -325,7 +325,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                             onChange={(value) =>
                               handleQuantityChange(srNo.id, value)
                             }
-                            className="flex-1 text-center bg-gray-700 border-gray-600 h-10"
+                            className="flex-1 text-center theme-input h-10"
                             controls={false}
                           />
                           <Button
@@ -343,7 +343,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                               (quantities[srNo.id] || 0) >=
                               parseFloat(srNo.current_stock)
                             }
-                            className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600 h-10"
+                            className="theme-button h-10"
                           />
                         </Space.Compact>
                       </div>
@@ -361,10 +361,10 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                   )}
 
                   {isRetailer && parseFloat(srNo.current_stock) === 0 && (
-                    <div className="pt-4 border-t border-gray-700 mt-auto">
+                    <div className="pt-4 border-t theme-border-secondary mt-auto">
                       <Button
                         disabled
-                        className="w-full h-10 bg-gray-600 text-gray-400 border-gray-600"
+                        className="w-full h-10 theme-bg-tertiary theme-text-tertiary theme-border-secondary"
                       >
                         Out of Stock
                       </Button>
@@ -379,7 +379,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
 
       {/* Add Serial Number Modal */}
       <Modal
-        title="Add Serial Number"
+        title={<span className="theme-text-primary">Add Serial Number</span>}
         open={addModalVisible}
         onCancel={() => {
           setAddModalVisible(false);
@@ -396,29 +396,37 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
         >
           <Form.Item
             name="sr_no"
-            label="Serial Number"
+            label={<span className="theme-text-secondary">Serial Number</span>}
             rules={[{ required: true, message: "Please enter serial number" }]}
           >
-            <Input placeholder="e.g., SN001" />
+            <Input placeholder="e.g., SN001" className="theme-input" />
           </Form.Item>
 
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
                 name="min_stock"
-                label="Min Stock"
+                label={<span className="theme-text-secondary">Min Stock</span>}
                 rules={[{ required: true, message: "Please enter min stock" }]}
               >
-                <InputNumber min={0} placeholder="10" className="w-full" />
+                <InputNumber
+                  min={0}
+                  placeholder="10"
+                  className="w-full theme-input"
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 name="max_stock"
-                label="Max Stock"
+                label={<span className="theme-text-secondary">Max Stock</span>}
                 rules={[{ required: true, message: "Please enter max stock" }]}
               >
-                <InputNumber min={0} placeholder="100" className="w-full" />
+                <InputNumber
+                  min={0}
+                  placeholder="100"
+                  className="w-full theme-input"
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -427,21 +435,27 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
             <Col span={12}>
               <Form.Item
                 name="current_stock"
-                label="Current Stock"
+                label={
+                  <span className="theme-text-secondary">Current Stock</span>
+                }
                 rules={[
                   { required: true, message: "Please enter current stock" },
                 ]}
               >
-                <InputNumber min={0} placeholder="50" className="w-full" />
+                <InputNumber
+                  min={0}
+                  placeholder="50"
+                  className="w-full theme-input"
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 name="unit"
-                label="Unit"
+                label={<span className="theme-text-secondary">Unit</span>}
                 rules={[{ required: true, message: "Please select unit" }]}
               >
-                <Select placeholder="Select unit">
+                <Select placeholder="Select unit" className="theme-input">
                   <Option value="mtr">Meter (mtr)</Option>
                   <Option value="pcs">Pieces (pcs)</Option>
                 </Select>
@@ -451,7 +465,12 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
 
           <Form.Item className="mb-0">
             <Space className="w-full justify-end">
-              <Button onClick={() => setAddModalVisible(false)}>Cancel</Button>
+              <Button
+                onClick={() => setAddModalVisible(false)}
+                className="theme-button"
+              >
+                Cancel
+              </Button>
               <Button
                 type="primary"
                 htmlType="submit"
@@ -467,7 +486,11 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
 
       {/* Update Stock Modal */}
       <Modal
-        title={`Update Stock - ${selectedSerialNumber?.sr_no}`}
+        title={
+          <span className="theme-text-primary">
+            Update Stock - {selectedSerialNumber?.sr_no}
+          </span>
+        }
         open={editModalVisible}
         onCancel={() => {
           setEditModalVisible(false);
@@ -483,10 +506,10 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
           onFinish={handleUpdateStock}
           className="mt-4"
         >
-          <div className="mb-4 p-3 bg-gray-100 rounded">
-            <Text className="text-gray-600">
+          <div className="mb-4 p-3 theme-bg-tertiary rounded">
+            <Text className="theme-text-secondary">
               Current Stock:{" "}
-              <strong>
+              <strong className="theme-text-primary">
                 {selectedSerialNumber?.current_stock}{" "}
                 {selectedSerialNumber?.unit}
               </strong>
@@ -495,22 +518,28 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
 
           <Form.Item
             name="quantity"
-            label="Quantity to Add"
+            label={
+              <span className="theme-text-secondary">Quantity to Add</span>
+            }
             rules={[{ required: true, message: "Please enter quantity" }]}
           >
             <InputNumber
               min={1}
               placeholder="Enter quantity to add"
-              className="w-full"
+              className="w-full theme-input"
             />
           </Form.Item>
 
           <Form.Item
             name="reason"
-            label="Reason"
+            label={<span className="theme-text-secondary">Reason</span>}
             rules={[{ required: true, message: "Please enter reason" }]}
           >
-            <TextArea rows={3} placeholder="e.g., Restocked from supplier" />
+            <TextArea
+              rows={3}
+              placeholder="e.g., Restocked from supplier"
+              className="theme-input"
+            />
           </Form.Item>
 
           <Form.Item className="mb-0">
@@ -521,6 +550,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                   editForm.resetFields();
                   setSelectedSerialNumber(null);
                 }}
+                className="theme-button"
               >
                 Cancel
               </Button>

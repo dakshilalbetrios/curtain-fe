@@ -172,36 +172,44 @@ export const Dashboard: React.FC = () => {
           {isWholesaler ? (
             <>
               <Col xs={12} sm={6}>
-                <Card className="bg-gray-800 border-gray-700 text-center">
+                <Card className="theme-card text-center">
                   <Statistic
-                    title={<span className="text-gray-300">Total Orders</span>}
+                    title={
+                      <span className="theme-text-secondary">Total Orders</span>
+                    }
                     value={stats.totalOrders}
                     valueStyle={{ color: "#8B5CF6" }}
                   />
                 </Card>
               </Col>
               <Col xs={12} sm={6}>
-                <Card className="bg-gray-800 border-gray-700 text-center">
+                <Card className="theme-card text-center">
                   <Statistic
-                    title={<span className="text-gray-300">Pending</span>}
+                    title={
+                      <span className="theme-text-secondary">Pending</span>
+                    }
                     value={stats.pendingOrders}
                     valueStyle={{ color: "#F59E0B" }}
                   />
                 </Card>
               </Col>
               <Col xs={12} sm={6}>
-                <Card className="bg-gray-800 border-gray-700 text-center">
+                <Card className="theme-card text-center">
                   <Statistic
-                    title={<span className="text-gray-300">Retailers</span>}
+                    title={
+                      <span className="theme-text-secondary">Retailers</span>
+                    }
                     value={stats.totalRetailers}
                     valueStyle={{ color: "#10B981" }}
                   />
                 </Card>
               </Col>
               <Col xs={12} sm={6}>
-                <Card className="bg-gray-800 border-gray-700 text-center">
+                <Card className="theme-card text-center">
                   <Statistic
-                    title={<span className="text-gray-300">Collections</span>}
+                    title={
+                      <span className="theme-text-secondary">Collections</span>
+                    }
                     value={stats.totalCollections}
                     valueStyle={{ color: "#3B82F6" }}
                   />
@@ -211,10 +219,10 @@ export const Dashboard: React.FC = () => {
           ) : (
             <>
               <Col xs={8}>
-                <Card className="bg-gray-800 border-gray-700 text-center">
+                <Card className="theme-card text-center">
                   <Statistic
                     title={
-                      <span className="text-gray-300 text-xs">
+                      <span className="theme-text-secondary text-xs">
                         Orders in Progress
                       </span>
                     }
@@ -224,10 +232,10 @@ export const Dashboard: React.FC = () => {
                 </Card>
               </Col>
               <Col xs={8}>
-                <Card className="bg-gray-800 border-gray-700 text-center">
+                <Card className="theme-card text-center">
                   <Statistic
                     title={
-                      <span className="text-gray-300 text-xs">
+                      <span className="theme-text-secondary text-xs">
                         Latest Collection
                       </span>
                     }
@@ -237,10 +245,10 @@ export const Dashboard: React.FC = () => {
                 </Card>
               </Col>
               <Col xs={8}>
-                <Card className="bg-gray-800 border-gray-700 text-center">
+                <Card className="theme-card text-center">
                   <Statistic
                     title={
-                      <span className="text-gray-300 text-xs">
+                      <span className="theme-text-secondary text-xs">
                         Exclusive Offers
                       </span>
                     }
@@ -255,7 +263,7 @@ export const Dashboard: React.FC = () => {
 
         {/* Quick Actions */}
         <div>
-          <Title level={4} className="!text-white !mb-4">
+          <Title level={4} className="!theme-text-primary !mb-4">
             Quick Actions
           </Title>
           <Row gutter={[16, 16]}>
@@ -264,16 +272,16 @@ export const Dashboard: React.FC = () => {
                 <Card
                   hoverable
                   onClick={action.action}
-                  className={`bg-gray-800 border ${action.color} cursor-pointer transition-all duration-300 hover:scale-105`}
+                  className={`theme-card-hover ${action.color} cursor-pointer transition-all duration-300 hover:scale-105`}
                 >
                   <div className="text-center p-4">
                     <div className="mb-3 flex justify-center">
                       {action.icon}
                     </div>
-                    <Title level={5} className="!text-white !mb-1">
+                    <Title level={5} className="!theme-text-primary !mb-1">
                       {action.title}
                     </Title>
-                    <Text className="text-gray-400 text-sm">
+                    <Text className="theme-text-secondary text-sm">
                       {action.description}
                     </Text>
                   </div>
@@ -285,21 +293,24 @@ export const Dashboard: React.FC = () => {
 
         {/* Chart for Wholesalers */}
         {isWholesaler && (
-          <Card className="bg-gray-800 border-gray-700">
-            <Title level={4} className="!text-white !mb-4">
+          <Card className="theme-card">
+            <Title level={4} className="!theme-text-primary !mb-4">
               Monthly Orders Overview
             </Title>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="month" stroke="#9CA3AF" />
-                  <YAxis stroke="#9CA3AF" />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="var(--border-secondary)"
+                  />
+                  <XAxis dataKey="month" stroke="var(--text-secondary)" />
+                  <YAxis stroke="var(--text-secondary)" />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#1F2937",
-                      border: "1px solid #374151",
-                      color: "#F9FAFB",
+                      backgroundColor: "var(--bg-card)",
+                      border: "1px solid var(--border-primary)",
+                      color: "var(--text-primary)",
                     }}
                   />
                   <Bar dataKey="orders" fill="#8B5CF6" />

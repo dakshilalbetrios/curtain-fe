@@ -61,7 +61,7 @@ export const OrderList: React.FC = () => {
 
   // Skeleton loading component
   const OrderSkeleton = () => (
-    <Card className="bg-gray-800 border-gray-700 mb-4">
+    <Card className="theme-card mb-4">
       <Skeleton active paragraph={{ rows: 2 }} />
     </Card>
   );
@@ -71,10 +71,10 @@ export const OrderList: React.FC = () => {
       <div className="space-y-4">
         {/* Order History */}
         <div>
-          <div className="sticky top-0 z-50 bg-gray-900 backdrop-blur-sm border-b border-gray-700/50 pb-4 pt-4 -mx-4 px-4 mb-4">
+          <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4 mb-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3">
-                <Title level={4} className="!text-white !mb-0">
+                <Title level={4} className="!theme-text-primary !mb-0">
                   Orders
                 </Title>
                 <Tag color="green" className="px-2 py-1 text-sm font-medium">
@@ -85,13 +85,8 @@ export const OrderList: React.FC = () => {
               <Select
                 value={statusFilter}
                 onChange={setStatusFilter}
-                className="w-32"
+                className="w-32 theme-input"
                 size="middle"
-                style={{
-                  backgroundColor: "#374151",
-                  borderColor: "#4B5563",
-                  color: "white",
-                }}
               >
                 <Option value="ALL">All</Option>
                 <Option value="PENDING">Pending</Option>
@@ -114,11 +109,11 @@ export const OrderList: React.FC = () => {
           ) : (
             <>
               {filteredOrders.length === 0 ? (
-                <Card className="bg-gray-800 border-gray-700 text-center py-12">
-                  <Title level={4} className="!text-gray-400 !mb-2">
+                <Card className="theme-card text-center py-12">
+                  <Title level={4} className="!theme-text-secondary !mb-2">
                     No Orders Found
                   </Title>
-                  <Text className="text-gray-500">
+                  <Text className="theme-text-tertiary">
                     {statusFilter !== "ALL"
                       ? "No orders with this status"
                       : "No orders available at the moment"}
@@ -131,16 +126,19 @@ export const OrderList: React.FC = () => {
                       <Card
                         hoverable
                         onClick={() => handleOrderClick(order.id)}
-                        className="bg-gray-800 border-gray-700 cursor-pointer transition-all duration-300 hover:bg-gray-750 hover:border-purple-500 h-full"
+                        className="theme-card-hover cursor-pointer transition-all duration-300 hover:border-purple-500 h-full"
                       >
                         <div className="space-y-3">
                           {/* Order Header */}
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
-                              <Title level={5} className="!text-white !mb-1">
+                              <Title
+                                level={5}
+                                className="!theme-text-primary !mb-1"
+                              >
                                 Order {formatOrderId(order.id)}
                               </Title>
-                              <Text className="text-gray-400 text-sm">
+                              <Text className="theme-text-secondary text-sm">
                                 {moment(order.created_at).format(
                                   "MMM DD, YYYY"
                                 )}
@@ -160,8 +158,8 @@ export const OrderList: React.FC = () => {
                             order.order_items.length > 0 && (
                               <div className="flex justify-between items-center">
                                 <div className="flex items-center space-x-2">
-                                  <Package className="w-4 h-4 text-gray-400" />
-                                  <Text className="text-gray-500 text-sm">
+                                  <Package className="w-4 h-4 theme-text-tertiary" />
+                                  <Text className="theme-text-tertiary text-sm">
                                     {order.order_items.length} item
                                     {order.order_items.length > 1 ? "s" : ""}
                                   </Text>

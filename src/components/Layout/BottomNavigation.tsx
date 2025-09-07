@@ -71,7 +71,7 @@ export const BottomNavigation: React.FC = () => {
     <>
       {/* Main navigation bar */}
       <div className="fixed bottom-4 left-4 right-4 lg:hidden z-50">
-        <div className="bg-gray-800/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl shadow-2xl shadow-black/20">
+        <div className="theme-bg-elevated/95 backdrop-blur-xl border theme-border-primary/50 rounded-2xl theme-shadow-lg">
           <div className="flex justify-around items-center py-3 px-2">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -83,8 +83,8 @@ export const BottomNavigation: React.FC = () => {
                   onClick={() => handleNavigation(item.path)}
                   className={`group relative flex flex-col items-center px-3 rounded-xl transition-all duration-300 ease-out min-w-0 flex-1 ${
                     isActive
-                      ? "text-white"
-                      : "text-gray-400 hover:text-gray-200"
+                      ? "theme-text-primary"
+                      : "theme-text-tertiary hover:theme-text-secondary"
                   }`}
                 >
                   {/* Icon container with active state */}
@@ -97,14 +97,14 @@ export const BottomNavigation: React.FC = () => {
                       className={`p-1.5 rounded-xl transition-all duration-300 ${
                         isActive
                           ? "bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg shadow-purple-500/25"
-                          : "group-hover:bg-gray-700/50"
+                          : "group-hover:theme-bg-tertiary"
                       }`}
                     >
                       <Icon
                         className={`w-5 h-5 transition-all duration-300 ${
                           isActive
                             ? "text-white drop-shadow-sm"
-                            : "group-hover:text-gray-200"
+                            : "group-hover:theme-text-secondary"
                         }`}
                       />
                     </div>

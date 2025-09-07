@@ -58,11 +58,13 @@ export const Cart: React.FC = () => {
   if (cartItems.length === 0) {
     return (
       <MainLayout title="Cart" showBack={true} showCart={false}>
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="theme-card">
           <Empty
-            image={<ShoppingCart className="w-16 h-16 text-gray-400 mx-auto" />}
+            image={
+              <ShoppingCart className="w-16 h-16 theme-text-tertiary mx-auto" />
+            }
             description={
-              <Text className="text-gray-400">Your cart is empty</Text>
+              <Text className="theme-text-secondary">Your cart is empty</Text>
             }
           >
             <Button
@@ -82,17 +84,14 @@ export const Cart: React.FC = () => {
     <MainLayout title="Cart" showBack={true} showCart={false}>
       <div className="space-y-4">
         {/* Items Header */}
-        <Title level={4} className="!text-white !mb-4">
+        <Title level={4} className="!theme-text-primary !mb-4">
           Items
         </Title>
 
         {/* Cart Items */}
         <div className="space-y-3">
           {cartItems.map((item) => (
-            <Card
-              key={item.collection_sr_no_id}
-              className="bg-gray-800 border-gray-700"
-            >
+            <Card key={item.collection_sr_no_id} className="theme-card">
               <div className="flex items-center space-x-4">
                 {/* Item Image Placeholder */}
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -103,10 +102,10 @@ export const Cart: React.FC = () => {
                 <div className="flex-1 space-y-2">
                   <div className="flex justify-between items-start">
                     <div>
-                      <Title level={5} className="!text-white !mb-1">
+                      <Title level={5} className="!theme-text-primary !mb-1">
                         {item.sr_no}
                       </Title>
-                      <Text className="text-gray-400 text-sm">
+                      <Text className="theme-text-secondary text-sm">
                         {item.collection_name}
                       </Text>
                     </div>
@@ -120,7 +119,7 @@ export const Cart: React.FC = () => {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <Text className="text-gray-400 text-sm">
+                    <Text className="theme-text-secondary text-sm">
                       {item.quantity} {item.unit}
                     </Text>
                     <Space.Compact size="small">
@@ -133,7 +132,7 @@ export const Cart: React.FC = () => {
                           )
                         }
                         disabled={item.quantity <= 0.5}
-                        className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600 w-8 h-8"
+                        className="theme-button w-8 h-8"
                       />
                       <InputNumber
                         min={0.5}
@@ -143,7 +142,7 @@ export const Cart: React.FC = () => {
                         onChange={(value) =>
                           updateQuantity(item.collection_sr_no_id, value || 0)
                         }
-                        className="w-16 text-center bg-gray-700 border-gray-600"
+                        className="w-16 text-center theme-input"
                         controls={false}
                         size="small"
                       />
@@ -156,7 +155,7 @@ export const Cart: React.FC = () => {
                           )
                         }
                         disabled={item.quantity >= item.available_stock}
-                        className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600 w-8 h-8"
+                        className="theme-button w-8 h-8"
                       />
                     </Space.Compact>
                   </div>
@@ -167,23 +166,25 @@ export const Cart: React.FC = () => {
         </div>
 
         {/* Order Summary */}
-        <Title level={4} className="!text-white !mb-4 !mt-8">
+        <Title level={4} className="!theme-text-primary !mb-4 !mt-8">
           Order Summary
         </Title>
 
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="theme-card">
           <div className="space-y-4">
             <div className="flex justify-between">
-              <Text className="text-gray-300">Total Items</Text>
-              <Text className="text-white">{cartItems.length}</Text>
+              <Text className="theme-text-secondary">Total Items</Text>
+              <Text className="theme-text-primary">{cartItems.length}</Text>
             </div>
 
             <div className="flex justify-between">
-              <Text className="text-gray-300">Total Quantity</Text>
-              <Text className="text-white">{getTotalQuantity()} units</Text>
+              <Text className="theme-text-secondary">Total Quantity</Text>
+              <Text className="theme-text-primary">
+                {getTotalQuantity()} units
+              </Text>
             </div>
 
-            <Divider className="border-gray-600 my-4" />
+            <Divider className="theme-border-secondary my-4" />
 
             <div className="space-y-2">
               <Button
@@ -198,7 +199,7 @@ export const Cart: React.FC = () => {
               <Button
                 size="large"
                 onClick={clearCart}
-                className="w-full bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                className="w-full theme-button"
               >
                 Clear Cart
               </Button>

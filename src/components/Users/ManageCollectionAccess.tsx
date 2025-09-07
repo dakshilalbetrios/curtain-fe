@@ -189,7 +189,7 @@ export const ManageCollectionAccess: React.FC = () => {
   if (loading) {
     return (
       <MainLayout title="Manage Collection Access" showBack={true}>
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="theme-card">
           <Skeleton active paragraph={{ rows: 6 }} />
         </Card>
       </MainLayout>
@@ -200,16 +200,16 @@ export const ManageCollectionAccess: React.FC = () => {
     <MainLayout title="Manage Collection Access" showBack={true}>
       <div className="space-y-6">
         {/* User Info */}
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="theme-card">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
               <User className="w-6 h-6 text-white" />
             </div>
             <div>
-              <Title level={4} className="!text-white !mb-1">
+              <Title level={4} className="!theme-text-primary !mb-1">
                 {user?.name}
               </Title>
-              <Text className="text-gray-400">
+              <Text className="theme-text-secondary">
                 {user?.shop_name} • {user?.mobile_no}
               </Text>
               <div className="mt-1">
@@ -225,11 +225,11 @@ export const ManageCollectionAccess: React.FC = () => {
         </Card>
 
         {/* Collection Access Management */}
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="theme-card">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-2">
               <Package className="w-5 h-5 text-purple-400" />
-              <Title level={4} className="!text-white !mb-0">
+              <Title level={4} className="!theme-text-primary !mb-0">
                 Collection Access
               </Title>
             </div>
@@ -253,7 +253,7 @@ export const ManageCollectionAccess: React.FC = () => {
               return (
                 <div
                   key={collection.id}
-                  className="flex items-center justify-between p-4 bg-gray-700 rounded-lg border border-gray-600"
+                  className="flex items-center justify-between p-4 theme-bg-tertiary rounded-lg border theme-border-primary"
                 >
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
@@ -265,13 +265,13 @@ export const ManageCollectionAccess: React.FC = () => {
                             e.target.checked
                           )
                         }
-                        className="text-white"
+                        className="theme-text-primary"
                       />
                       <div>
-                        <Title level={5} className="!text-white !mb-1">
+                        <Title level={5} className="!theme-text-primary !mb-1">
                           {collection.name}
                         </Title>
-                        <Text className="text-gray-400 text-sm">
+                        <Text className="theme-text-secondary text-sm">
                           {collection.description}
                         </Text>
                         <div className="mt-2">
@@ -301,7 +301,7 @@ export const ManageCollectionAccess: React.FC = () => {
           title={
             <div className="flex items-center space-x-2">
               <AlertCircle className="w-5 h-5 text-orange-400" />
-              <span className="text-white">
+              <span className="theme-text-primary">
                 Select Status for Unselected Collection
               </span>
             </div>
@@ -314,13 +314,13 @@ export const ManageCollectionAccess: React.FC = () => {
           className="collection-status-modal"
         >
           <div className="py-4">
-            <Text className="text-gray-300 mb-4 block">
+            <Text className="theme-text-secondary mb-4 block">
               Please select the status for this collection when it's not active:
             </Text>
             <Select
               value={selectedStatus}
               onChange={setSelectedStatus}
-              className="w-full"
+              className="w-full theme-input"
               size="large"
             >
               <Option value="INACTIVE">Inactive</Option>

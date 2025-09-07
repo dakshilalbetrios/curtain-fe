@@ -87,7 +87,7 @@ export const OrderDetail: React.FC = () => {
 
   // Skeleton loading component
   const OrderItemSkeleton = () => (
-    <div className="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+    <div className="flex justify-between items-center p-3 theme-bg-tertiary rounded-lg">
       <div className="flex-1">
         <Skeleton.Input active size="small" className="!w-48 !h-4 !mb-2" />
         <Skeleton.Input active size="small" className="!w-32 !h-3" />
@@ -100,7 +100,7 @@ export const OrderDetail: React.FC = () => {
       <MainLayout title="Loading..." showBack={true}>
         <div className="space-y-6">
           {/* Order Header Skeleton */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="theme-card">
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
                 <Skeleton.Input
@@ -134,7 +134,7 @@ export const OrderDetail: React.FC = () => {
           </Card>
 
           {/* Order Status Timeline Skeleton */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="theme-card">
             <Skeleton.Input
               active
               size="default"
@@ -167,7 +167,7 @@ export const OrderDetail: React.FC = () => {
           </Card>
 
           {/* Order Items Skeleton */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="theme-card">
             <div className="flex justify-between items-center mb-4">
               <Skeleton.Input active size="default" className="!w-32 !h-6" />
               <Skeleton.Button active size="small" className="!w-16 !h-6" />
@@ -175,7 +175,7 @@ export const OrderDetail: React.FC = () => {
             <Row gutter={[16, 16]}>
               {[...Array(4)].map((_, index) => (
                 <Col xs={24} sm={12} lg={8} xl={6} key={index}>
-                  <Card className="bg-gray-700 border-gray-600">
+                  <Card className="theme-card">
                     <div className="space-y-3">
                       <div className="flex items-start space-x-3">
                         <Skeleton.Avatar active size="default" />
@@ -192,7 +192,7 @@ export const OrderDetail: React.FC = () => {
                           />
                         </div>
                       </div>
-                      <div className="pt-2 border-t border-gray-600">
+                      <div className="pt-2 border-t theme-border-secondary">
                         <div className="flex justify-between items-center">
                           <Skeleton.Input
                             active
@@ -221,7 +221,7 @@ export const OrderDetail: React.FC = () => {
     return (
       <MainLayout title="Order Not Found" showBack={true}>
         <div className="text-center py-8">
-          <Title level={3} className="!text-gray-400">
+          <Title level={3} className="!theme-text-secondary">
             Order Not Found
           </Title>
         </div>
@@ -272,13 +272,13 @@ export const OrderDetail: React.FC = () => {
       dot: getStatusIcon("PENDING"),
       children: (
         <div>
-          <Text className="text-white font-medium">Pending</Text>
+          <Text className="theme-text-primary font-medium">Pending</Text>
           <br />
-          <Text className="text-gray-400 text-sm">
+          <Text className="theme-text-secondary text-sm">
             {moment(order.created_at).format("MMM DD, YYYY, hh:mm A")}
           </Text>
           <br />
-          <Text className="text-gray-400 text-sm">
+          <Text className="theme-text-secondary text-sm">
             We have received your order.
           </Text>
         </div>
@@ -290,15 +290,15 @@ export const OrderDetail: React.FC = () => {
             dot: getStatusIcon("APPROVED"),
             children: (
               <div>
-                <Text className="text-white font-medium">Approved</Text>
+                <Text className="theme-text-primary font-medium">Approved</Text>
                 <br />
-                <Text className="text-gray-400 text-sm">
+                <Text className="theme-text-secondary text-sm">
                   {moment(order.created_at)
                     .add(5, "hours")
                     .format("MMM DD, YYYY, hh:mm A")}
                 </Text>
                 <br />
-                <Text className="text-gray-400 text-sm">
+                <Text className="theme-text-secondary text-sm">
                   Your order has been approved.
                 </Text>
               </div>
@@ -312,15 +312,15 @@ export const OrderDetail: React.FC = () => {
             dot: getStatusIcon("SHIPPED"),
             children: (
               <div>
-                <Text className="text-white font-medium">Shipped</Text>
+                <Text className="theme-text-primary font-medium">Shipped</Text>
                 <br />
-                <Text className="text-gray-400 text-sm">
+                <Text className="theme-text-secondary text-sm">
                   {moment(order.created_at)
                     .add(1, "day")
                     .format("MMM DD, YYYY, hh:mm A")}
                 </Text>
                 <br />
-                <Text className="text-gray-400 text-sm">
+                <Text className="theme-text-secondary text-sm">
                   Your order has been shipped from our warehouse.
                 </Text>
               </div>
@@ -334,15 +334,17 @@ export const OrderDetail: React.FC = () => {
             dot: getStatusIcon("DELIVERED"),
             children: (
               <div>
-                <Text className="text-white font-medium">Delivered</Text>
+                <Text className="theme-text-primary font-medium">
+                  Delivered
+                </Text>
                 <br />
-                <Text className="text-gray-400 text-sm">
+                <Text className="theme-text-secondary text-sm">
                   {moment(order.created_at)
                     .add(3, "days")
                     .format("MMM DD, YYYY, hh:mm A")}
                 </Text>
                 <br />
-                <Text className="text-gray-400 text-sm">
+                <Text className="theme-text-secondary text-sm">
                   Your order has been delivered.
                 </Text>
               </div>
@@ -356,15 +358,17 @@ export const OrderDetail: React.FC = () => {
             dot: getStatusIcon("CANCELLED"),
             children: (
               <div>
-                <Text className="text-white font-medium">Cancelled</Text>
+                <Text className="theme-text-primary font-medium">
+                  Cancelled
+                </Text>
                 <br />
-                <Text className="text-gray-400 text-sm">
+                <Text className="theme-text-secondary text-sm">
                   {moment(order.created_at)
                     .add(2, "hours")
                     .format("MMM DD, YYYY, hh:mm A")}
                 </Text>
                 <br />
-                <Text className="text-gray-400 text-sm">
+                <Text className="theme-text-secondary text-sm">
                   Order has been cancelled.
                 </Text>
               </div>
@@ -378,13 +382,13 @@ export const OrderDetail: React.FC = () => {
     <MainLayout title="Order Details" showBack={true}>
       <div className="space-y-6">
         {/* Order Header */}
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="theme-card">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <Title level={3} className="!text-white !mb-1">
+              <Title level={3} className="!theme-text-primary !mb-1">
                 Order {formatOrderId(order.id)}
               </Title>
-              <Text className="text-gray-400">
+              <Text className="theme-text-secondary">
                 Placed on {moment(order.created_at).format("MMM DD, YYYY")}
               </Text>
             </div>
@@ -424,8 +428,8 @@ export const OrderDetail: React.FC = () => {
         </Card>
 
         {/* Order Status Timeline */}
-        <Card className="bg-gray-800 border-gray-700">
-          <Title level={4} className="!text-white !mb-4">
+        <Card className="theme-card">
+          <Title level={4} className="!theme-text-primary !mb-4">
             Order Status
           </Title>
           <Timeline items={timelineItems} className="custom-timeline" />
@@ -433,9 +437,9 @@ export const OrderDetail: React.FC = () => {
 
         {/* Order Items */}
         {order.order_items && order.order_items.length > 0 && (
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="theme-card">
             <div className="flex justify-between items-center mb-4">
-              <Title level={4} className="!text-white !mb-0">
+              <Title level={4} className="!theme-text-primary !mb-0">
                 Order Items
               </Title>
               <Tag color="blue" className="px-2 py-1 text-sm font-medium">
@@ -446,7 +450,7 @@ export const OrderDetail: React.FC = () => {
             <Row gutter={[16, 16]}>
               {order.order_items.map((item) => (
                 <Col xs={24} sm={12} lg={8} xl={6} key={item.id}>
-                  <Card className="bg-gray-700 border-gray-600 hover:border-purple-500 transition-all duration-300 h-full">
+                  <Card className="theme-card hover:border-purple-500 transition-all duration-300 h-full">
                     <div className="space-y-3">
                       {/* Collection Info */}
                       <div className="flex items-start space-x-3">
@@ -454,22 +458,22 @@ export const OrderDetail: React.FC = () => {
                           <Package className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <Text className="text-white font-medium text-sm block truncate">
+                          <Text className="theme-text-primary font-medium text-sm block truncate">
                             {item.collection_details.name}
                           </Text>
-                          <Text className="text-gray-400 text-xs">
+                          <Text className="theme-text-secondary text-xs">
                             {item.collection_details.sr_no}
                           </Text>
                         </div>
                       </div>
 
                       {/* Quantity and Unit */}
-                      <div className="pt-2 border-t border-gray-600">
+                      <div className="pt-2 border-t theme-border-secondary">
                         <div className="flex justify-between items-center">
-                          <Text className="text-gray-400 text-sm">
+                          <Text className="theme-text-secondary text-sm">
                             Quantity
                           </Text>
-                          <Text className="text-white font-semibold">
+                          <Text className="theme-text-primary font-semibold">
                             {item.quantity} {item.collection_details.unit}
                           </Text>
                         </div>
@@ -516,18 +520,22 @@ export const OrderDetail: React.FC = () => {
       >
         <div className="space-y-4">
           <div>
-            <Text className="text-gray-600 mb-2 block">Current Status:</Text>
+            <Text className="theme-text-secondary mb-2 block">
+              Current Status:
+            </Text>
             <Tag color={getStatusColor(order?.status || "")} className="mb-4">
               {order?.status}
             </Tag>
           </div>
 
           <div>
-            <Text className="text-gray-600 mb-2 block">Select New Status:</Text>
+            <Text className="theme-text-secondary mb-2 block">
+              Select New Status:
+            </Text>
             <Select
               value={selectedStatus}
               onChange={setSelectedStatus}
-              className="w-full"
+              className="w-full theme-input"
               placeholder="Select status"
             >
               <Option value="PENDING">

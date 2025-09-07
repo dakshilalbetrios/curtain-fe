@@ -423,7 +423,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
   // Skeleton loading component
   const RetailerSkeleton = () => (
     <Col xs={24} sm={12} lg={8} xl={6} className="mb-4">
-      <Card className="bg-gray-800 border-gray-700 h-64">
+      <Card className="theme-card h-64">
         <Skeleton active paragraph={{ rows: 4 }} />
       </Card>
     </Col>
@@ -433,7 +433,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
     <MainLayout title="Users">
       <div className="space-y-2">
         {/* Search and Add Button - Fixed Position */}
-        <div className="sticky top-0 z-10 bg-gray-900/95 pt-4 -mx-4 px-4 backdrop-blur-sm border-b border-gray-700/50 pb-4 mb-4">
+        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4 -mx-4 px-4">
           <div className="flex gap-4 items-center justify-end">
             <AntSearch
               placeholder="Search users..."
@@ -487,12 +487,12 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
           <Row gutter={[16, 16]}>
             {retailers.length === 0 ? (
               <Col span={24}>
-                <Card className="bg-gray-800 border-gray-700 text-center py-12">
-                  <Users className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-                  <Title level={4} className="!text-gray-400 !mb-2">
+                <Card className="theme-card text-center py-12">
+                  <Users className="w-16 h-16 theme-text-tertiary mx-auto mb-4" />
+                  <Title level={4} className="!theme-text-secondary !mb-2">
                     No Users Found
                   </Title>
-                  <Text className="text-gray-500">
+                  <Text className="theme-text-tertiary">
                     {searchText
                       ? "Try adjusting your search terms"
                       : "No users available at the moment"}
@@ -505,7 +505,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                   <Card
                     hoverable
                     // onClick={() => handleRetailerClick(retailer.id)}
-                    className="bg-gray-800 border-gray-700 cursor-pointer"
+                    className="theme-card-hover cursor-pointer"
                   >
                     <div className="space-y-4">
                       <div className="flex items-center justify-between space-x-2">
@@ -515,7 +515,10 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                             className="bg-purple-600"
                             icon={<UserCheck className="w-6 h-6" />}
                           />
-                          <Title level={5} className="!text-white !mb-0">
+                          <Title
+                            level={5}
+                            className="!theme-text-primary !mb-0"
+                          >
                             {retailer.name}
                           </Title>
                         </div>
@@ -537,15 +540,15 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                       </div>
 
                       <div className="space-y-2">
-                        <div className="flex items-center space-x-2 text-gray-400">
+                        <div className="flex items-center space-x-2 theme-text-tertiary">
                           <Store className="w-4 h-4" />
-                          <Text className="text-gray-400 text-sm">
+                          <Text className="theme-text-tertiary text-sm">
                             {retailer.shop_name}
                           </Text>
                         </div>
-                        <div className="flex items-center space-x-2 text-gray-400">
+                        <div className="flex items-center space-x-2 theme-text-tertiary">
                           <Phone className="w-4 h-4" />
-                          <Text className="text-gray-400 text-sm">
+                          <Text className="theme-text-tertiary text-sm">
                             {retailer.mobile_no}
                           </Text>
                         </div>
@@ -572,7 +575,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                         </Button>
                       </div>
 
-                      <div className="flex items-center justify-between space-x-2 pt-2 border-t border-gray-700">
+                      <div className="flex items-center justify-between space-x-2 pt-2 border-t theme-border-secondary">
                         <Button
                           type="link"
                           icon={<Edit className="w-4 h-4" />}
@@ -636,7 +639,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
           title={
             <div className="flex items-center">
               <UploadIcon className="w-5 h-5 mr-2 text-purple-400" />
-              <span className="text-white">Bulk Upload Users</span>
+              <span className="theme-text-primary">Bulk Upload Users</span>
             </div>
           }
           open={bulkModalVisible}
@@ -647,13 +650,13 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
         >
           <div className="space-y-4">
             <div className="flex justify-between items-center mb-4">
-              <Text className="text-gray-300">
+              <Text className="theme-text-secondary">
                 Upload CSV file to add multiple users at once
               </Text>
               <Button
                 icon={<Download className="w-4 h-4" />}
                 onClick={downloadTemplate}
-                className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                className="theme-button"
               >
                 Download Template
               </Button>
@@ -666,14 +669,14 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                 return false; // Prevent default upload
               }}
               showUploadList={false}
-              className="bg-gray-700 border-gray-600 hover:border-purple-500"
+              className="theme-input hover:border-purple-500"
             >
               <div className="p-6 text-center">
-                <UploadIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <Text className="text-white text-lg block mb-2">
+                <UploadIcon className="w-12 h-12 theme-text-tertiary mx-auto mb-4" />
+                <Text className="theme-text-primary text-lg block mb-2">
                   Click or drag CSV file to upload
                 </Text>
-                <Text className="text-gray-400">
+                <Text className="theme-text-secondary">
                   Supports CSV files with users data
                 </Text>
               </div>
@@ -685,11 +688,11 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
               </div>
             )}
 
-            <div className="mt-4 p-3 bg-gray-800 rounded-lg">
-              <Text className="text-gray-300 text-sm">
+            <div className="mt-4 p-3 theme-bg-tertiary rounded-lg">
+              <Text className="theme-text-secondary text-sm">
                 <strong>CSV Format Requirements:</strong>
               </Text>
-              <ul className="text-gray-400 text-xs mt-2 space-y-1">
+              <ul className="theme-text-tertiary text-xs mt-2 space-y-1">
                 <li>
                   • Required columns: name, mobile_no, shop_name, role, status
                 </li>
@@ -711,7 +714,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
               ) : (
                 <Plus className="w-5 h-5 mr-2 text-purple-400" />
               )}
-              <span className="text-white">
+              <span className="theme-text-primary">
                 {editingUser ? "Edit User" : "Add New User"}
               </span>
             </div>
@@ -734,20 +737,22 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
             autoComplete="off"
           >
             <Form.Item
-              label={<span className="text-gray-300">Name</span>}
+              label={<span className="theme-text-secondary">Name</span>}
               name="name"
               rules={[{ required: true, message: "Please enter user name" }]}
             >
               <Input
                 placeholder="Enter user name"
-                className="bg-gray-700 border-gray-600 text-white"
+                className="theme-input"
                 size="large"
                 autoComplete="off"
               />
             </Form.Item>
 
             <Form.Item
-              label={<span className="text-gray-300">Mobile Number</span>}
+              label={
+                <span className="theme-text-secondary">Mobile Number</span>
+              }
               name="mobile_no"
               rules={[
                 { required: true, message: "Please enter mobile number" },
@@ -759,7 +764,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
             >
               <Input
                 placeholder="Enter mobile number"
-                className="bg-gray-700 border-gray-600 text-white"
+                className="theme-input"
                 size="large"
                 autoComplete="off"
                 type="tel"
@@ -767,25 +772,25 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
             </Form.Item>
 
             <Form.Item
-              label={<span className="text-gray-300">Shop Name</span>}
+              label={<span className="theme-text-secondary">Shop Name</span>}
               name="shop_name"
               rules={[{ required: true, message: "Please enter shop name" }]}
             >
               <Input
                 placeholder="Enter shop name"
-                className="bg-gray-700 border-gray-600 text-white"
+                className="theme-input"
                 size="large"
               />
             </Form.Item>
 
             <Form.Item
-              label={<span className="text-gray-300">Role</span>}
+              label={<span className="theme-text-secondary">Role</span>}
               name="role"
               rules={[{ required: true, message: "Please select role" }]}
             >
               <Select
                 placeholder="Select role"
-                className="bg-gray-700 border-gray-600"
+                className="theme-input"
                 size="large"
               >
                 <Option value="ADMIN">Administrator</Option>
@@ -795,13 +800,13 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
             </Form.Item>
 
             <Form.Item
-              label={<span className="text-gray-300">Status</span>}
+              label={<span className="theme-text-secondary">Status</span>}
               name="status"
               rules={[{ required: true, message: "Please select status" }]}
             >
               <Select
                 placeholder="Select status"
-                className="bg-gray-700 border-gray-600"
+                className="theme-input"
                 size="large"
               >
                 <Option value="ACTIVE">Active</Option>
@@ -818,7 +823,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                     form.resetFields();
                   }}
                   size="large"
-                  className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                  className="theme-button"
                 >
                   Cancel
                 </Button>

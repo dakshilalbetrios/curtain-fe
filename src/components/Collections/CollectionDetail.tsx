@@ -34,7 +34,7 @@ export const CollectionDetail: React.FC = () => {
   // Skeleton loading component
   const SerialNumberSkeleton = () => (
     <Col xs={24} sm={12} lg={8} className="mb-4">
-      <Card className="bg-gray-800 border-gray-700 h-80">
+      <Card className="theme-card h-80">
         <Skeleton active paragraph={{ rows: 4 }} />
       </Card>
     </Col>
@@ -45,7 +45,7 @@ export const CollectionDetail: React.FC = () => {
       <MainLayout title="Loading..." showBack={true}>
         <div className="space-y-6">
           {/* Collection Header Skeleton */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="theme-card">
             <Skeleton active paragraph={{ rows: 2 }} />
           </Card>
 
@@ -71,7 +71,7 @@ export const CollectionDetail: React.FC = () => {
     return (
       <MainLayout title="Collection Not Found" showBack={true}>
         <div className="text-center py-8">
-          <Title level={3} className="!text-gray-400">
+          <Title level={3} className="!theme-text-secondary">
             Collection Not Found
           </Title>
         </div>

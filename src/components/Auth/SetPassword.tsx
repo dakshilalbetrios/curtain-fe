@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Card, Typography, message, Space } from "antd";
+import { Form, Input, Button, Card, Typography, message } from "antd";
 import { Lock, User, ArrowLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { userService } from "../../services";
@@ -48,22 +48,22 @@ export const SetPassword: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+    <div className="min-h-screen theme-bg-primary flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="theme-card">
           <div className="text-center mb-6">
             <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <Lock className="w-8 h-8 text-white" />
             </div>
-            <Title level={2} className="!text-white !mb-2">
+            <Title level={2} className="!theme-text-primary !mb-2">
               Set Your Password
             </Title>
-            <Text className="text-gray-400">
+            <Text className="theme-text-secondary">
               Set a password for your account
             </Text>
             {mobileNo && (
-              <div className="mt-2 p-2 bg-gray-700 rounded-lg">
-                <Text className="text-gray-300 text-sm">
+              <div className="mt-2 p-2 theme-bg-tertiary rounded-lg">
+                <Text className="theme-text-secondary text-sm">
                   <User className="w-4 h-4 inline mr-1" />
                   {mobileNo}
                 </Text>
@@ -78,7 +78,7 @@ export const SetPassword: React.FC = () => {
             autoComplete="off"
           >
             <Form.Item
-              label={<span className="text-gray-300">New Password</span>}
+              label={<span className="theme-text-secondary">New Password</span>}
               name="password"
               rules={[
                 { required: true, message: "Please enter your password" },
@@ -87,14 +87,16 @@ export const SetPassword: React.FC = () => {
             >
               <Input.Password
                 placeholder="Enter your new password"
-                className="bg-gray-700 border-gray-600 text-white"
+                className="theme-input"
                 size="large"
-                prefix={<Lock className="w-4 h-4 text-gray-400" />}
+                prefix={<Lock className="w-4 h-4 theme-text-tertiary" />}
               />
             </Form.Item>
 
             <Form.Item
-              label={<span className="text-gray-300">Confirm Password</span>}
+              label={
+                <span className="theme-text-secondary">Confirm Password</span>
+              }
               name="confirmPassword"
               rules={[
                 { required: true, message: "Please confirm your password" },
@@ -103,9 +105,9 @@ export const SetPassword: React.FC = () => {
             >
               <Input.Password
                 placeholder="Confirm your new password"
-                className="bg-gray-700 border-gray-600 text-white"
+                className="theme-input"
                 size="large"
-                prefix={<Lock className="w-4 h-4 text-gray-400" />}
+                prefix={<Lock className="w-4 h-4 theme-text-tertiary" />}
               />
             </Form.Item>
 
@@ -125,7 +127,7 @@ export const SetPassword: React.FC = () => {
               <Button
                 type="link"
                 onClick={handleBackToLogin}
-                className="!text-gray-400 hover:!text-white flex items-center gap-2 mx-auto"
+                className="!theme-text-tertiary hover:!theme-text-primary flex items-center gap-2 mx-auto"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Login

@@ -8,6 +8,7 @@ import {
 import { ConfigProvider, theme } from "antd";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { Login } from "./components/Auth/Login";
 import { SetPassword } from "./components/Auth/SetPassword";
 import { Dashboard } from "./components/Dashboard/Dashboard";
@@ -31,135 +32,139 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
+  const { isDark } = useTheme();
 
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />}
-      />
-      <Route
-        path="/set-password"
-        element={
-          isAuthenticated ? <Navigate to="/dashboard" /> : <SetPassword />
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <PrivateRoute>
-            <Dashboard />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/collections"
-        element={
-          <PrivateRoute>
-            <CollectionList />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/collections/add"
-        element={
-          <PrivateRoute>
-            <AddCollection />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/collections/edit/:id"
-        element={
-          <PrivateRoute>
-            <AddCollection />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/collections/:id"
-        element={
-          <PrivateRoute>
-            <CollectionDetail />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/orders"
-        element={
-          <PrivateRoute>
-            <OrderList />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/orders/:id"
-        element={
-          <PrivateRoute>
-            <OrderDetail />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/orders/:id/manage"
-        element={
-          <PrivateRoute>
-            <OrderManagement />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/users"
-        element={
-          <PrivateRoute>
-            <RetailerList />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/users/manage-collection-access/:userId"
-        element={
-          <PrivateRoute>
-            <ManageCollectionAccess />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/profile"
-        element={
-          <PrivateRoute>
-            <Profile />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/cart"
-        element={
-          <PrivateRoute>
-            <Cart />
-          </PrivateRoute>
-        }
-      />
-      <Route path="/" element={<Navigate to="/dashboard" />} />
-    </Routes>
+    <ConfigProvider
+      theme={{
+        algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        token: {
+          colorPrimary: "#8B5CF6",
+          colorBgContainer: isDark ? "#1F2937" : "#FFFFFF",
+          colorBgElevated: isDark ? "#1F2937" : "#FFFFFF",
+          colorBorder: isDark ? "#374151" : "#D1D5DB",
+          colorText: isDark ? "#F9FAFB" : "#111827",
+          colorTextSecondary: isDark ? "#9CA3AF" : "#6B7280",
+          colorBgLayout: isDark ? "#111827" : "#F9FAFB",
+        },
+      }}
+    >
+      <Routes>
+        <Route
+          path="/login"
+          element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />}
+        />
+        <Route
+          path="/set-password"
+          element={
+            isAuthenticated ? <Navigate to="/dashboard" /> : <SetPassword />
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/collections"
+          element={
+            <PrivateRoute>
+              <CollectionList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/collections/add"
+          element={
+            <PrivateRoute>
+              <AddCollection />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/collections/edit/:id"
+          element={
+            <PrivateRoute>
+              <AddCollection />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/collections/:id"
+          element={
+            <PrivateRoute>
+              <CollectionDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <PrivateRoute>
+              <OrderList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/orders/:id"
+          element={
+            <PrivateRoute>
+              <OrderDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/orders/:id/manage"
+          element={
+            <PrivateRoute>
+              <OrderManagement />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <PrivateRoute>
+              <RetailerList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/users/manage-collection-access/:userId"
+          element={
+            <PrivateRoute>
+              <ManageCollectionAccess />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <PrivateRoute>
+              <Cart />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/dashboard" />} />
+      </Routes>
+    </ConfigProvider>
   );
 };
 
 function App() {
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme.darkAlgorithm,
-        token: {
-          colorPrimary: "#8B5CF6",
-          colorBgContainer: "#1F2937",
-          colorBgElevated: "#1F2937",
-          colorBorder: "#374151",
-          colorText: "#F9FAFB",
-          colorTextSecondary: "#9CA3AF",
-        },
-      }}
-    >
+    <ThemeProvider>
       <AuthProvider>
         <CartProvider>
           <Router>
@@ -169,7 +174,7 @@ function App() {
           </Router>
         </CartProvider>
       </AuthProvider>
-    </ConfigProvider>
+    </ThemeProvider>
   );
 }
 

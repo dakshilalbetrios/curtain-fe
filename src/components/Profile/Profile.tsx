@@ -152,7 +152,7 @@ export const Profile: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Profile Header - Full width on mobile, 1 column on desktop */}
           <div className="lg:col-span-1">
-            <Card className="bg-gray-800 border-gray-700 h-fit">
+            <Card className="theme-card h-fit">
               <div className="text-center space-y-4">
                 <Avatar
                   size={80}
@@ -160,7 +160,7 @@ export const Profile: React.FC = () => {
                   icon={<User className="w-8 h-8" />}
                 />
                 <div>
-                  <Title level={3} className="!text-white !mb-1">
+                  <Title level={3} className="!theme-text-primary !mb-1">
                     {user.name}
                   </Title>
                   <Tag color={getRoleColor(user.role)} className="mb-2">
@@ -178,8 +178,8 @@ export const Profile: React.FC = () => {
           {/* Profile Details and Actions - 2 columns on desktop */}
           <div className="lg:col-span-2 space-y-6">
             {/* Profile Details */}
-            <Card className="bg-gray-800 border-gray-700">
-              <Title level={4} className="!text-white !mb-4">
+            <Card className="theme-card">
+              <Title level={4} className="!theme-text-primary !mb-4">
                 Personal Information
               </Title>
 
@@ -187,35 +187,35 @@ export const Profile: React.FC = () => {
                 <div className="flex items-center space-x-3">
                   <Phone className="w-5 h-5 text-purple-400" />
                   <div>
-                    <Text className="text-gray-300">Mobile Number</Text>
+                    <Text className="theme-text-secondary">Mobile Number</Text>
                     <br />
-                    <Text className="text-white font-medium">
+                    <Text className="theme-text-primary font-medium">
                       {user.mobile_no}
                     </Text>
                   </div>
                 </div>
 
-                <Divider className="border-gray-600" />
+                <Divider className="theme-border-secondary" />
 
                 <div className="flex items-center space-x-3">
                   <Store className="w-5 h-5 text-blue-400" />
                   <div>
-                    <Text className="text-gray-300">Shop Name</Text>
+                    <Text className="theme-text-secondary">Shop Name</Text>
                     <br />
-                    <Text className="text-white font-medium">
+                    <Text className="theme-text-primary font-medium">
                       {user.shop_name}
                     </Text>
                   </div>
                 </div>
 
-                <Divider className="border-gray-600" />
+                <Divider className="theme-border-secondary" />
 
                 <div className="flex items-center space-x-3">
                   <Calendar className="w-5 h-5 text-green-400" />
                   <div>
-                    <Text className="text-gray-300">Member Since</Text>
+                    <Text className="theme-text-secondary">Member Since</Text>
                     <br />
-                    <Text className="text-white font-medium">
+                    <Text className="theme-text-primary font-medium">
                       {moment(user.created_at).format("MMMM DD, YYYY")}
                     </Text>
                   </div>
@@ -224,8 +224,8 @@ export const Profile: React.FC = () => {
             </Card>
 
             {/* Actions */}
-            <Card className="bg-gray-800 border-gray-700">
-              <Title level={4} className="!text-white !mb-4">
+            <Card className="theme-card">
+              <Title level={4} className="!theme-text-primary !mb-4">
                 Settings
               </Title>
 
@@ -234,7 +234,7 @@ export const Profile: React.FC = () => {
                   size="large"
                   icon={<Edit className="w-5 h-5" />}
                   onClick={handleEditProfile}
-                  className="w-full bg-gray-700 border-gray-600 text-white hover:bg-gray-600 flex items-center"
+                  className="w-full theme-button flex items-center"
                 >
                   Edit Profile
                 </Button>
@@ -243,7 +243,7 @@ export const Profile: React.FC = () => {
                   size="large"
                   icon={<Settings className="w-5 h-5" />}
                   onClick={handleChangePassword}
-                  className="w-full bg-gray-700 border-gray-600 text-white hover:bg-gray-600 flex items-center"
+                  className="w-full theme-button flex items-center"
                 >
                   Change Password
                 </Button>
@@ -268,7 +268,7 @@ export const Profile: React.FC = () => {
         title={
           <div className="flex items-center">
             <Edit className="w-5 h-5 mr-2 text-purple-400" />
-            <span className="text-white">Edit Profile</span>
+            <span className="theme-text-primary">Edit Profile</span>
           </div>
         }
         open={editModalVisible}
@@ -288,19 +288,19 @@ export const Profile: React.FC = () => {
           autoComplete="off"
         >
           <Form.Item
-            label={<span className="text-gray-300">Name</span>}
+            label={<span className="theme-text-secondary">Name</span>}
             name="name"
             rules={[{ required: true, message: "Please enter your name" }]}
           >
             <Input
               placeholder="Enter your name"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="theme-input"
               size="large"
             />
           </Form.Item>
 
           <Form.Item
-            label={<span className="text-gray-300">Mobile Number</span>}
+            label={<span className="theme-text-secondary">Mobile Number</span>}
             name="mobile_no"
             rules={[
               { required: true, message: "Please enter mobile number" },
@@ -312,7 +312,7 @@ export const Profile: React.FC = () => {
           >
             <Input
               placeholder="Enter mobile number"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="theme-input"
               size="large"
               type="tel"
               disabled
@@ -321,13 +321,13 @@ export const Profile: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            label={<span className="text-gray-300">Shop Name</span>}
+            label={<span className="theme-text-secondary">Shop Name</span>}
             name="shop_name"
             rules={[{ required: true, message: "Please enter shop name" }]}
           >
             <Input
               placeholder="Enter shop name"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="theme-input"
               size="large"
             />
           </Form.Item>
@@ -340,7 +340,7 @@ export const Profile: React.FC = () => {
                   editForm.resetFields();
                 }}
                 size="large"
-                className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                className="theme-button"
               >
                 Cancel
               </Button>
@@ -363,7 +363,7 @@ export const Profile: React.FC = () => {
         title={
           <div className="flex items-center">
             <Lock className="w-5 h-5 mr-2 text-purple-400" />
-            <span className="text-white">Change Password</span>
+            <span className="theme-text-primary">Change Password</span>
           </div>
         }
         open={changePasswordModalVisible}
@@ -383,7 +383,7 @@ export const Profile: React.FC = () => {
           autoComplete="off"
         >
           <Form.Item
-            label={<span className="text-gray-300">Old Password</span>}
+            label={<span className="theme-text-secondary">Old Password</span>}
             name="oldPassword"
             rules={[
               { required: true, message: "Please enter your old password" },
@@ -391,13 +391,13 @@ export const Profile: React.FC = () => {
           >
             <Input.Password
               placeholder="Enter your old password"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="theme-input"
               size="large"
             />
           </Form.Item>
 
           <Form.Item
-            label={<span className="text-gray-300">New Password</span>}
+            label={<span className="theme-text-secondary">New Password</span>}
             name="newPassword"
             rules={[
               { required: true, message: "Please enter your new password" },
@@ -406,13 +406,15 @@ export const Profile: React.FC = () => {
           >
             <Input.Password
               placeholder="Enter your new password"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="theme-input"
               size="large"
             />
           </Form.Item>
 
           <Form.Item
-            label={<span className="text-gray-300">Confirm New Password</span>}
+            label={
+              <span className="theme-text-secondary">Confirm New Password</span>
+            }
             name="confirmPassword"
             rules={[
               { required: true, message: "Please confirm your new password" },
@@ -421,7 +423,7 @@ export const Profile: React.FC = () => {
           >
             <Input.Password
               placeholder="Confirm your new password"
-              className="bg-gray-700 border-gray-600 text-white"
+              className="theme-input"
               size="large"
             />
           </Form.Item>
@@ -434,7 +436,7 @@ export const Profile: React.FC = () => {
                   changePasswordForm.resetFields();
                 }}
                 size="large"
-                className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                className="theme-button"
               >
                 Cancel
               </Button>

@@ -411,8 +411,11 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
       showBack={true}
     >
       <div className="space-y-6">
-        <Card className="bg-gray-800 border-gray-700">
-          <Title level={4} className="!text-white !mb-4 flex items-center">
+        <Card className="theme-card">
+          <Title
+            level={4}
+            className="!theme-text-primary !mb-4 flex items-center"
+          >
             {editMode ? (
               <>
                 <Edit className="w-5 h-5 mr-2" />
@@ -447,7 +450,11 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
             <Row gutter={16}>
               <Col xs={24} md={12}>
                 <Form.Item
-                  label={<span className="text-gray-300">Collection Name</span>}
+                  label={
+                    <span className="theme-text-secondary">
+                      Collection Name
+                    </span>
+                  }
                   name="name"
                   rules={[
                     { required: true, message: "Please enter collection name" },
@@ -456,14 +463,16 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                 >
                   <Input
                     placeholder="Enter collection name"
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className="theme-input"
                     size="large"
                   />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12}>
                 <Form.Item
-                  label={<span className="text-gray-300">Description</span>}
+                  label={
+                    <span className="theme-text-secondary">Description</span>
+                  }
                   name="description"
                   rules={[
                     { required: true, message: "Please enter description" },
@@ -475,7 +484,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                 >
                   <TextArea
                     placeholder="Enter collection description"
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className="theme-input"
                     size="large"
                     rows={3}
                   />
@@ -485,7 +494,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
 
             <div>
               <div className="flex items-center justify-between mb-4">
-                <Title level={5} className="!text-white !mb-0">
+                <Title level={5} className="!theme-text-primary !mb-0">
                   Serial Numbers
                 </Title>
                 <Button
@@ -504,10 +513,10 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                     {fields.map(({ key, name, ...restField }) => (
                       <Card
                         key={key}
-                        className="bg-gray-700 border-gray-600"
+                        className="theme-card"
                         title={
                           <div className="flex items-center justify-between">
-                            <Text className="text-white">
+                            <Text className="theme-text-primary">
                               Serial Number {name + 1}
                             </Text>
                             {fields.length > 1 && (
@@ -530,7 +539,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                               {...restField}
                               name={[name, "sr_no"]}
                               label={
-                                <span className="text-gray-300">
+                                <span className="theme-text-secondary">
                                   Serial Number
                                 </span>
                               }
@@ -543,7 +552,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                             >
                               <Input
                                 placeholder="e.g., SR-001"
-                                className="bg-gray-600 border-gray-500 text-white"
+                                className="theme-input"
                               />
                             </Form.Item>
                           </Col>
@@ -552,7 +561,9 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                               {...restField}
                               name={[name, "unit"]}
                               label={
-                                <span className="text-gray-300">Unit</span>
+                                <span className="theme-text-secondary">
+                                  Unit
+                                </span>
                               }
                               rules={[
                                 {
@@ -563,7 +574,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                             >
                               <Select
                                 placeholder="Select unit"
-                                className="bg-gray-600 border-gray-500"
+                                className="theme-input"
                               >
                                 <Option value="pcs">Pieces</Option>
                                 <Option value="mtr">Meters</Option>
@@ -575,7 +586,9 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                               {...restField}
                               name={[name, "min_stock"]}
                               label={
-                                <span className="text-gray-300">Min Stock</span>
+                                <span className="theme-text-secondary">
+                                  Min Stock
+                                </span>
                               }
                               rules={[
                                 {
@@ -588,10 +601,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                                 },
                               ]}
                             >
-                              <Input
-                                placeholder="0"
-                                className="bg-gray-600 border-gray-500 text-white"
-                              />
+                              <Input placeholder="0" className="theme-input" />
                             </Form.Item>
                           </Col>
                           <Col xs={24} sm={12} md={4}>
@@ -599,7 +609,9 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                               {...restField}
                               name={[name, "max_stock"]}
                               label={
-                                <span className="text-gray-300">Max Stock</span>
+                                <span className="theme-text-secondary">
+                                  Max Stock
+                                </span>
                               }
                               rules={[
                                 {
@@ -614,7 +626,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                             >
                               <Input
                                 placeholder="100"
-                                className="bg-gray-600 border-gray-500 text-white"
+                                className="theme-input"
                               />
                             </Form.Item>
                           </Col>
@@ -623,7 +635,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                               {...restField}
                               name={[name, "current_stock"]}
                               label={
-                                <span className="text-gray-300">
+                                <span className="theme-text-secondary">
                                   Current Stock
                                 </span>
                               }
@@ -640,7 +652,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                             >
                               <Input
                                 placeholder="50"
-                                className="bg-gray-600 border-gray-500 text-white"
+                                className="theme-input"
                                 disabled={form.getFieldValue([
                                   "serial_numbers",
                                   name,

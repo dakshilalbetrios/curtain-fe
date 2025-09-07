@@ -78,7 +78,7 @@ export const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="h-full bg-gray-800 pt-[4rem]">
+    <div className="h-full theme-bg-secondary pt-[4rem]">
       <div className="px-4 py-2">
         {menuItems.map((item) => {
           const Icon = item.icon;
@@ -89,7 +89,9 @@ export const Sidebar: React.FC = () => {
               key={item.key}
               onClick={() => handleNavigation(item.path)}
               className={`group relative flex items-center w-full px-4 py-3 mb-2 rounded-xl transition-all duration-300 ease-out ${
-                isActive ? "text-white" : "text-gray-400 hover:text-gray-200"
+                isActive
+                  ? "theme-text-primary"
+                  : "theme-text-tertiary hover:theme-text-secondary"
               }`}
             >
               {/* Icon container with active state */}
@@ -102,14 +104,14 @@ export const Sidebar: React.FC = () => {
                   className={`p-2 rounded-xl transition-all duration-300 ${
                     isActive
                       ? "bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg shadow-purple-500/25"
-                      : "group-hover:bg-gray-700/50"
+                      : "group-hover:theme-bg-tertiary"
                   }`}
                 >
                   <Icon
                     className={`w-5 h-5 transition-all duration-300 ${
                       isActive
                         ? "text-white drop-shadow-sm"
-                        : "group-hover:text-gray-200"
+                        : "group-hover:theme-text-secondary"
                     }`}
                   />
                 </div>
@@ -119,8 +121,8 @@ export const Sidebar: React.FC = () => {
               <span
                 className={`font-medium transition-all duration-300 ${
                   isActive
-                    ? "text-white"
-                    : "text-gray-400 group-hover:text-gray-200"
+                    ? "theme-text-primary"
+                    : "theme-text-tertiary group-hover:theme-text-secondary"
                 }`}
               >
                 {item.label}

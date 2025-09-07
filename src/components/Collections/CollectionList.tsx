@@ -375,7 +375,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
   // Skeleton loading component
   const CollectionSkeleton = () => (
     <Col xs={24} sm={12} lg={8} xl={6} className="mb-4">
-      <Card className="bg-gray-800 border-gray-700 h-48">
+      <Card className="theme-card h-48">
         <Skeleton active paragraph={{ rows: 3 }} />
       </Card>
     </Col>
@@ -385,7 +385,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
     <MainLayout title="Collections" showCart={true}>
       <div className="space-y-2">
         {/* Search and Add Button - Fixed Position */}
-        <div className="sticky top-0 z-50 bg-gray-900 backdrop-blur-sm border-b border-gray-700/50 pb-4 pt-4 -mx-4 px-4">
+        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4">
           <div className="flex gap-4 items-center justify-end">
             <AntSearch
               placeholder="Search collections..."
@@ -441,12 +441,12 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
           <Row gutter={[16, 16]}>
             {collections.length === 0 ? (
               <Col span={24}>
-                <Card className="bg-gray-800 border-gray-700 text-center py-12">
-                  <Package className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-                  <Title level={4} className="!text-gray-400 !mb-2">
+                <Card className="theme-card text-center py-12">
+                  <Package className="w-16 h-16 theme-text-tertiary mx-auto mb-4" />
+                  <Title level={4} className="!theme-text-secondary !mb-2">
                     No Collections Found
                   </Title>
-                  <Text className="text-gray-500">
+                  <Text className="theme-text-tertiary">
                     {searchText
                       ? "Try adjusting your search terms"
                       : "No collections available at the moment"}
@@ -466,19 +466,22 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                     <Card
                       hoverable
                       onClick={() => handleCollectionClick(collection.id)}
-                      className="bg-gray-800 border-gray-700 cursor-pointer"
+                      className="theme-card-hover cursor-pointer"
                     >
                       <div className="space-y-3">
                         <div>
                           <div className="flex items-center justify-between">
-                            <Title level={5} className="!text-white !mb-1">
+                            <Title
+                              level={5}
+                              className="!theme-text-primary !mb-1"
+                            >
                               {collection.name}
                             </Title>
                             <Tag color="blue">
                               {collection.serial_numbers?.length} Items
                             </Tag>
                           </div>
-                          <Text className="text-gray-400 text-sm">
+                          <Text className="theme-text-secondary text-sm">
                             {collection.description}
                           </Text>
                         </div>
@@ -494,7 +497,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                         </div>
 
                         {user?.role === "ADMIN" && (
-                          <div className="flex items-center justify-between space-x-2 pt-2 border-t border-gray-700">
+                          <div className="flex items-center justify-between space-x-2 pt-2 border-t theme-border-secondary">
                             <Button
                               type="link"
                               icon={<Edit className="w-4 h-4" />}
@@ -536,7 +539,9 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
           title={
             <div className="flex items-center">
               <UploadIcon className="w-5 h-5 mr-2 text-purple-400" />
-              <span className="text-white">Bulk Upload Collections</span>
+              <span className="theme-text-primary">
+                Bulk Upload Collections
+              </span>
             </div>
           }
           open={bulkModalVisible}
@@ -547,13 +552,13 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
         >
           <div className="space-y-4">
             <div className="flex justify-between items-center mb-4">
-              <Text className="text-gray-300">
+              <Text className="theme-text-secondary">
                 Upload CSV file to add multiple collections at once
               </Text>
               <Button
                 icon={<Download className="w-4 h-4" />}
                 onClick={downloadTemplate}
-                className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                className="theme-button"
               >
                 Download Template
               </Button>
@@ -566,14 +571,14 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                 return false; // Prevent default upload
               }}
               showUploadList={false}
-              className="bg-gray-700 border-gray-600 hover:border-purple-500"
+              className="theme-input hover:border-purple-500"
             >
               <div className="p-6 text-center">
-                <UploadIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <Text className="text-white text-lg block mb-2">
+                <UploadIcon className="w-12 h-12 theme-text-tertiary mx-auto mb-4" />
+                <Text className="theme-text-primary text-lg block mb-2">
                   Click or drag CSV file to upload
                 </Text>
-                <Text className="text-gray-400">
+                <Text className="theme-text-secondary">
                   Supports CSV files with collections data
                 </Text>
               </div>
@@ -587,11 +592,11 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
               </div>
             )}
 
-            <div className="mt-4 p-3 bg-gray-800 rounded-lg">
-              <Text className="text-gray-300 text-sm">
+            <div className="mt-4 p-3 theme-bg-tertiary rounded-lg">
+              <Text className="theme-text-secondary text-sm">
                 <strong>CSV Format Requirements:</strong>
               </Text>
-              <ul className="text-gray-400 text-xs mt-2 space-y-1">
+              <ul className="theme-text-tertiary text-xs mt-2 space-y-1">
                 <li>
                   • Required columns: collection_name, description, sr_no,
                   min_stock, max_stock, current_stock, unit

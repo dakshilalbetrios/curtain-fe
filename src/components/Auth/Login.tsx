@@ -132,24 +132,24 @@ export const Login: React.FC = () => {
   // Show loading spinner while auth context is initializing
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+      <div className="min-h-screen theme-bg-primary flex items-center justify-center p-4">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <Text className="text-gray-400">Loading...</Text>
+          <Text className="theme-text-secondary">Loading...</Text>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-      <Card className="w-full max-w-[25rem] bg-gray-800 border-gray-700 shadow-2xl">
+    <div className="min-h-screen theme-bg-primary flex items-center justify-center">
+      <Card className="w-full max-w-[25rem] theme-card theme-shadow-lg">
         <div className="px-[2rem] py-10">
           <div className="text-center mb-10">
-            <Title level={2} className="!text-white !mb-3 !font-bold">
+            <Title level={2} className="!theme-text-primary !mb-3 !font-bold">
               Welcome Back
             </Title>
-            <Text className="text-gray-400 text-lg">
+            <Text className="theme-text-secondary text-lg">
               Sign in to your account
             </Text>
           </div>
@@ -168,7 +168,7 @@ export const Login: React.FC = () => {
 
             <Form.Item
               label={
-                <span className="text-gray-300 font-medium text-base">
+                <span className="theme-text-secondary font-medium text-base">
                   Mobile Number
                 </span>
               }
@@ -178,7 +178,7 @@ export const Login: React.FC = () => {
                 placeholder="Enter mobile number"
                 value={mobileNo}
                 onChange={handleMobileChange}
-                className="bg-gray-700 border-gray-600 text-white h-14 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-lg"
+                className="theme-input h-14 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-lg"
                 size="large"
                 autoComplete="off"
                 name="mobile_number"
@@ -218,7 +218,9 @@ export const Login: React.FC = () => {
             {showPasswordField && (
               <Form.Item
                 label={
-                  <span className="text-gray-300 font-medium">Password</span>
+                  <span className="theme-text-secondary font-medium">
+                    Password
+                  </span>
                 }
                 className="mb-8"
               >
@@ -233,7 +235,7 @@ export const Login: React.FC = () => {
                         handlePasswordChange(index, e.target.value)
                       }
                       onKeyDown={(e) => handleKeyDown(index, e)}
-                      className="w-14 h-14 text-center text-xl font-semibold bg-gray-700 border-gray-600 text-white rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200"
+                      className="w-14 h-14 text-center text-xl font-semibold theme-input rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200"
                       maxLength={1}
                       placeholder="•"
                     />
