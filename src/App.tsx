@@ -18,7 +18,6 @@ import { OrderList } from "./components/Orders/OrderList";
 import { OrderDetail } from "./components/Orders/OrderDetail";
 import { OrderManagement } from "./components/Orders/OrderManagement";
 import { RetailerList } from "./components/Users/UserList";
-import { ManageCollectionAccess } from "./components/Users/ManageCollectionAccess";
 import { Profile } from "./components/Profile/Profile";
 import { Cart } from "./components/Cart/Cart";
 
@@ -140,14 +139,6 @@ const AppRoutes: React.FC = () => {
           element={
             <PrivateRoute>
               <RetailerList />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/users/manage-collection-access/:userId"
-          element={
-            <PrivateRoute>
-              <ManageCollectionAccess />
             </PrivateRoute>
           }
         />

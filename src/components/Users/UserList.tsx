@@ -31,11 +31,11 @@ import {
   RefreshCw,
   Search,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { UserResponse, CreateRetailerRequest } from "../../services";
 import { MainLayout } from "../Layout/MainLayout";
 import { TelephoneField } from "../Common/TelephoneField";
 import { useUsers } from "../../hooks/useUsers";
+import { ManageCollectionAccessDrawer } from "./ManageCollectionAccessDrawer";
 
 const { Title, Text } = Typography;
 const { Search: AntSearch } = Input;
@@ -49,7 +49,9 @@ export const RetailerList: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [editingUser, setEditingUser] = useState<UserResponse | null>(null);
   const [form] = Form.useForm();
-  const navigate = useNavigate();
+  const [collectionAccessDrawerVisible, setCollectionAccessDrawerVisible] =
+    useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   // Debounced search function
   const debouncedSearch = useCallback(
@@ -375,7 +377,18 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
   };
 
   const handleManageCollections = (retailerId: number) => {
-    navigate(`/users/manage-collection-access/${retailerId}`);
+    setSelectedUserId(retailerId);
+    setCollectionAccessDrawerVisible(true);
+  };
+
+  const handleCollectionAccessDrawerClose = () => {
+    setCollectionAccessDrawerVisible(false);
+    setSelectedUserId(null);
+  };
+
+  const handleCollectionAccessSuccess = () => {
+    // Optionally refresh user data or show success message
+    message.success("Collection access updated successfully!");
   };
 
   const handleDeleteRetailer = (retailerId: number, retailerName: string) => {
@@ -887,6 +900,14 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
             </Form.Item>
           </Form>
         </Modal>
+
+        {/* Collection Access Management Drawer */}
+        <ManageCollectionAccessDrawer
+          visible={collectionAccessDrawerVisible}
+          onClose={handleCollectionAccessDrawerClose}
+          userId={selectedUserId}
+          onSuccess={handleCollectionAccessSuccess}
+        />
       </div>
     </MainLayout>
   );
