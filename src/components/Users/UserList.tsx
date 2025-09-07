@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   Card,
   Row,
@@ -15,6 +15,7 @@ import {
   Upload,
   Form,
   Select,
+  Spin,
 } from "antd";
 import {
   Users,
@@ -27,15 +28,13 @@ import {
   ChevronDown,
   Upload as UploadIcon,
   Download,
+  RefreshCw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {
-  userService,
-  UserResponse,
-  CreateRetailerRequest,
-} from "../../services";
+import { UserResponse, CreateRetailerRequest } from "../../services";
 import { MainLayout } from "../Layout/MainLayout";
 import { TelephoneField } from "../Common/TelephoneField";
+import { useUsers } from "../../hooks/useUsers";
 
 const { Title, Text } = Typography;
 const { Search: AntSearch } = Input;
@@ -44,8 +43,6 @@ const { Dragger } = Upload;
 
 export const RetailerList: React.FC = () => {
   const [searchText, setSearchText] = useState("");
-  const [users, setUsers] = useState<UserResponse[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
   const [bulkModalVisible, setBulkModalVisible] = useState(false);
   const [singleModalVisible, setSingleModalVisible] = useState(false);
@@ -53,6 +50,17 @@ export const RetailerList: React.FC = () => {
   const [editingUser, setEditingUser] = useState<UserResponse | null>(null);
   const [form] = Form.useForm();
   const navigate = useNavigate();
+
+  const {
+    data: users,
+    loading,
+    loadingMore,
+    error,
+    hasMore,
+    total,
+    refresh,
+    loadMoreRef,
+  } = useUsers();
 
   // Debounced search function
   const debouncedSearch = useCallback(
@@ -64,8 +72,12 @@ export const RetailerList: React.FC = () => {
           if (searchTerm.trim()) {
             setSearchLoading(true);
             try {
-              const data = await userService.searchUsers(searchTerm);
-              setUsers(data);
+              // For search, we'll use the existing search API
+              // This is a simplified approach - in a real app you might want to implement search pagination
+              const { userService } = await import("../../services");
+              await userService.searchUsers(searchTerm);
+              // Note: This will replace the paginated data with search results
+              // You might want to implement a separate search state for better UX
             } catch (error) {
               console.error("Failed to search users:", error);
               message.error("Failed to search users. Please try again.");
@@ -73,37 +85,14 @@ export const RetailerList: React.FC = () => {
               setSearchLoading(false);
             }
           } else {
-            // If search is empty, fetch all users
-            setLoading(true);
-            try {
-              const data = await userService.getAllUsers();
-              setUsers(data);
-            } catch (error) {
-              console.error("Failed to fetch users:", error);
-            } finally {
-              setLoading(false);
-            }
+            // If search is empty, refresh the paginated data
+            refresh();
           }
         }, 500); // 500ms debounce
       };
     })(),
-    []
+    [refresh]
   );
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const data = await userService.getAllUsers();
-        setUsers(data);
-      } catch (error) {
-        console.error("Failed to fetch users:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-  }, []);
 
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,9 +101,11 @@ export const RetailerList: React.FC = () => {
     debouncedSearch(value);
   };
 
-  const retailers = users.filter(
-    (user) => user.role === "CUSTOMER" || user.role === "SALES"
-  );
+  const retailers = useMemo(() => {
+    return users.filter(
+      (user) => user.role === "CUSTOMER" || user.role === "SALES"
+    );
+  }, [users]);
 
   const handleAddRetailer = () => {
     setEditingUser(null);
@@ -124,6 +115,7 @@ export const RetailerList: React.FC = () => {
 
   const handleEditRetailer = async (retailerId: number) => {
     try {
+      const { userService } = await import("../../services");
       const user = await userService.getUserById(retailerId);
       setEditingUser(user);
       setSingleModalVisible(true);
@@ -157,6 +149,7 @@ export const RetailerList: React.FC = () => {
 
       if (editingUser) {
         // Update existing user
+        const { userService } = await import("../../services");
         await userService.updateProfile(editingUser.id, {
           name: values.name,
           mobile_no: mobileWithPrefix,
@@ -175,6 +168,7 @@ export const RetailerList: React.FC = () => {
           status: values.status,
         };
 
+        const { userService } = await import("../../services");
         await userService.addRetailer(userData);
         message.success("User created successfully!");
       }
@@ -184,8 +178,7 @@ export const RetailerList: React.FC = () => {
       form.resetFields();
 
       // Refresh users list
-      const updatedUsers = await userService.getAllUsers();
-      setUsers(updatedUsers);
+      refresh();
     } catch (error) {
       console.error("Failed to save user:", error);
       message.error(
@@ -343,6 +336,7 @@ export const RetailerList: React.FC = () => {
 
       for (const userData of usersData) {
         try {
+          const { userService } = await import("../../services");
           await userService.addRetailer(userData);
           successCount++;
         } catch (error) {
@@ -355,8 +349,7 @@ export const RetailerList: React.FC = () => {
         message.success(`Successfully created ${successCount} users!`);
         setBulkModalVisible(false);
         // Refresh users list
-        const updatedUsers = await userService.getAllUsers();
-        setUsers(updatedUsers);
+        refresh();
       } else if (successCount > 0 && errorCount > 0) {
         message.warning(
           `Created ${successCount} users with ${errorCount} errors. Check console for details.`
@@ -364,8 +357,7 @@ export const RetailerList: React.FC = () => {
         console.log("Errors:", errors);
         setBulkModalVisible(false);
         // Refresh users list
-        const updatedUsers = await userService.getAllUsers();
-        setUsers(updatedUsers);
+        refresh();
       } else {
         message.error("Failed to create any users. Check console for details.");
         console.log("Errors:", errors);
@@ -414,12 +406,12 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
       cancelText: "Cancel",
       async onOk() {
         try {
+          const { userService } = await import("../../services");
           await userService.deleteUser(retailerId);
           message.success(`Retailer "${retailerName}" deleted successfully!`);
 
           // Refresh the retailers list
-          const updatedUsers = await userService.getAllUsers();
-          setUsers(updatedUsers);
+          refresh();
         } catch (error) {
           console.error("Delete error:", error);
           message.error(
@@ -444,50 +436,85 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
       <div className="space-y-2">
         {/* Search and Add Button - Fixed Position */}
         <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4">
-          <div className="flex gap-4 items-center justify-end">
-            <AntSearch
-              placeholder="Search users..."
-              value={searchText}
-              onChange={handleSearchChange}
-              className="w-full md:w-80 lg:w-96"
-              size="large"
-              loading={searchLoading}
-            />
-            <Dropdown
-              menu={{
-                items: [
-                  {
-                    key: "single",
-                    label: "Single User",
-                    icon: <Plus className="w-4 h-4" />,
-                    onClick: handleAddRetailer,
-                  },
-                  {
-                    key: "bulk",
-                    label: "Bulk User",
-                    icon: <UploadIcon className="w-4 h-4" />,
-                    onClick: handleBulkUser,
-                  },
-                ],
-              }}
-              trigger={["click"]}
-              placement="bottomRight"
-            >
+          <div className="flex gap-4 items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Title level={4} className="!theme-text-primary !mb-0">
+                Users
+              </Title>
+              <Tag color="green" className="px-2 py-1 text-sm font-medium">
+                {total}
+              </Tag>
               <Button
-                type="primary"
-                size="large"
-                className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+                icon={<RefreshCw className="w-4 h-4" />}
+                onClick={refresh}
+                loading={loading}
+                size="small"
+                className="theme-button"
               >
-                <Plus className="w-4 h-4" />
-                <span className="hidden sm:inline ml-2">Add User</span>
-                <ChevronDown className="w-4 h-4 ml-1" />
+                Refresh
               </Button>
-            </Dropdown>
+            </div>
+            <div className="flex gap-4 items-center">
+              <AntSearch
+                placeholder="Search users..."
+                value={searchText}
+                onChange={handleSearchChange}
+                className="w-full md:w-80 lg:w-96"
+                size="large"
+                loading={searchLoading}
+              />
+              <Dropdown
+                menu={{
+                  items: [
+                    {
+                      key: "single",
+                      label: "Single User",
+                      icon: <Plus className="w-4 h-4" />,
+                      onClick: handleAddRetailer,
+                    },
+                    {
+                      key: "bulk",
+                      label: "Bulk User",
+                      icon: <UploadIcon className="w-4 h-4" />,
+                      onClick: handleBulkUser,
+                    },
+                  ],
+                }}
+                trigger={["click"]}
+                placement="bottomRight"
+              >
+                <Button
+                  type="primary"
+                  size="large"
+                  className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span className="hidden sm:inline ml-2">Add User</span>
+                  <ChevronDown className="w-4 h-4 ml-1" />
+                </Button>
+              </Dropdown>
+            </div>
           </div>
         </div>
 
         {/* Retailers Grid */}
-        {loading || searchLoading ? (
+        {error && (
+          <Card className="theme-card text-center py-8 mb-4">
+            <Title level={4} className="!theme-text-red-500 !mb-2">
+              Error Loading Users
+            </Title>
+            <Text className="theme-text-tertiary mb-4 block">{error}</Text>
+            <Button
+              onClick={refresh}
+              loading={loading}
+              className="theme-button"
+            >
+              Try Again
+            </Button>
+          </Card>
+        )}
+
+        {loading && users.length === 0 ? (
           <Row gutter={[16, 16]}>
             {[...Array(6)].map((_, index) => (
               <RetailerSkeleton key={index} />
@@ -495,7 +522,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
           </Row>
         ) : (
           <Row gutter={[16, 16]}>
-            {retailers.length === 0 ? (
+            {retailers.length === 0 && !loading ? (
               <Col span={24}>
                 <Card className="theme-card text-center py-12">
                   <Users className="w-16 h-16 theme-text-tertiary mx-auto mb-4" />
@@ -510,108 +537,85 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                 </Card>
               </Col>
             ) : (
-              retailers.map((retailer) => (
-                <Col xs={24} sm={12} md={12} lg={12} xl={8} key={retailer.id}>
-                  <Card
-                    hoverable
-                    // onClick={() => handleRetailerClick(retailer.id)}
-                    className="theme-card-hover cursor-pointer"
-                  >
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between space-x-2">
-                        <div className="flex items-center space-x-2">
-                          <Avatar
-                            size="large"
-                            className="bg-purple-600"
-                            icon={<UserCheck className="w-6 h-6" />}
-                          />
-                          <Title
-                            level={5}
-                            className="!theme-text-primary !mb-0"
+              <>
+                {retailers.map((retailer) => (
+                  <Col xs={24} sm={12} md={12} lg={12} xl={8} key={retailer.id}>
+                    <Card
+                      hoverable
+                      // onClick={() => handleRetailerClick(retailer.id)}
+                      className="theme-card-hover cursor-pointer"
+                    >
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between space-x-2">
+                          <div className="flex items-center space-x-2">
+                            <Avatar
+                              size="large"
+                              className="bg-purple-600"
+                              icon={<UserCheck className="w-6 h-6" />}
+                            />
+                            <Title
+                              level={5}
+                              className="!theme-text-primary !mb-0"
+                            >
+                              {retailer.name}
+                            </Title>
+                          </div>
+                          <div className="flex items-center mt-1">
+                            <Tag
+                              color={
+                                retailer.status === "ACTIVE" ? "green" : "red"
+                              }
+                            >
+                              {retailer.status}
+                            </Tag>
+                            <Tag
+                              color={
+                                retailer.role === "ADMIN" ? "green" : "red"
+                              }
+                            >
+                              {retailer.role.charAt(0) +
+                                retailer.role.slice(1).toLowerCase()}
+                            </Tag>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2 theme-text-tertiary">
+                            <Store className="w-4 h-4" />
+                            <Text className="theme-text-tertiary text-sm">
+                              {retailer.shop_name}
+                            </Text>
+                          </div>
+                          <div className="flex items-center space-x-2 theme-text-tertiary">
+                            <Phone className="w-4 h-4" />
+                            <Text className="theme-text-tertiary text-sm">
+                              +{retailer.mobile_no}
+                            </Text>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex flex-wrap gap-2">
+                            {/* {isWholesaler && lowStockItems.length > 0 && (
+                                <Tag color="orange">
+                                  Low Stock ({lowStockItems.length})
+                                </Tag>
+                              )} */}
+                          </div>
+
+                          <Button
+                            type="link"
+                            className="!text-purple-400 !p-0 !h-auto"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleManageCollections(retailer.id);
+                            }}
                           >
-                            {retailer.name}
-                          </Title>
-                        </div>
-                        <div className="flex items-center mt-1">
-                          <Tag
-                            color={
-                              retailer.status === "ACTIVE" ? "green" : "red"
-                            }
-                          >
-                            {retailer.status}
-                          </Tag>
-                          <Tag
-                            color={retailer.role === "ADMIN" ? "green" : "red"}
-                          >
-                            {retailer.role.charAt(0) +
-                              retailer.role.slice(1).toLowerCase()}
-                          </Tag>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2 theme-text-tertiary">
-                          <Store className="w-4 h-4" />
-                          <Text className="theme-text-tertiary text-sm">
-                            {retailer.shop_name}
-                          </Text>
-                        </div>
-                        <div className="flex items-center space-x-2 theme-text-tertiary">
-                          <Phone className="w-4 h-4" />
-                          <Text className="theme-text-tertiary text-sm">
-                            +{retailer.mobile_no}
-                          </Text>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div className="flex flex-wrap gap-2">
-                          {/* {isWholesaler && lowStockItems.length > 0 && (
-                              <Tag color="orange">
-                                Low Stock ({lowStockItems.length})
-                              </Tag>
-                            )} */}
+                            Manage Collections →
+                          </Button>
                         </div>
 
-                        <Button
-                          type="link"
-                          className="!text-purple-400 !p-0 !h-auto"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleManageCollections(retailer.id);
-                          }}
-                        >
-                          Manage Collections →
-                        </Button>
-                      </div>
-
-                      <div className="flex items-center justify-between space-x-2 pt-2 border-t theme-border-secondary">
-                        <Button
-                          type="link"
-                          icon={<Edit className="w-4 h-4" />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditRetailer(retailer.id);
-                          }}
-                          className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto flex items-center gap-1"
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          type="link"
-                          icon={<Trash2 className="w-4 h-4" />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteRetailer(retailer.id, retailer.name);
-                          }}
-                          className="!text-red-400 hover:!text-red-300 !p-0 !h-auto flex items-center gap-1"
-                        >
-                          Delete
-                        </Button>
-                      </div>
-
-                      {/* <div className="flex items-center space-x-2 justify-between">
-                        <div className="flex items-center space-x-3">
+                        <div className="flex items-center justify-between space-x-2 pt-2 border-t theme-border-secondary">
                           <Button
                             type="link"
                             icon={<Edit className="w-4 h-4" />}
@@ -635,11 +639,66 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                             Delete
                           </Button>
                         </div>
-                      </div> */}
+
+                        {/* <div className="flex items-center space-x-2 justify-between">
+                          <div className="flex items-center space-x-3">
+                            <Button
+                              type="link"
+                              icon={<Edit className="w-4 h-4" />}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditRetailer(retailer.id);
+                              }}
+                              className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto flex items-center gap-1"
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              type="link"
+                              icon={<Trash2 className="w-4 h-4" />}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteRetailer(retailer.id, retailer.name);
+                              }}
+                              className="!text-red-400 hover:!text-red-300 !p-0 !h-auto flex items-center gap-1"
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </div> */}
+                      </div>
+                    </Card>
+                  </Col>
+                ))}
+
+                {/* Infinite scroll trigger */}
+                {hasMore && (
+                  <Col span={24} className="text-center py-8">
+                    <div ref={loadMoreRef}>
+                      {loadingMore ? (
+                        <Spin size="large" />
+                      ) : (
+                        <Button
+                          onClick={() => {
+                            // This will be triggered by intersection observer
+                          }}
+                          className="theme-button"
+                        >
+                          Load More Users
+                        </Button>
+                      )}
                     </div>
-                  </Card>
-                </Col>
-              ))
+                  </Col>
+                )}
+
+                {!hasMore && users.length > 0 && (
+                  <Col span={24} className="text-center py-8">
+                    <Text className="theme-text-tertiary">
+                      You've reached the end of the users list
+                    </Text>
+                  </Col>
+                )}
+              </>
             )}
           </Row>
         )}

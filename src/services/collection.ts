@@ -1,4 +1,4 @@
-import { BaseService, ApiResponse } from './types';
+import { BaseService, ApiResponse, PaginatedApiResponse, PaginationParams } from './types';
 
 // Collection interfaces
 export interface CollectionSerialNumber {
@@ -88,6 +88,37 @@ export class CollectionService extends BaseService {
       }
 
       return apiResponse.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while fetching collections');
+    }
+  }
+
+  async getCollectionsPaginated(params: PaginationParams): Promise<PaginatedApiResponse<CollectionResponse[]>> {
+    try {
+      const queryParams = new URLSearchParams({
+        page: params.page.toString(),
+        limit: params.limit.toString(),
+      });
+
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/collections?${queryParams}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: PaginatedApiResponse<CollectionResponse[]> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse;
     } catch (error) {
       if (error instanceof Error) {
         throw error;

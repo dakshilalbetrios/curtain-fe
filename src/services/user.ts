@@ -1,4 +1,4 @@
-import { BaseService, ApiResponse, CollectionAccess, CollectionAccessResponse, AddCollectionAccessRequest, UpdateCollectionAccessRequest } from './types';
+import { BaseService, ApiResponse, PaginatedApiResponse, PaginationParams, CollectionAccess, CollectionAccessResponse, AddCollectionAccessRequest, UpdateCollectionAccessRequest } from './types';
 
 // User interfaces
 export interface UserResponse {
@@ -90,6 +90,37 @@ export class UserService extends BaseService {
       }
 
       return apiResponse.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while fetching users');
+    }
+  }
+
+  async getUsersPaginated(params: PaginationParams): Promise<PaginatedApiResponse<UserResponse[]>> {
+    try {
+      const queryParams = new URLSearchParams({
+        page: params.page.toString(),
+        limit: params.limit.toString(),
+      });
+
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/users?${queryParams}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: PaginatedApiResponse<UserResponse[]> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse;
     } catch (error) {
       if (error instanceof Error) {
         throw error;

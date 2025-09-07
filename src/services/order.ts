@@ -1,4 +1,4 @@
-import { BaseService, ApiResponse } from './types';
+import { BaseService, ApiResponse, PaginatedApiResponse, PaginationParams } from './types';
 
 // Order interfaces
 export interface OrderItem {
@@ -69,6 +69,37 @@ export class OrderService extends BaseService {
       }
 
       return apiResponse.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while fetching orders');
+    }
+  }
+
+  async getOrdersPaginated(params: PaginationParams): Promise<PaginatedApiResponse<OrderResponse[]>> {
+    try {
+      const queryParams = new URLSearchParams({
+        page: params.page.toString(),
+        limit: params.limit.toString(),
+      });
+
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/orders?${queryParams}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: PaginatedApiResponse<OrderResponse[]> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse;
     } catch (error) {
       if (error instanceof Error) {
         throw error;

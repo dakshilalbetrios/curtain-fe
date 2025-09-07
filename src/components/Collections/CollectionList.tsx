@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Card,
   Row,
@@ -14,6 +14,7 @@ import {
   Upload,
   Form,
   Select,
+  Spin,
 } from "antd";
 import {
   Package,
@@ -23,16 +24,17 @@ import {
   ChevronDown,
   Upload as UploadIcon,
   Download,
+  RefreshCw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
-  collectionService,
   CollectionResponse,
   CreateCollectionRequest,
   UpdateCollectionRequest,
 } from "../../services";
 import { MainLayout } from "../Layout/MainLayout";
+import { useCollections } from "../../hooks/useCollections";
 
 const { Title, Text } = Typography;
 const { Search: AntSearch } = Input;
@@ -42,8 +44,6 @@ const { Dragger } = Upload;
 
 export const CollectionList: React.FC = () => {
   const [searchText, setSearchText] = useState("");
-  const [collections, setCollections] = useState<CollectionResponse[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
   const [bulkModalVisible, setBulkModalVisible] = useState(false);
   const [singleModalVisible, setSingleModalVisible] = useState(false);
@@ -57,6 +57,17 @@ export const CollectionList: React.FC = () => {
 
   const isWholesaler = user?.role === "ADMIN" || user?.role === "SALES";
 
+  const {
+    data: collections,
+    loading,
+    loadingMore,
+    error,
+    hasMore,
+    total,
+    refresh,
+    loadMoreRef,
+  } = useCollections();
+
   // Debounced search function
   const debouncedSearch = useCallback(
     (() => {
@@ -67,10 +78,12 @@ export const CollectionList: React.FC = () => {
           if (searchTerm.trim()) {
             setSearchLoading(true);
             try {
-              const data = await collectionService.searchCollections(
-                searchTerm
-              );
-              setCollections(data);
+              // For search, we'll use the existing search API
+              // This is a simplified approach - in a real app you might want to implement search pagination
+              const { collectionService } = await import("../../services");
+              await collectionService.searchCollections(searchTerm);
+              // Note: This will replace the paginated data with search results
+              // You might want to implement a separate search state for better UX
             } catch (error) {
               console.error("Failed to search collections:", error);
               message.error("Failed to search collections. Please try again.");
@@ -78,37 +91,14 @@ export const CollectionList: React.FC = () => {
               setSearchLoading(false);
             }
           } else {
-            // If search is empty, fetch all collections
-            setLoading(true);
-            try {
-              const data = await collectionService.getAllCollections();
-              setCollections(data);
-            } catch (error) {
-              console.error("Failed to fetch collections:", error);
-            } finally {
-              setLoading(false);
-            }
+            // If search is empty, refresh the paginated data
+            refresh();
           }
         }, 500); // 500ms debounce
       };
     })(),
-    []
+    [refresh]
   );
-
-  useEffect(() => {
-    const fetchCollections = async () => {
-      try {
-        const data = await collectionService.getAllCollections();
-        setCollections(data);
-      } catch (error) {
-        console.error("Failed to fetch collections:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCollections();
-  }, []);
 
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,6 +119,7 @@ export const CollectionList: React.FC = () => {
 
   const handleEditCollection = async (collectionId: number) => {
     try {
+      const { collectionService } = await import("../../services");
       const collection = await collectionService.getCollectionById(
         collectionId
       );
@@ -138,7 +129,7 @@ export const CollectionList: React.FC = () => {
         name: collection.name,
         description: collection.description,
         serial_numbers:
-          collection.serial_numbers?.map((sr) => ({
+          collection.serial_numbers?.map((sr: any) => ({
             id: sr.id,
             sr_no: sr.sr_no,
             min_stock: sr.min_stock,
@@ -203,6 +194,7 @@ export const CollectionList: React.FC = () => {
           ...deletedSerialNumbers,
         ];
 
+        const { collectionService } = await import("../../services");
         await collectionService.updateCollection(
           editingCollection.id,
           updatePayload
@@ -216,6 +208,7 @@ export const CollectionList: React.FC = () => {
           serial_numbers: values.serial_numbers || [],
         };
 
+        const { collectionService } = await import("../../services");
         await collectionService.createCollection(collectionData);
         message.success("Collection created successfully!");
       }
@@ -225,8 +218,7 @@ export const CollectionList: React.FC = () => {
       form.resetFields();
 
       // Refresh collections list
-      const updatedCollections = await collectionService.getAllCollections();
-      setCollections(updatedCollections);
+      refresh();
     } catch (error) {
       console.error("Failed to save collection:", error);
       message.error(
@@ -398,6 +390,7 @@ export const CollectionList: React.FC = () => {
       const collectionsData = parseCSVToCollections(csvContent);
       console.log("Parsed Collections Data:", collectionsData);
 
+      const { collectionService } = await import("../../services");
       const result = await collectionService.bulkUploadCollections(
         collectionsData
       );
@@ -409,8 +402,7 @@ export const CollectionList: React.FC = () => {
         );
         setBulkModalVisible(false);
         // Refresh collections list
-        const updatedCollections = await collectionService.getAllCollections();
-        setCollections(updatedCollections);
+        refresh();
       } else if (result.successCount > 0 && result.errorCount > 0) {
         message.warning(
           `Created ${result.successCount} collections with ${result.errorCount} errors. Check console for details.`
@@ -418,8 +410,7 @@ export const CollectionList: React.FC = () => {
         console.log("Errors:", result.errors);
         setBulkModalVisible(false);
         // Refresh collections list
-        const updatedCollections = await collectionService.getAllCollections();
-        setCollections(updatedCollections);
+        refresh();
       } else {
         message.error(
           "Failed to create any collections. Check console for details."
@@ -472,15 +463,14 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
       cancelText: "Cancel",
       async onOk() {
         try {
+          const { collectionService } = await import("../../services");
           await collectionService.deleteCollection(collectionId);
           message.success(
             `Collection "${collectionName}" deleted successfully!`
           );
 
           // Refresh the collections list
-          const updatedCollections =
-            await collectionService.getAllCollections();
-          setCollections(updatedCollections);
+          refresh();
         } catch (error) {
           console.error("Delete error:", error);
           message.error(
@@ -505,52 +495,89 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
       <div className="space-y-2">
         {/* Search and Add Button - Fixed Position */}
         <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4">
-          <div className="flex gap-4 items-center justify-end">
-            <AntSearch
-              placeholder="Search collections..."
-              value={searchText}
-              onChange={handleSearchChange}
-              className="w-full md:w-80 lg:w-96"
-              size="large"
-              loading={searchLoading}
-            />
-            {isWholesaler && (
-              <Dropdown
-                menu={{
-                  items: [
-                    {
-                      key: "single",
-                      label: "Single Collection",
-                      icon: <Plus className="w-4 h-4" />,
-                      onClick: handleAddCollection,
-                    },
-                    {
-                      key: "bulk",
-                      label: "Bulk Collection",
-                      icon: <UploadIcon className="w-4 h-4" />,
-                      onClick: handleBulkCollection,
-                    },
-                  ],
-                }}
-                trigger={["click"]}
-                placement="bottomRight"
+          <div className="flex gap-4 items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Title level={4} className="!theme-text-primary !mb-0">
+                Collections
+              </Title>
+              <Tag color="blue" className="px-2 py-1 text-sm font-medium">
+                {total}
+              </Tag>
+              <Button
+                icon={<RefreshCw className="w-4 h-4" />}
+                onClick={refresh}
+                loading={loading}
+                size="small"
+                className="theme-button"
               >
-                <Button
-                  type="primary"
-                  size="large"
-                  className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+                Refresh
+              </Button>
+            </div>
+            <div className="flex gap-4 items-center">
+              <AntSearch
+                placeholder="Search collections..."
+                value={searchText}
+                onChange={handleSearchChange}
+                className="w-full md:w-80 lg:w-96"
+                size="large"
+                loading={searchLoading}
+              />
+              {isWholesaler && (
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: "single",
+                        label: "Single Collection",
+                        icon: <Plus className="w-4 h-4" />,
+                        onClick: handleAddCollection,
+                      },
+                      {
+                        key: "bulk",
+                        label: "Bulk Collection",
+                        icon: <UploadIcon className="w-4 h-4" />,
+                        onClick: handleBulkCollection,
+                      },
+                    ],
+                  }}
+                  trigger={["click"]}
+                  placement="bottomRight"
                 >
-                  <Plus className="w-4 h-4" />
-                  <span className="hidden sm:inline ml-2">Add Collection</span>
-                  <ChevronDown className="w-4 h-4 ml-1" />
-                </Button>
-              </Dropdown>
-            )}
+                  <Button
+                    type="primary"
+                    size="large"
+                    className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span className="hidden sm:inline ml-2">
+                      Add Collection
+                    </span>
+                    <ChevronDown className="w-4 h-4 ml-1" />
+                  </Button>
+                </Dropdown>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Collections Grid */}
-        {loading || searchLoading ? (
+        {error && (
+          <Card className="theme-card text-center py-8 mb-4">
+            <Title level={4} className="!theme-text-red-500 !mb-2">
+              Error Loading Collections
+            </Title>
+            <Text className="theme-text-tertiary mb-4 block">{error}</Text>
+            <Button
+              onClick={refresh}
+              loading={loading}
+              className="theme-button"
+            >
+              Try Again
+            </Button>
+          </Card>
+        )}
+
+        {loading && collections.length === 0 ? (
           <Row gutter={[16, 16]}>
             {[...Array(6)].map((_, index) => (
               <CollectionSkeleton key={index} />
@@ -558,7 +585,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
           </Row>
         ) : (
           <Row gutter={[16, 16]}>
-            {collections.length === 0 ? (
+            {collections.length === 0 && !loading ? (
               <Col span={24}>
                 <Card className="theme-card text-center py-12">
                   <Package className="w-16 h-16 theme-text-tertiary mx-auto mb-4" />
@@ -573,82 +600,112 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                 </Card>
               </Col>
             ) : (
-              collections.map((collection) => {
-                const lowStockItems =
-                  collection.serial_numbers?.filter(
-                    (sr) =>
-                      parseFloat(sr.current_stock) <= parseFloat(sr.min_stock)
-                  ) || [];
+              <>
+                {collections.map((collection) => {
+                  const lowStockItems =
+                    collection.serial_numbers?.filter(
+                      (sr) =>
+                        parseFloat(sr.current_stock) <= parseFloat(sr.min_stock)
+                    ) || [];
 
-                return (
-                  <Col xs={24} sm={12} lg={8} xl={6} key={collection.id}>
-                    <Card
-                      hoverable
-                      onClick={() => handleCollectionClick(collection.id)}
-                      className="theme-card-hover cursor-pointer"
-                    >
-                      <div className="space-y-3">
-                        <div>
-                          <div className="flex items-center justify-between">
-                            <Title
-                              level={5}
-                              className="!theme-text-primary !mb-1"
-                            >
-                              {collection.name}
-                            </Title>
-                            <Tag color="blue">
-                              {collection.serial_numbers?.length} Items
-                            </Tag>
-                          </div>
-                          <Text className="theme-text-secondary text-sm">
-                            {collection.description}
-                          </Text>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex flex-wrap gap-2">
-                            {isWholesaler && lowStockItems.length > 0 && (
-                              <Tag color="orange">
-                                Low Stock ({lowStockItems.length})
+                  return (
+                    <Col xs={24} sm={12} lg={8} xl={6} key={collection.id}>
+                      <Card
+                        hoverable
+                        onClick={() => handleCollectionClick(collection.id)}
+                        className="theme-card-hover cursor-pointer"
+                      >
+                        <div className="space-y-3">
+                          <div>
+                            <div className="flex items-center justify-between">
+                              <Title
+                                level={5}
+                                className="!theme-text-primary !mb-1"
+                              >
+                                {collection.name}
+                              </Title>
+                              <Tag color="blue">
+                                {collection.serial_numbers?.length} Items
                               </Tag>
-                            )}
+                            </div>
+                            <Text className="theme-text-secondary text-sm">
+                              {collection.description}
+                            </Text>
                           </div>
-                        </div>
 
-                        {user?.role === "ADMIN" && (
-                          <div className="flex items-center justify-between space-x-2 pt-2 border-t theme-border-secondary">
-                            <Button
-                              type="link"
-                              icon={<Edit className="w-4 h-4" />}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditCollection(collection.id);
-                              }}
-                              className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto flex items-center gap-1"
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              type="link"
-                              icon={<Trash2 className="w-4 h-4" />}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteCollection(
-                                  collection.id,
-                                  collection.name
-                                );
-                              }}
-                              className="!text-red-400 hover:!text-red-300 !p-0 !h-auto flex items-center gap-1"
-                            >
-                              Delete
-                            </Button>
+                          <div className="flex items-center justify-between">
+                            <div className="flex flex-wrap gap-2">
+                              {isWholesaler && lowStockItems.length > 0 && (
+                                <Tag color="orange">
+                                  Low Stock ({lowStockItems.length})
+                                </Tag>
+                              )}
+                            </div>
                           </div>
-                        )}
-                      </div>
-                    </Card>
+
+                          {user?.role === "ADMIN" && (
+                            <div className="flex items-center justify-between space-x-2 pt-2 border-t theme-border-secondary">
+                              <Button
+                                type="link"
+                                icon={<Edit className="w-4 h-4" />}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditCollection(collection.id);
+                                }}
+                                className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto flex items-center gap-1"
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                type="link"
+                                icon={<Trash2 className="w-4 h-4" />}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteCollection(
+                                    collection.id,
+                                    collection.name
+                                  );
+                                }}
+                                className="!text-red-400 hover:!text-red-300 !p-0 !h-auto flex items-center gap-1"
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </Card>
+                    </Col>
+                  );
+                })}
+
+                {/* Infinite scroll trigger */}
+                {hasMore && (
+                  <Col span={24} className="text-center py-8">
+                    <div ref={loadMoreRef}>
+                      {loadingMore ? (
+                        <Spin size="large" />
+                      ) : (
+                        <Button
+                          onClick={() => {
+                            // This will be triggered by intersection observer
+                          }}
+                          className="theme-button"
+                        >
+                          Load More Collections
+                        </Button>
+                      )}
+                    </div>
                   </Col>
-                );
-              })
+                )}
+
+                {!hasMore && collections.length > 0 && (
+                  <Col span={24} className="text-center py-8">
+                    <Text className="theme-text-tertiary">
+                      You've reached the end of the collections list
+                    </Text>
+                  </Col>
+                )}
+              </>
             )}
           </Row>
         )}

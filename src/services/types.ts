@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 
 
 // Common API response wrapper
@@ -6,6 +6,25 @@ export interface ApiResponse<T> {
   error: boolean;
   message: string;
   data: T;
+}
+
+// Pagination response wrapper
+export interface PaginatedApiResponse<T> {
+  error: boolean;
+  message: string;
+  data: T;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    pages: number;
+  };
+}
+
+// Pagination parameters
+export interface PaginationParams {
+  page: number;
+  limit: number;
 }
 
 // Collection Access Management Types
