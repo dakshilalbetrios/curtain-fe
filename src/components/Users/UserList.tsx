@@ -35,6 +35,7 @@ import {
   CreateRetailerRequest,
 } from "../../services";
 import { MainLayout } from "../Layout/MainLayout";
+import { TelephoneField } from "../Common/TelephoneField";
 
 const { Title, Text } = Typography;
 const { Search: AntSearch } = Input;
@@ -126,9 +127,15 @@ export const RetailerList: React.FC = () => {
       const user = await userService.getUserById(retailerId);
       setEditingUser(user);
       setSingleModalVisible(true);
+
+      // Remove 91 prefix from mobile number for editing (show only 10 digits)
+      const mobileWithoutPrefix = user.mobile_no.startsWith("91")
+        ? user.mobile_no.substring(2)
+        : user.mobile_no;
+
       form.setFieldsValue({
         name: user.name,
-        mobile_no: user.mobile_no,
+        mobile_no: mobileWithoutPrefix,
         shop_name: user.shop_name,
         role: user.role,
         status: user.status,
@@ -145,11 +152,14 @@ export const RetailerList: React.FC = () => {
 
   const handleSingleUserSubmit = async (values: any) => {
     try {
+      // Add 91 prefix to mobile number
+      const mobileWithPrefix = `91${values.mobile_no}`;
+
       if (editingUser) {
         // Update existing user
         await userService.updateProfile(editingUser.id, {
           name: values.name,
-          mobile_no: values.mobile_no,
+          mobile_no: mobileWithPrefix,
           shop_name: values.shop_name,
           role: values.role,
           status: values.status,
@@ -159,7 +169,7 @@ export const RetailerList: React.FC = () => {
         // Create new user
         const userData: CreateRetailerRequest = {
           name: values.name,
-          mobile_no: values.mobile_no,
+          mobile_no: mobileWithPrefix,
           shop_name: values.shop_name,
           role: values.role,
           status: values.status,
@@ -296,7 +306,7 @@ export const RetailerList: React.FC = () => {
 
       users.push({
         name,
-        mobile_no: mobileNo,
+        mobile_no: `91${mobileNo}`,
         shop_name: shopName,
         role: role.toUpperCase() as "ADMIN" | "SALES" | "CUSTOMER",
         status: status.toUpperCase() as "ACTIVE" | "INACTIVE",
@@ -549,7 +559,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                         <div className="flex items-center space-x-2 theme-text-tertiary">
                           <Phone className="w-4 h-4" />
                           <Text className="theme-text-tertiary text-sm">
-                            {retailer.mobile_no}
+                            +{retailer.mobile_no}
                           </Text>
                         </div>
                       </div>
@@ -762,12 +772,11 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                 },
               ]}
             >
-              <Input
+              <TelephoneField
                 placeholder="Enter mobile number"
-                className="theme-input"
                 size="large"
-                autoComplete="off"
-                type="tel"
+                maxLength={10}
+                className="h-11 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-lg"
               />
             </Form.Item>
 

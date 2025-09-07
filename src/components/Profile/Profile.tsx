@@ -26,6 +26,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { MainLayout } from "../Layout/MainLayout";
 import { userService } from "../../services";
+import { TelephoneField } from "../Common/TelephoneField";
 import moment from "moment";
 
 const { Title, Text } = Typography;
@@ -39,6 +40,9 @@ export const Profile: React.FC = () => {
   const [editForm] = Form.useForm();
   const [changePasswordForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [oldPassword, setOldPassword] = useState(["", "", "", ""]);
+  const [newPassword, setNewPassword] = useState(["", "", "", ""]);
+  const [confirmPassword, setConfirmPassword] = useState(["", "", "", ""]);
 
   const handleLogout = () => {
     logout();
@@ -47,16 +51,98 @@ export const Profile: React.FC = () => {
 
   const handleEditProfile = () => {
     setEditModalVisible(true);
+
+    // Remove 91 prefix from mobile number for editing (show only 10 digits)
+    const mobileWithoutPrefix = user?.mobile_no?.startsWith("91")
+      ? user.mobile_no.substring(2)
+      : user?.mobile_no;
+
     editForm.setFieldsValue({
       name: user?.name,
-      mobile_no: user?.mobile_no,
+      mobile_no: mobileWithoutPrefix,
       shop_name: user?.shop_name,
     });
   };
 
   const handleChangePassword = () => {
     setChangePasswordModalVisible(true);
+    setOldPassword(["", "", "", ""]);
+    setNewPassword(["", "", "", ""]);
+    setConfirmPassword(["", "", "", ""]);
     changePasswordForm.resetFields();
+  };
+
+  const handlePasswordChange = (
+    index: number,
+    value: string,
+    type: "oldPassword" | "newPassword" | "confirmPassword"
+  ) => {
+    if (value.length <= 1 && /^\d*$/.test(value)) {
+      if (type === "oldPassword") {
+        const newOldPassword = [...oldPassword];
+        newOldPassword[index] = value;
+        setOldPassword(newOldPassword);
+
+        // Auto-focus next input
+        if (value && index < 3) {
+          const nextInput = document.getElementById(
+            `old-password-${index + 1}`
+          );
+          nextInput?.focus();
+        }
+      } else if (type === "newPassword") {
+        const newNewPassword = [...newPassword];
+        newNewPassword[index] = value;
+        setNewPassword(newNewPassword);
+
+        // Auto-focus next input
+        if (value && index < 3) {
+          const nextInput = document.getElementById(
+            `new-password-${index + 1}`
+          );
+          nextInput?.focus();
+        }
+      } else {
+        const newConfirmPassword = [...confirmPassword];
+        newConfirmPassword[index] = value;
+        setConfirmPassword(newConfirmPassword);
+
+        // Auto-focus next input
+        if (value && index < 3) {
+          const nextInput = document.getElementById(
+            `confirm-password-${index + 1}`
+          );
+          nextInput?.focus();
+        }
+      }
+    }
+  };
+
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent,
+    type: "oldPassword" | "newPassword" | "confirmPassword"
+  ) => {
+    if (
+      e.key === "Backspace" &&
+      !(type === "oldPassword"
+        ? oldPassword[index]
+        : type === "newPassword"
+        ? newPassword[index]
+        : confirmPassword[index]) &&
+      index > 0
+    ) {
+      const prevInput = document.getElementById(
+        `${
+          type === "oldPassword"
+            ? "old-password"
+            : type === "newPassword"
+            ? "new-password"
+            : "confirm-password"
+        }-${index - 1}`
+      );
+      prevInput?.focus();
+    }
   };
 
   const handleEditSubmit = async (values: any) => {
@@ -64,9 +150,12 @@ export const Profile: React.FC = () => {
 
     setLoading(true);
     try {
+      // Add 91 prefix to mobile number
+      const mobileWithPrefix = `91${values.mobile_no}`;
+
       const updatedUserData = await userService.updateProfile(user.id, {
         name: values.name,
-        mobile_no: values.mobile_no,
+        mobile_no: mobileWithPrefix,
         shop_name: values.shop_name,
         role: user.role,
         status: user.status,
@@ -92,8 +181,27 @@ export const Profile: React.FC = () => {
     }
   };
 
-  const handleChangePasswordSubmit = async (values: any) => {
-    if (values.newPassword !== values.confirmPassword) {
+  const handleChangePasswordSubmit = async () => {
+    const fullOldPassword = oldPassword.join("");
+    const fullNewPassword = newPassword.join("");
+    const fullConfirmPassword = confirmPassword.join("");
+
+    if (fullOldPassword.length !== 4) {
+      message.error("Please enter 4-digit old password");
+      return;
+    }
+
+    if (fullNewPassword.length !== 4) {
+      message.error("Please enter 4-digit new password");
+      return;
+    }
+
+    if (fullConfirmPassword.length !== 4) {
+      message.error("Please enter 4-digit confirm password");
+      return;
+    }
+
+    if (fullNewPassword !== fullConfirmPassword) {
       message.error("New passwords do not match");
       return;
     }
@@ -101,12 +209,15 @@ export const Profile: React.FC = () => {
     setLoading(true);
     try {
       await userService.changePassword({
-        oldPassword: values.oldPassword,
-        newPassword: values.newPassword,
+        oldPassword: fullOldPassword,
+        newPassword: fullNewPassword,
       });
 
       message.success("Password changed successfully!");
       setChangePasswordModalVisible(false);
+      setOldPassword(["", "", "", ""]);
+      setNewPassword(["", "", "", ""]);
+      setConfirmPassword(["", "", "", ""]);
       changePasswordForm.resetFields();
     } catch (error) {
       console.error("Failed to change password:", error);
@@ -190,7 +301,7 @@ export const Profile: React.FC = () => {
                     <Text className="theme-text-secondary">Mobile Number</Text>
                     <br />
                     <Text className="theme-text-primary font-medium">
-                      {user.mobile_no}
+                      +{user.mobile_no}
                     </Text>
                   </div>
                 </div>
@@ -277,7 +388,7 @@ export const Profile: React.FC = () => {
           editForm.resetFields();
         }}
         footer={null}
-        width={600}
+        width={500}
         centered
         className="edit-profile-modal"
       >
@@ -310,13 +421,12 @@ export const Profile: React.FC = () => {
               },
             ]}
           >
-            <Input
+            <TelephoneField
               placeholder="Enter mobile number"
-              className="theme-input"
               size="large"
-              type="tel"
+              maxLength={10}
+              className="h-11 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-lg"
               disabled
-              title="Mobile number cannot be changed"
             />
           </Form.Item>
 
@@ -369,89 +479,128 @@ export const Profile: React.FC = () => {
         open={changePasswordModalVisible}
         onCancel={() => {
           setChangePasswordModalVisible(false);
+          setOldPassword(["", "", "", ""]);
+          setNewPassword(["", "", "", ""]);
+          setConfirmPassword(["", "", "", ""]);
           changePasswordForm.resetFields();
         }}
         footer={null}
-        width={600}
+        width={350}
         centered
         className="change-password-modal"
       >
-        <Form
-          form={changePasswordForm}
-          layout="vertical"
-          onFinish={handleChangePasswordSubmit}
-          autoComplete="off"
-        >
-          <Form.Item
-            label={<span className="theme-text-secondary">Old Password</span>}
-            name="oldPassword"
-            rules={[
-              { required: true, message: "Please enter your old password" },
-            ]}
-          >
-            <Input.Password
-              placeholder="Enter your old password"
-              className="theme-input"
-              size="large"
+        <div className="space-y-6">
+          {/* Hidden fake fields to trick browsers */}
+          <div style={{ display: "none" }}>
+            <input type="text" name="fake_username" autoComplete="username" />
+            <input
+              type="password"
+              name="fake_password"
+              autoComplete="current-password"
             />
-          </Form.Item>
+          </div>
 
-          <Form.Item
-            label={<span className="theme-text-secondary">New Password</span>}
-            name="newPassword"
-            rules={[
-              { required: true, message: "Please enter your new password" },
-              { min: 4, message: "Password must be at least 4 characters" },
-            ]}
-          >
-            <Input.Password
-              placeholder="Enter your new password"
-              className="theme-input"
-              size="large"
-            />
-          </Form.Item>
-
-          <Form.Item
-            label={
-              <span className="theme-text-secondary">Confirm New Password</span>
-            }
-            name="confirmPassword"
-            rules={[
-              { required: true, message: "Please confirm your new password" },
-              { min: 4, message: "Password must be at least 4 characters" },
-            ]}
-          >
-            <Input.Password
-              placeholder="Confirm your new password"
-              className="theme-input"
-              size="large"
-            />
-          </Form.Item>
-
-          <Form.Item className="mb-0">
-            <div className="flex gap-3 justify-end">
-              <Button
-                onClick={() => {
-                  setChangePasswordModalVisible(false);
-                  changePasswordForm.resetFields();
-                }}
-                size="large"
-                className="theme-button"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-                size="large"
-                className="bg-purple-600 hover:bg-purple-700 border-purple-600"
-              >
-                Change Password
-              </Button>
+          {/* Old Password */}
+          <div>
+            <label className="block text-sm font-medium theme-text-secondary mb-3">
+              Old Password
+            </label>
+            <div className="flex items-center justify-center gap-4">
+              {oldPassword.map((digit, index) => (
+                <Input
+                  key={index}
+                  id={`old-password-${index}`}
+                  type="password"
+                  value={digit}
+                  onChange={(e) =>
+                    handlePasswordChange(index, e.target.value, "oldPassword")
+                  }
+                  onKeyDown={(e) => handleKeyDown(index, e, "oldPassword")}
+                  className="w-14 h-14 text-center text-xl font-semibold theme-input rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200"
+                  maxLength={1}
+                  placeholder="•"
+                />
+              ))}
             </div>
-          </Form.Item>
-        </Form>
+          </div>
+
+          {/* New Password */}
+          <div>
+            <label className="block text-sm font-medium theme-text-secondary mb-3">
+              New Password
+            </label>
+            <div className="flex items-center justify-center gap-4">
+              {newPassword.map((digit, index) => (
+                <Input
+                  key={index}
+                  id={`new-password-${index}`}
+                  type="password"
+                  value={digit}
+                  onChange={(e) =>
+                    handlePasswordChange(index, e.target.value, "newPassword")
+                  }
+                  onKeyDown={(e) => handleKeyDown(index, e, "newPassword")}
+                  className="w-14 h-14 text-center text-xl font-semibold theme-input rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200"
+                  maxLength={1}
+                  placeholder="•"
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label className="block text-sm font-medium theme-text-secondary mb-3">
+              Confirm New Password
+            </label>
+            <div className="flex items-center justify-center gap-4">
+              {confirmPassword.map((digit, index) => (
+                <Input
+                  key={index}
+                  id={`confirm-password-${index}`}
+                  type="password"
+                  value={digit}
+                  onChange={(e) =>
+                    handlePasswordChange(
+                      index,
+                      e.target.value,
+                      "confirmPassword"
+                    )
+                  }
+                  onKeyDown={(e) => handleKeyDown(index, e, "confirmPassword")}
+                  className="w-14 h-14 text-center text-xl font-semibold theme-input rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200"
+                  maxLength={1}
+                  placeholder="•"
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex gap-3 justify-end">
+            <Button
+              onClick={() => {
+                setChangePasswordModalVisible(false);
+                setOldPassword(["", "", "", ""]);
+                setNewPassword(["", "", "", ""]);
+                setConfirmPassword(["", "", "", ""]);
+                changePasswordForm.resetFields();
+              }}
+              size="large"
+              className="theme-button"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="primary"
+              onClick={handleChangePasswordSubmit}
+              loading={loading}
+              size="large"
+              className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+            >
+              Change Password
+            </Button>
+          </div>
+        </div>
       </Modal>
     </MainLayout>
   );

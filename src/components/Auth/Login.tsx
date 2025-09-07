@@ -4,12 +4,12 @@ import { User, AlertCircle } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { userService } from "../../services";
+import { TelephoneField } from "../Common/TelephoneField";
 
 const { Title, Text } = Typography;
 
 export const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [checkingUser, setCheckingUser] = useState(false);
   const [password, setPassword] = useState(["", "", "", ""]);
   const [mobileNo, setMobileNo] = useState("");
   const [userExists, setUserExists] = useState<boolean | null>(null);
@@ -42,9 +42,10 @@ export const Login: React.FC = () => {
   const checkUserExists = async (mobileNumber: string) => {
     if (mobileNumber.length !== 10) return;
 
-    setCheckingUser(true);
     try {
-      const response = await userService.checkUserExists(mobileNumber);
+      // Add +91 prefix for API call
+      const mobileWithPrefix = `91${mobileNumber}`;
+      const response = await userService.checkUserExists(mobileWithPrefix);
 
       if (response.error === false && response.data) {
         setUserExists(true);
@@ -57,7 +58,7 @@ export const Login: React.FC = () => {
         } else {
           // User doesn't have password, redirect to set password
           message.info("Please set your password to continue.");
-          navigate("/set-password", { state: { mobileNo: mobileNumber } });
+          navigate("/set-password", { state: { mobileNo: mobileWithPrefix } });
         }
       } else {
         setUserExists(false);
@@ -69,14 +70,12 @@ export const Login: React.FC = () => {
       message.error("Failed to verify user. Please try again.");
       setUserExists(null);
       setShowPasswordField(false);
-    } finally {
-      setCheckingUser(false);
     }
   };
 
-  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, ""); // Only allow digits
-    setMobileNo(value);
+  const handleMobileChange = (value?: string) => {
+    const cleanValue = value || "";
+    setMobileNo(cleanValue);
 
     // Reset states when mobile number changes
     setUserExists(null);
@@ -85,8 +84,8 @@ export const Login: React.FC = () => {
     setPassword(["", "", "", ""]);
 
     // Check user existence when 10 digits are entered
-    if (value.length === 10) {
-      checkUserExists(value);
+    if (cleanValue.length === 10) {
+      checkUserExists(cleanValue);
     }
   };
 
@@ -104,13 +103,15 @@ export const Login: React.FC = () => {
 
     setLoading(true);
     try {
+      // Add +91 prefix for login
+      const mobileWithPrefix = `91${mobileNo}`;
       console.log(
         "Login component: Attempting login with:",
-        mobileNo,
+        mobileWithPrefix,
         "password length:",
         fullPassword.length
       );
-      const success = await login(mobileNo, fullPassword);
+      const success = await login(mobileWithPrefix, fullPassword);
       console.log("Login component: Login result:", success);
       if (success) {
         message.success("Login successful!");
@@ -174,21 +175,13 @@ export const Login: React.FC = () => {
               }
               className="mb-8"
             >
-              <Input
+              <TelephoneField
                 placeholder="Enter mobile number"
                 value={mobileNo}
                 onChange={handleMobileChange}
-                className="theme-input h-14 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-lg"
                 size="large"
-                autoComplete="off"
-                name="mobile_number"
-                type="tel"
                 maxLength={10}
-                suffix={
-                  checkingUser ? (
-                    <div className="animate-spin w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full" />
-                  ) : null
-                }
+                className="h-11 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-lg"
               />
 
               {/* User status messages */}
