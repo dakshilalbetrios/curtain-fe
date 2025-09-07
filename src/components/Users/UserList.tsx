@@ -29,6 +29,7 @@ import {
   Upload as UploadIcon,
   Download,
   RefreshCw,
+  Search,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { UserResponse, CreateRetailerRequest } from "../../services";
@@ -43,13 +44,26 @@ const { Dragger } = Upload;
 
 export const RetailerList: React.FC = () => {
   const [searchText, setSearchText] = useState("");
-  const [searchLoading, setSearchLoading] = useState(false);
   const [bulkModalVisible, setBulkModalVisible] = useState(false);
   const [singleModalVisible, setSingleModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [editingUser, setEditingUser] = useState<UserResponse | null>(null);
   const [form] = Form.useForm();
   const navigate = useNavigate();
+
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId: number;
+      return (searchTerm: string) => {
+        clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => {
+          setSearchText(searchTerm);
+        }, 500); // 500ms debounce
+      };
+    })(),
+    []
+  );
 
   const {
     data: users,
@@ -60,44 +74,11 @@ export const RetailerList: React.FC = () => {
     total,
     refresh,
     loadMoreRef,
-  } = useUsers();
-
-  // Debounced search function
-  const debouncedSearch = useCallback(
-    (() => {
-      let timeoutId: number;
-      return (searchTerm: string) => {
-        clearTimeout(timeoutId);
-        timeoutId = window.setTimeout(async () => {
-          if (searchTerm.trim()) {
-            setSearchLoading(true);
-            try {
-              // For search, we'll use the existing search API
-              // This is a simplified approach - in a real app you might want to implement search pagination
-              const { userService } = await import("../../services");
-              await userService.searchUsers(searchTerm);
-              // Note: This will replace the paginated data with search results
-              // You might want to implement a separate search state for better UX
-            } catch (error) {
-              console.error("Failed to search users:", error);
-              message.error("Failed to search users. Please try again.");
-            } finally {
-              setSearchLoading(false);
-            }
-          } else {
-            // If search is empty, refresh the paginated data
-            refresh();
-          }
-        }, 500); // 500ms debounce
-      };
-    })(),
-    [refresh]
-  );
+  } = useUsers(searchText);
 
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchText(value);
     debouncedSearch(value);
   };
 
@@ -456,12 +437,11 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
             </div>
             <div className="flex gap-4 items-center">
               <AntSearch
-                placeholder="Search users..."
-                value={searchText}
+                placeholder="Search by name, mobile, or shop..."
                 onChange={handleSearchChange}
                 className="w-full md:w-80 lg:w-96"
                 size="large"
-                loading={searchLoading}
+                prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
               />
               <Dropdown
                 menu={{

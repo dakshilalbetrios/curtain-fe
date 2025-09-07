@@ -27,6 +27,11 @@ export interface PaginationParams {
   limit: number;
 }
 
+// Search parameters
+export interface SearchParams extends PaginationParams {
+  search?: string;
+}
+
 // Collection Access Management Types
 export interface CollectionAccess {
   id: number;

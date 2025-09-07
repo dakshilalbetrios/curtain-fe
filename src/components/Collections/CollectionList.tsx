@@ -25,6 +25,7 @@ import {
   Upload as UploadIcon,
   Download,
   RefreshCw,
+  Search,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -44,7 +45,6 @@ const { Dragger } = Upload;
 
 export const CollectionList: React.FC = () => {
   const [searchText, setSearchText] = useState("");
-  const [searchLoading, setSearchLoading] = useState(false);
   const [bulkModalVisible, setBulkModalVisible] = useState(false);
   const [singleModalVisible, setSingleModalVisible] = useState(false);
   const [editingCollection, setEditingCollection] =
@@ -57,6 +57,20 @@ export const CollectionList: React.FC = () => {
 
   const isWholesaler = user?.role === "ADMIN" || user?.role === "SALES";
 
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId: number;
+      return (searchTerm: string) => {
+        clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => {
+          setSearchText(searchTerm);
+        }, 500); // 500ms debounce
+      };
+    })(),
+    []
+  );
+
   const {
     data: collections,
     loading,
@@ -66,44 +80,11 @@ export const CollectionList: React.FC = () => {
     total,
     refresh,
     loadMoreRef,
-  } = useCollections();
-
-  // Debounced search function
-  const debouncedSearch = useCallback(
-    (() => {
-      let timeoutId: number;
-      return (searchTerm: string) => {
-        clearTimeout(timeoutId);
-        timeoutId = window.setTimeout(async () => {
-          if (searchTerm.trim()) {
-            setSearchLoading(true);
-            try {
-              // For search, we'll use the existing search API
-              // This is a simplified approach - in a real app you might want to implement search pagination
-              const { collectionService } = await import("../../services");
-              await collectionService.searchCollections(searchTerm);
-              // Note: This will replace the paginated data with search results
-              // You might want to implement a separate search state for better UX
-            } catch (error) {
-              console.error("Failed to search collections:", error);
-              message.error("Failed to search collections. Please try again.");
-            } finally {
-              setSearchLoading(false);
-            }
-          } else {
-            // If search is empty, refresh the paginated data
-            refresh();
-          }
-        }, 500); // 500ms debounce
-      };
-    })(),
-    [refresh]
-  );
+  } = useCollections(searchText);
 
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchText(value);
     debouncedSearch(value);
   };
 
@@ -515,12 +496,11 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
             </div>
             <div className="flex gap-4 items-center">
               <AntSearch
-                placeholder="Search collections..."
-                value={searchText}
+                placeholder="Search collections by name..."
                 onChange={handleSearchChange}
                 className="w-full md:w-80 lg:w-96"
                 size="large"
-                loading={searchLoading}
+                prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
               />
               {isWholesaler && (
                 <Dropdown
@@ -1103,4 +1083,4 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
       </div>
     </MainLayout>
   );
-};
+};git 

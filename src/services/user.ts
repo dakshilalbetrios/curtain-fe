@@ -1,4 +1,4 @@
-import { BaseService, ApiResponse, PaginatedApiResponse, PaginationParams, CollectionAccess, CollectionAccessResponse, AddCollectionAccessRequest, UpdateCollectionAccessRequest } from './types';
+import { BaseService, ApiResponse, PaginatedApiResponse, PaginationParams, SearchParams, CollectionAccess, CollectionAccessResponse, AddCollectionAccessRequest, UpdateCollectionAccessRequest } from './types';
 
 // User interfaces
 export interface UserResponse {
@@ -126,6 +126,43 @@ export class UserService extends BaseService {
         throw error;
       }
       throw new Error('An unexpected error occurred while fetching users');
+    }
+  }
+
+  async searchUsersPaginated(params: SearchParams): Promise<PaginatedApiResponse<UserResponse[]>> {
+    try {
+      const queryParams = new URLSearchParams({
+        page: params.page.toString(),
+        limit: params.limit.toString(),
+      });
+
+      if (params.search) {
+        queryParams.append('name_like', params.search);
+        queryParams.append('mobile_no_like', params.search);
+        queryParams.append('shop_name_like', params.search);
+      }
+
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/users?${queryParams}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: PaginatedApiResponse<UserResponse[]> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while searching users');
     }
   }
 

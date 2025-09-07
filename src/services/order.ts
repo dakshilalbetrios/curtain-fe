@@ -1,4 +1,4 @@
-import { BaseService, ApiResponse, PaginatedApiResponse, PaginationParams } from './types';
+import { BaseService, ApiResponse, PaginatedApiResponse, PaginationParams, SearchParams } from './types';
 
 // Order interfaces
 export interface OrderItem {
@@ -105,6 +105,42 @@ export class OrderService extends BaseService {
         throw error;
       }
       throw new Error('An unexpected error occurred while fetching orders');
+    }
+  }
+
+  async searchOrdersPaginated(params: SearchParams): Promise<PaginatedApiResponse<OrderResponse[]>> {
+    try {
+      const queryParams = new URLSearchParams({
+        page: params.page.toString(),
+        limit: params.limit.toString(),
+      });
+
+      if (params.search) {
+        queryParams.append('id_like', params.search);
+        queryParams.append('courier_tracking_no_like', params.search);
+      }
+
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/orders?${queryParams}`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: PaginatedApiResponse<OrderResponse[]> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while searching orders');
     }
   }
 

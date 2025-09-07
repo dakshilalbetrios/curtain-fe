@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 export interface UseInfiniteScrollOptions<T> {
-    fetchFunction: (page: number, limit: number) => Promise<{
+    fetchFunction: (page: number, limit: number, search?: string) => Promise<{
         data: T[];
         pagination: {
             total: number;
@@ -13,6 +13,7 @@ export interface UseInfiniteScrollOptions<T> {
     limit?: number;
     enabled?: boolean;
     threshold?: number; // Distance from bottom to trigger load more
+    searchTerm?: string; // Search term for filtering
 }
 
 export interface UseInfiniteScrollReturn<T> {
@@ -35,6 +36,7 @@ export function useInfiniteScroll<T>({
     limit = 20,
     enabled = true,
     threshold = 100,
+    searchTerm = '',
 }: UseInfiniteScrollOptions<T>): UseInfiniteScrollReturn<T> {
     const [data, setData] = useState<T[]>([]);
     const [loading, setLoading] = useState(false);
@@ -48,51 +50,67 @@ export function useInfiniteScroll<T>({
     const observerRef = useRef<IntersectionObserver | null>(null);
     const loadMoreRef = useRef<HTMLDivElement | null>(null);
     const isInitialLoad = useRef(true);
+    const searchTermRef = useRef(searchTerm);
 
-    const fetchData = useCallback(async (page: number, isLoadMore = false) => {
-        if (!enabled) return;
-
-        try {
-            if (isLoadMore) {
-                setLoadingMore(true);
-            } else {
-                setLoading(true);
-            }
-            setError(null);
-
-            const response = await fetchFunction(page, limit);
-
-            if (isLoadMore) {
-                setData(prev => [...prev, ...response.data]);
-            } else {
-                setData(response.data);
-            }
-
-            setTotal(response.pagination.total);
-            setCurrentPage(response.pagination.page);
-            setTotalPages(response.pagination.pages);
-            setHasMore(response.pagination.page < response.pagination.pages);
-
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'An error occurred';
-            setError(errorMessage);
-        } finally {
-            setLoading(false);
-            setLoadingMore(false);
-        }
-    }, [fetchFunction, limit, enabled]);
 
     const loadMore = useCallback(() => {
         if (!loadingMore && hasMore && enabled) {
-            fetchData(currentPage + 1, true);
+            // Call fetchData directly without including it in dependencies
+            const loadMoreData = async () => {
+                try {
+                    setLoadingMore(true);
+                    setError(null);
+
+                    const response = await fetchFunction(currentPage + 1, limit, searchTermRef.current);
+
+                    setData(prev => [...prev, ...response.data]);
+                    setTotal(response.pagination.total);
+                    setCurrentPage(response.pagination.page);
+                    setTotalPages(response.pagination.pages);
+                    setHasMore(response.pagination.page < response.pagination.pages);
+
+                } catch (err) {
+                    const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+                    setError(errorMessage);
+                } finally {
+                    setLoadingMore(false);
+                }
+            };
+
+            loadMoreData();
         }
-    }, [loadingMore, hasMore, enabled, currentPage, fetchData]);
+    }, [loadingMore, hasMore, enabled, currentPage, fetchFunction, limit]);
 
     const refresh = useCallback(() => {
         setCurrentPage(1);
         setHasMore(true);
-        fetchData(1, false);
-    }, [fetchData]);
+
+        // Call fetchData directly without including it in dependencies
+        const loadData = async () => {
+            if (!enabled) return;
+
+            try {
+                setLoading(true);
+                setError(null);
+
+                const response = await fetchFunction(1, limit, searchTermRef.current);
+
+                setData(response.data);
+                setTotal(response.pagination.total);
+                setCurrentPage(response.pagination.page);
+                setTotalPages(response.pagination.pages);
+                setHasMore(response.pagination.page < response.pagination.pages);
+
+            } catch (err) {
+                const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+                setError(errorMessage);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, [enabled, fetchFunction, limit]);
 
     const reset = useCallback(() => {
         setData([]);
@@ -104,13 +122,50 @@ export function useInfiniteScroll<T>({
         isInitialLoad.current = true;
     }, []);
 
-    // Initial load
+    // Update search term ref when it changes
     useEffect(() => {
-        if (enabled && isInitialLoad.current) {
-            isInitialLoad.current = false;
-            fetchData(1, false);
+        searchTermRef.current = searchTerm;
+    }, [searchTerm]);
+
+    // Initial load and search term change
+    useEffect(() => {
+        if (enabled) {
+            if (isInitialLoad.current) {
+                isInitialLoad.current = false;
+            } else {
+                // Reset data when search term changes
+                setData([]);
+                setCurrentPage(1);
+                setHasMore(true);
+            }
+
+            // Call fetchData directly without including it in dependencies
+            const loadData = async () => {
+                if (!enabled) return;
+
+                try {
+                    setLoading(true);
+                    setError(null);
+
+                    const response = await fetchFunction(1, limit, searchTermRef.current);
+
+                    setData(response.data);
+                    setTotal(response.pagination.total);
+                    setCurrentPage(response.pagination.page);
+                    setTotalPages(response.pagination.pages);
+                    setHasMore(response.pagination.page < response.pagination.pages);
+
+                } catch (err) {
+                    const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+                    setError(errorMessage);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            loadData();
         }
-    }, [enabled, fetchData]);
+    }, [enabled, searchTerm, fetchFunction, limit]);
 
     // Intersection Observer for infinite scroll
     useEffect(() => {

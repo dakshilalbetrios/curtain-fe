@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
   Card,
   Typography,
@@ -9,8 +9,9 @@ import {
   Skeleton,
   Button,
   Spin,
+  Input,
 } from "antd";
-import { Package, RefreshCw } from "lucide-react";
+import { Package, RefreshCw, Search } from "lucide-react";
 import { MainLayout } from "../Layout/MainLayout";
 import { OrderDetailDrawer } from "./OrderDetailDrawer";
 import { useOrders } from "../../hooks/useOrders";
@@ -18,11 +19,27 @@ import moment from "moment";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
+const { Search: AntSearch } = Input;
 
 export const OrderList: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [searchText, setSearchText] = useState("");
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId: number;
+      return (searchTerm: string) => {
+        clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => {
+          setSearchText(searchTerm);
+        }, 500); // 500ms debounce
+      };
+    })(),
+    []
+  );
 
   const {
     data: orders,
@@ -33,7 +50,7 @@ export const OrderList: React.FC = () => {
     total,
     refresh,
     loadMoreRef,
-  } = useOrders();
+  } = useOrders(searchText);
 
   const filteredOrders = useMemo(() => {
     return orders.filter(
@@ -109,19 +126,28 @@ export const OrderList: React.FC = () => {
                 </Button>
               </div>
 
-              <Select
-                value={statusFilter}
-                onChange={setStatusFilter}
-                className="w-32 theme-input"
-                size="middle"
-              >
-                <Option value="ALL">All</Option>
-                <Option value="PENDING">Pending</Option>
-                <Option value="APPROVED">Approved</Option>
-                <Option value="SHIPPED">Shipped</Option>
-                <Option value="DELIVERED">Delivered</Option>
-                <Option value="CANCELLED">Cancelled</Option>
-              </Select>
+              <div className="flex gap-4 items-center">
+                <AntSearch
+                  placeholder="Search by Order ID or Tracking No..."
+                  onChange={(e) => debouncedSearch(e.target.value)}
+                  className="w-64 theme-input"
+                  size="middle"
+                  prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+                />
+                <Select
+                  value={statusFilter}
+                  onChange={setStatusFilter}
+                  className="w-32 theme-input"
+                  size="middle"
+                >
+                  <Option value="ALL">All</Option>
+                  <Option value="PENDING">Pending</Option>
+                  <Option value="APPROVED">Approved</Option>
+                  <Option value="SHIPPED">Shipped</Option>
+                  <Option value="DELIVERED">Delivered</Option>
+                  <Option value="CANCELLED">Cancelled</Option>
+                </Select>
+              </div>
             </div>
           </div>
 
