@@ -14,7 +14,6 @@ import { SetPassword } from "./components/Auth/SetPassword";
 import { Dashboard } from "./components/Dashboard/Dashboard";
 import { CollectionList } from "./components/Collections/CollectionList";
 import { CollectionDetail } from "./components/Collections/CollectionDetail";
-import { AddCollection } from "./components/Collections/AddCollection";
 import { OrderList } from "./components/Orders/OrderList";
 import { OrderDetail } from "./components/Orders/OrderDetail";
 import { OrderManagement } from "./components/Orders/OrderManagement";
@@ -73,22 +72,6 @@ const AppRoutes: React.FC = () => {
           element={
             <PrivateRoute>
               <CollectionList />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/collections/add"
-          element={
-            <PrivateRoute>
-              <AddCollection />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/collections/edit/:id"
-          element={
-            <PrivateRoute>
-              <AddCollection />
             </PrivateRoute>
           }
         />

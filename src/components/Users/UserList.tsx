@@ -433,7 +433,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
     <MainLayout title="Users">
       <div className="space-y-2">
         {/* Search and Add Button - Fixed Position */}
-        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4 -mx-4 px-4">
+        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4">
           <div className="flex gap-4 items-center justify-end">
             <AntSearch
               placeholder="Search users..."
