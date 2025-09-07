@@ -31,6 +31,8 @@ export interface OrderResponse {
   creator: any;
   updater: any;
   order_items: OrderItem[];
+  courier_tracking_no?: string;
+  courier_company?: string;
 }
 
 export interface CreateOrderRequest {
@@ -42,6 +44,8 @@ export interface CreateOrderRequest {
 
 export interface UpdateOrderStatusRequest {
   status: 'PENDING' | 'APPROVED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
+  courier_tracking_no?: string;
+  courier_company?: string;
 }
 
 
@@ -126,11 +130,11 @@ export class OrderService extends BaseService {
     }
   }
 
-  async updateOrderStatus(id: number, status: UpdateOrderStatusRequest['status']): Promise<OrderResponse> {
+  async updateOrderStatus(id: number, payload: UpdateOrderStatusRequest): Promise<OrderResponse> {
     try {
       const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/orders/${id}/status`, {
         method: 'PUT',
-        body: JSON.stringify({ status }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -154,7 +158,7 @@ export class OrderService extends BaseService {
   }
 
   async cancelOrder(id: number): Promise<OrderResponse> {
-    return this.updateOrderStatus(id, 'CANCELLED');
+    return this.updateOrderStatus(id, { status: 'CANCELLED' });
   }
 
   async getOrdersByStatus(status: OrderResponse['status']): Promise<OrderResponse[]> {

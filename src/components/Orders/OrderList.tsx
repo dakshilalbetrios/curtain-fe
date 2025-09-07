@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Card, Typography, Tag, Select, Row, Col, Skeleton } from "antd";
 import { Package } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { orderService, OrderResponse } from "../../services";
 import { MainLayout } from "../Layout/MainLayout";
+import { OrderDetailDrawer } from "./OrderDetailDrawer";
 import moment from "moment";
 
 const { Title, Text } = Typography;
@@ -13,7 +13,8 @@ export const OrderList: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [orders, setOrders] = useState<OrderResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -35,7 +36,23 @@ export const OrderList: React.FC = () => {
   );
 
   const handleOrderClick = (orderId: number) => {
-    navigate(`/orders/${orderId}`);
+    setSelectedOrderId(orderId);
+    setDrawerVisible(true);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerVisible(false);
+    setSelectedOrderId(null);
+  };
+
+  const handleOrderUpdate = async () => {
+    // Refresh orders list when order is updated
+    try {
+      const data = await orderService.getAllOrders();
+      setOrders(data);
+    } catch (error) {
+      console.error("Failed to refresh orders:", error);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -194,6 +211,14 @@ export const OrderList: React.FC = () => {
             </>
           )}
         </div>
+
+        {/* Order Detail Drawer */}
+        <OrderDetailDrawer
+          visible={drawerVisible}
+          onClose={handleDrawerClose}
+          orderId={selectedOrderId}
+          onOrderUpdate={handleOrderUpdate}
+        />
       </div>
     </MainLayout>
   );

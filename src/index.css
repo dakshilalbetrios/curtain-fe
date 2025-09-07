@@ -37,6 +37,33 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
 }
 
+/* Order Detail Drawer Styles */
+.order-detail-drawer .ant-drawer-content {
+  background-color: var(--bg-primary);
+}
+
+.order-detail-drawer .ant-drawer-header {
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.order-detail-drawer .ant-drawer-body {
+  background-color: var(--bg-primary);
+}
+
+/* Responsive drawer width */
+@media (max-width: 1024px) {
+  .order-detail-drawer .ant-drawer-content-wrapper {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .order-detail-drawer .ant-drawer-content-wrapper {
+    width: 50% !important;
+  }
+}
+
 /* Phone Input Styles */
 .phone-input-wrapper {
   display: flex;
