@@ -264,7 +264,6 @@ export const CollectionList: React.FC = () => {
     const headers = lines[0]
       .split(",")
       .map((header) => header.trim().replace(/\r/g, ""));
-    console.log("CSV Headers:", headers);
 
     const requiredHeaders = [
       "collection_name",
@@ -352,7 +351,6 @@ export const CollectionList: React.FC = () => {
       throw new Error("No valid collections found in CSV file");
     }
 
-    console.log("Parsed collections:", collections);
     return collections;
   };
 
@@ -366,16 +364,13 @@ export const CollectionList: React.FC = () => {
       }
 
       const csvContent = await readFileContent(file);
-      console.log("CSV Content:", csvContent);
 
       const collectionsData = parseCSVToCollections(csvContent);
-      console.log("Parsed Collections Data:", collectionsData);
 
       const { collectionService } = await import("../../services");
       const result = await collectionService.bulkUploadCollections(
         collectionsData
       );
-      console.log("Upload Result:", result);
 
       if (result.successCount > 0 && result.errorCount === 0) {
         message.success(
@@ -388,7 +383,7 @@ export const CollectionList: React.FC = () => {
         message.warning(
           `Created ${result.successCount} collections with ${result.errorCount} errors. Check console for details.`
         );
-        console.log("Errors:", result.errors);
+
         setBulkModalVisible(false);
         // Refresh collections list
         refresh();
@@ -396,7 +391,6 @@ export const CollectionList: React.FC = () => {
         message.error(
           "Failed to create any collections. Check console for details."
         );
-        console.log("Errors:", result.errors);
       }
     } catch (error) {
       console.error("CSV upload error:", error);

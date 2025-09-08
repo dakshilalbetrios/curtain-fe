@@ -436,14 +436,6 @@ export const OrderList: React.FC = () => {
                                     const orderDate = moment(order.created_at);
                                     const currentDate = moment();
 
-                                    // Check if the date is valid
-                                    if (!orderDate.isValid()) {
-                                      console.log(
-                                        `Invalid date for order ${order.id}: ${order.created_at}`
-                                      );
-                                      return null;
-                                    }
-
                                     const daysDiff = currentDate.diff(
                                       orderDate,
                                       "days"

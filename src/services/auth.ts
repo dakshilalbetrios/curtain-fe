@@ -48,26 +48,14 @@ export class AuthService extends BaseService {
         }),
       });
 
-      // Debug: Log response status and headers
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.log('Error response data:', errorData);
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
       const responseText = await response.text();
-      console.log('Raw response text:', responseText);
-
       const apiResponse: ApiResponse<LoginResponse> = JSON.parse(responseText);
 
-      // Debug logging
-      console.log('Login API Response:', apiResponse);
-      console.log('Response data:', apiResponse.data);
-      console.log('Response error:', apiResponse.error);
 
       if (apiResponse.error) {
         throw new Error(apiResponse.message);

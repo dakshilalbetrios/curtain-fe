@@ -163,7 +163,6 @@ export class OrderService extends BaseService {
           const overdueDate = new Date();
           overdueDate.setDate(overdueDate.getDate() - ORDER_DELIVERED_DAY);
 
-          console.log("overdueDate", overdueDate);
           queryParams.append('created_at_lt', overdueDate.toISOString());
           // For overdue orders, we want PENDING, APPROVED, or SHIPPED status
           queryParams.append('status_in', 'PENDING,APPROVED,SHIPPED');

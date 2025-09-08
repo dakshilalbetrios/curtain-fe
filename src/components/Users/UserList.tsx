@@ -216,7 +216,6 @@ export const RetailerList: React.FC = () => {
     const headers = lines[0]
       .split(",")
       .map((header) => header.trim().replace(/\r/g, ""));
-    console.log("CSV Headers:", headers);
 
     const requiredHeaders = [
       "name",
@@ -293,7 +292,6 @@ export const RetailerList: React.FC = () => {
       throw new Error("No valid users found in CSV file");
     }
 
-    console.log("Parsed users:", users);
     return users;
   };
 
@@ -307,10 +305,8 @@ export const RetailerList: React.FC = () => {
       }
 
       const csvContent = await readFileContent(file);
-      console.log("CSV Content:", csvContent);
 
       const usersData = parseCSVToUsers(csvContent);
-      console.log("Parsed Users Data:", usersData);
 
       // Create users one by one (since there's no bulk user creation API)
       let successCount = 0;
@@ -337,13 +333,12 @@ export const RetailerList: React.FC = () => {
         message.warning(
           `Created ${successCount} users with ${errorCount} errors. Check console for details.`
         );
-        console.log("Errors:", errors);
+
         setBulkModalVisible(false);
         // Refresh users list
         refresh();
       } else {
         message.error("Failed to create any users. Check console for details.");
-        console.log("Errors:", errors);
       }
     } catch (error) {
       console.error("CSV upload error:", error);

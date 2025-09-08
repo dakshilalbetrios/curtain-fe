@@ -105,14 +105,8 @@ export const Login: React.FC = () => {
     try {
       // Add +91 prefix for login
       const mobileWithPrefix = `91${mobileNo}`;
-      console.log(
-        "Login component: Attempting login with:",
-        mobileWithPrefix,
-        "password length:",
-        fullPassword.length
-      );
       const success = await login(mobileWithPrefix, fullPassword);
-      console.log("Login component: Login result:", success);
+
       if (success) {
         message.success("Login successful!");
         // Small delay to show success message before redirect

@@ -58,9 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     password: string
   ): Promise<boolean> => {
     try {
-      console.log("AuthContext: Attempting login with:", mobile_no);
       const userData = await authService.login(mobile_no, password);
-      console.log("AuthContext: Login successful, user data:", userData);
       setUser(userData);
       return true;
     } catch (error) {
