@@ -101,10 +101,6 @@ export const OrderList: React.FC = () => {
     }
   };
 
-  const formatOrderId = (id: number) => {
-    return `#${id.toString().padStart(6, "0")}`;
-  };
-
   // Skeleton loading component
   const OrderSkeleton = () => (
     <Card className="theme-card mb-4">
@@ -116,7 +112,7 @@ export const OrderList: React.FC = () => {
     <MainLayout title="">
       <div className="flex flex-col h-full min-h-0 max-h-full">
         {/* Fixed Header Section */}
-        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4 flex-shrink-0">
+        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 -mx-4 px-4 pb-6 flex-shrink-0">
           <div className="space-y-4">
             {/* Large Screen: All in one row */}
             <div className="hidden xl:flex xl:items-center xl:justify-between gap-4">
@@ -243,6 +239,7 @@ export const OrderList: React.FC = () => {
                   placeholder="Filter by status"
                 >
                   <Option value="ALL">All Status</Option>
+                  <Option value="OVER_DUE">Over Due</Option>
                   <Option value="PENDING">Pending</Option>
                   <Option value="APPROVED">Approved</Option>
                   <Option value="SHIPPED">Shipped</Option>
@@ -320,6 +317,7 @@ export const OrderList: React.FC = () => {
                   placeholder="Filter by status"
                 >
                   <Option value="ALL">All Status</Option>
+                  <Option value="OVER_DUE">Over Due</Option>
                   <Option value="PENDING">Pending</Option>
                   <Option value="APPROVED">Approved</Option>
                   <Option value="SHIPPED">Shipped</Option>
@@ -343,7 +341,7 @@ export const OrderList: React.FC = () => {
         </div>
 
         {/* Scrollable Content Area */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden pt-4 min-h-0 max-h-full -mr-4 pr-4">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden pt-4 min-h-0 max-h-full -mr-4 pr-4 pb-16 lg:pb-6">
           {error && (
             <Card className="theme-card text-center py-8 mb-4">
               <Title level={4} className="!theme-text-red-500 !mb-2">
@@ -399,7 +397,7 @@ export const OrderList: React.FC = () => {
                                   level={5}
                                   className="!theme-text-primary !mb-1"
                                 >
-                                  Order {formatOrderId(order.id)}
+                                  Order #{order.id}
                                 </Title>
                                 <Text className="theme-text-secondary text-sm">
                                   {moment(order.created_at).format(

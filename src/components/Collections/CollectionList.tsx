@@ -554,7 +554,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
         </div>
 
         {/* Scrollable Content Area */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden pt-4 min-h-0 max-h-full -mr-4 pr-4">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden pt-4 min-h-0 max-h-full -mr-4 pr-4 pb-16 lg:pb-6">
           {/* Collections Grid */}
           {error && (
             <Card className="theme-card text-center py-8 mb-4">
@@ -743,7 +743,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                   return false; // Prevent default upload
                 }}
                 showUploadList={false}
-                className="theme-input hover:border-purple-500"
+                className="theme-input !border-none hover:border-purple-500"
               >
                 <div className="p-6 text-center">
                   <UploadIcon className="w-12 h-12 theme-text-tertiary mx-auto mb-4" />
