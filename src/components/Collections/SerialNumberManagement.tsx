@@ -315,7 +315,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                               )
                             }
                             disabled={(quantities[srNo.id] || 0) <= 0}
-                            className="w-10 h-10 p-0 flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
+                            className="w-10 h-10 p-0 rounded-full flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
                             style={{ minWidth: "40px", minHeight: "40px" }}
                           />
                           <InputNumber
@@ -326,7 +326,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                             onChange={(value) =>
                               handleQuantityChange(srNo.id, value)
                             }
-                            className="flex-1 theme-input"
+                            className="flex-1 theme-input !align-center !justify-center !border-none"
                             controls={false}
                             style={{
                               height: "40px",
@@ -351,7 +351,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                               (quantities[srNo.id] || 0) >=
                               parseFloat(srNo.current_stock)
                             }
-                            className="w-10 h-10 p-0 flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
+                            className="w-10 h-10 p-0 rounded-full flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
                             style={{ minWidth: "40px", minHeight: "40px" }}
                           />
                         </div>
