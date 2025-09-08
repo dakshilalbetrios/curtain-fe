@@ -1,4 +1,5 @@
 import { BaseService, ApiResponse, PaginatedApiResponse, PaginationParams, SearchParams, OrderFilterParams } from './types';
+import { ORDER_DELIVERED_DAY } from '../constants';
 
 // Order interfaces
 export interface OrderItem {
@@ -157,7 +158,18 @@ export class OrderService extends BaseService {
       }
 
       if (params.status_in && params.status_in !== 'ALL') {
-        queryParams.append('status_in', params.status_in);
+        if (params.status_in === 'OVER_DUE') {
+          // Calculate the date that is ORDER_DELIVERED_DAY days ago
+          const overdueDate = new Date();
+          overdueDate.setDate(overdueDate.getDate() - ORDER_DELIVERED_DAY);
+
+          console.log("overdueDate", overdueDate);
+          queryParams.append('created_at_lt', overdueDate.toISOString());
+          // For overdue orders, we want PENDING, APPROVED, or SHIPPED status
+          queryParams.append('status_in', 'PENDING,APPROVED,SHIPPED');
+        } else {
+          queryParams.append('status_in', params.status_in);
+        }
       }
 
       const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/orders?${queryParams}`, {

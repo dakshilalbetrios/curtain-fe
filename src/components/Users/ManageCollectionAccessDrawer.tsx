@@ -336,7 +336,7 @@ export const ManageCollectionAccessDrawer: React.FC<
                     {user.name}
                   </Title>
                   <Text className="theme-text-secondary">
-                    {user.shop_name} • {user.mobile_no}
+                    {user.shop_name} +{user.mobile_no}
                   </Text>
                   <div className="mt-1">
                     <Tag color={user.status === "ACTIVE" ? "green" : "red"}>

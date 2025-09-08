@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Card,
   Typography,
@@ -16,6 +16,7 @@ import { MainLayout } from "../Layout/MainLayout";
 import { OrderDetailDrawer } from "./OrderDetailDrawer";
 import { useOrdersFiltered } from "../../hooks/useOrders";
 import { useSearchParams } from "react-router-dom";
+import { ORDER_DELIVERED_DAY } from "../../constants";
 import moment from "moment";
 
 const { Title, Text } = Typography;
@@ -23,7 +24,7 @@ const { Option } = Select;
 const { Search: AntSearch } = Input;
 
 export const OrderList: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [statusFilter, setStatusFilter] = useState<string>(
     searchParams.get("status_in") || "ALL"
   );
@@ -169,6 +170,7 @@ export const OrderList: React.FC = () => {
                     placeholder="Filter by status"
                   >
                     <Option value="ALL">All Status</Option>
+                    <Option value="OVER_DUE">Over Due</Option>
                     <Option value="PENDING">Pending</Option>
                     <Option value="APPROVED">Approved</Option>
                     <Option value="SHIPPED">Shipped</Option>
@@ -424,13 +426,42 @@ export const OrderList: React.FC = () => {
                                       {order.order_items.length > 1 ? "s" : ""}
                                     </Text>
                                   </div>
-                                  {moment().diff(
-                                    moment(order.created_at),
-                                    "days"
-                                  ) > 4 &&
-                                    order.status === "PENDING" && (
-                                      <Tag color="red">Over Due</Tag>
-                                    )}
+                                  {(() => {
+                                    // If we're filtering by OVER_DUE, show the tag for all orders since they're already filtered
+                                    // if (statusFilter === "OVER_DUE") {
+                                    //   return <Tag color="red">Over Due</Tag>;
+                                    // }
+
+                                    // Otherwise, calculate if the order is overdue
+                                    const orderDate = moment(order.created_at);
+                                    const currentDate = moment();
+
+                                    // Check if the date is valid
+                                    if (!orderDate.isValid()) {
+                                      console.log(
+                                        `Invalid date for order ${order.id}: ${order.created_at}`
+                                      );
+                                      return null;
+                                    }
+
+                                    const daysDiff = currentDate.diff(
+                                      orderDate,
+                                      "days"
+                                    );
+                                    const isOverdue =
+                                      daysDiff >= ORDER_DELIVERED_DAY;
+                                    const isEligibleStatus =
+                                      order.status === "PENDING" ||
+                                      order.status === "APPROVED" ||
+                                      order.status === "SHIPPED";
+
+                                    return (
+                                      isOverdue &&
+                                      isEligibleStatus && (
+                                        <Tag color="red">Over Due</Tag>
+                                      )
+                                    );
+                                  })()}
                                 </div>
                               )}
 
