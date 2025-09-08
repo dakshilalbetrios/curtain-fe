@@ -65,15 +65,14 @@ export const Sidebar: React.FC = () => {
       case "collections":
         return (
           currentPath === "/collections" ||
-          currentPath.startsWith("/collections/") ||
-          currentPath === "/cart"
+          currentPath.startsWith("/collections/")
         );
 
       case "orders":
         return currentPath === "/orders" || currentPath.startsWith("/orders/");
 
       case "new-order":
-        return currentPath === "/new-order";
+        return currentPath === "/cart" || currentPath.startsWith("/new-order/");
 
       case "users":
         return currentPath === "/users" || currentPath.startsWith("/users/");

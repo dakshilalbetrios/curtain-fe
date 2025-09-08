@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   Typography,
   Button,
   InputNumber,
-  Space,
   message,
   Empty,
   Divider,
@@ -14,6 +13,7 @@ import { useCart } from "../../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { orderService } from "../../services";
 import { MainLayout } from "../Layout/MainLayout";
+import { NewOrderModal } from "../Orders/NewOrderModal";
 
 const { Title, Text } = Typography;
 
@@ -26,6 +26,7 @@ export const Cart: React.FC = () => {
     getTotalQuantity,
   } = useCart();
   const navigate = useNavigate();
+  const [isNewOrderModalVisible, setIsNewOrderModalVisible] = useState(false);
 
   const handlePlaceOrder = async () => {
     if (cartItems.length === 0) {
@@ -67,15 +68,22 @@ export const Cart: React.FC = () => {
               <Text className="theme-text-secondary">Your cart is empty</Text>
             }
           >
-            <Button
-              type="primary"
-              onClick={() => navigate("/collections")}
-              className="bg-purple-600 hover:bg-purple-700 border-purple-600"
-            >
-              Browse Collections
-            </Button>
+            <div className="space-y-2">
+              <Button
+                type="primary"
+                icon={<Plus className="w-4 h-4" />}
+                onClick={() => setIsNewOrderModalVisible(true)}
+                className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+              >
+                Add Items to Cart
+              </Button>
+            </div>
           </Empty>
         </Card>
+        <NewOrderModal
+          visible={isNewOrderModalVisible}
+          onClose={() => setIsNewOrderModalVisible(false)}
+        />
       </MainLayout>
     );
   }
@@ -84,9 +92,19 @@ export const Cart: React.FC = () => {
     <MainLayout title="Cart" showBack={true} showCart={false}>
       <div className="space-y-4">
         {/* Items Header */}
-        <Title level={4} className="!theme-text-primary !mb-4">
-          Items
-        </Title>
+        <div className="flex items-center justify-between">
+          <Title level={4} className="!theme-text-primary !mb-0">
+            Items
+          </Title>
+          <Button
+            type="primary"
+            icon={<Plus className="w-4 h-4" />}
+            onClick={() => setIsNewOrderModalVisible(true)}
+            className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+          >
+            Add Items
+          </Button>
+        </div>
 
         {/* Cart Items */}
         <div className="space-y-4">
@@ -94,9 +112,6 @@ export const Cart: React.FC = () => {
             <Card key={item.collection_sr_no_id} className="theme-card">
               <div className="flex items-center space-x-4">
                 {/* Item Image Placeholder */}
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Package className="w-8 h-8 text-white" />
-                </div>
 
                 {/* Item Details */}
                 <div className="flex-1">
@@ -105,12 +120,14 @@ export const Cart: React.FC = () => {
                       <Title level={5} className="!theme-text-primary !mb-1">
                         {item.sr_no}
                       </Title>
-                      <Text className="theme-text-secondary text-sm">
-                        {item.collection_name}
-                      </Text>
-                      <Text className="theme-text-tertiary text-sm">
-                        {item.quantity} {item.unit}
-                      </Text>
+                      <div className="flex items-center space-x-2">
+                        <Text className="theme-text-secondary text-sm">
+                          {item.collection_name}
+                        </Text>
+                        <Text className="theme-text-tertiary text-sm">
+                          {item.quantity} {item.unit}
+                        </Text>
+                      </div>
                     </div>
                     <Button
                       type="text"
@@ -132,7 +149,7 @@ export const Cart: React.FC = () => {
                         )
                       }
                       disabled={item.quantity <= 0.5}
-                      className="w-10 h-10 p-0 flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
+                      className="w-10 h-10 rounded-full p-0 flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
                       style={{ minWidth: "40px", minHeight: "40px" }}
                     />
                     <InputNumber
@@ -163,7 +180,7 @@ export const Cart: React.FC = () => {
                         )
                       }
                       disabled={item.quantity >= item.available_stock}
-                      className="w-10 h-10 p-0 flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
+                      className="w-10 h-10 rounded-full p-0 flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
                       style={{ minWidth: "40px", minHeight: "40px" }}
                     />
                   </div>
@@ -215,6 +232,12 @@ export const Cart: React.FC = () => {
           </div>
         </Card>
       </div>
+
+      {/* New Order Modal */}
+      <NewOrderModal
+        visible={isNewOrderModalVisible}
+        onClose={() => setIsNewOrderModalVisible(false)}
+      />
     </MainLayout>
   );
 };
