@@ -466,7 +466,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                   onChange={handleSearchChange}
                   className="flex-1 min-w-0"
                   size="large"
-                  prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+                  allowClear
                 />
                 <Dropdown
                   menu={{

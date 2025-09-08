@@ -26,6 +26,7 @@ import {
   Download,
   RefreshCw,
   Search,
+  X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -511,7 +512,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                   onChange={handleSearchChange}
                   className="flex-1 min-w-0"
                   size="large"
-                  prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+                  allowClear
                 />
                 {isWholesaler && (
                   <Dropdown

@@ -331,6 +331,29 @@ body {
 .theme-input {
   @apply theme-bg-tertiary theme-border-secondary theme-text-primary;
   border: 1px solid var(--border-secondary);
+  background-color: #ffffff !important;
+}
+
+/* Remove double borders from select components */
+.ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.ant-select {
+  border: 1px solid #e0e0e0 !important;
+  background-color: #ffffff !important;
+  border-radius: 6px !important;
+}
+
+.ant-select:hover {
+  border-color: #c0c0c0 !important;
+}
+
+.ant-select-focused {
+  border-color: #d0d0d0 !important;
+  box-shadow: 0 0 0 2px rgba(208, 208, 208, 0.2) !important;
 }
 
 .theme-input:focus {

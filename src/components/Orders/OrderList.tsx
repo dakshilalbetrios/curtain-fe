@@ -160,7 +160,7 @@ export const OrderList: React.FC = () => {
                     onChange={(e) => debouncedSearch(e.target.value)}
                     className="w-80"
                     size="large"
-                    prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+                    allowClear
                   />
                   <Select
                     value={statusFilter}
@@ -234,7 +234,7 @@ export const OrderList: React.FC = () => {
                     onChange={(e) => debouncedSearch(e.target.value)}
                     className="flex-1 min-w-0"
                     size="large"
-                    prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+                    allowClear
                   />
                   <Select
                     value={statusFilter}
@@ -307,7 +307,7 @@ export const OrderList: React.FC = () => {
                     onChange={(e) => debouncedSearch(e.target.value)}
                     className="w-full"
                     size="large"
-                    prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+                    allowClear
                   />
                 </div>
 
