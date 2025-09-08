@@ -574,7 +574,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
 
           {loading && collections.length === 0 ? (
             <Row gutter={[16, 16]}>
-              {[...Array(6)].map((_, index) => (
+              {[...Array(20)].map((_, index) => (
                 <CollectionSkeleton key={index} />
               ))}
             </Row>

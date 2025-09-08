@@ -151,10 +151,6 @@ export const OrderDetailDrawer: React.FC<OrderDetailDrawerProps> = ({
     return true;
   };
 
-  const formatOrderId = (id: number) => {
-    return `#${id.toString().padStart(6, "0")}`;
-  };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case "PENDING":
@@ -484,7 +480,7 @@ export const OrderDetailDrawer: React.FC<OrderDetailDrawerProps> = ({
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <Title level={3} className="!theme-text-primary !mb-1">
-                      Order {formatOrderId(order.id)}
+                      Order #{order.id}
                     </Title>
                     <Text className="theme-text-secondary">
                       Placed on{" "}

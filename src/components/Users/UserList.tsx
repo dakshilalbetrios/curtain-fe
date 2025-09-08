@@ -524,7 +524,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
 
           {loading && users.length === 0 ? (
             <Row gutter={[16, 16]}>
-              {[...Array(6)].map((_, index) => (
+              {[...Array(15)].map((_, index) => (
                 <RetailerSkeleton key={index} />
               ))}
             </Row>

@@ -362,7 +362,7 @@ export const OrderList: React.FC = () => {
 
           {loading && orders.length === 0 ? (
             <Row gutter={[16, 16]}>
-              {[...Array(6)].map((_, index) => (
+              {[...Array(20)].map((_, index) => (
                 <Col xs={24} sm={12} lg={8} xl={6} key={index}>
                   <OrderSkeleton />
                 </Col>
