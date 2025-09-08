@@ -43,17 +43,17 @@ export const Header: React.FC<HeaderProps> = ({
 
     switch (location.pathname) {
       case "/dashboard":
-        return "Dashboard";
+        return "";
       case "/collections":
-        return "Collections";
+        return "";
       case "/orders":
-        return "My Orders";
+        return "";
       case "/users":
-        return "Users";
+        return "";
       case "/profile":
-        return "Profile";
+        return "";
       case "/cart":
-        return "Cart";
+        return "";
       default:
         return "Dashboard";
     }
@@ -71,6 +71,12 @@ export const Header: React.FC<HeaderProps> = ({
               className="theme-text-primary hover:theme-bg-tertiary border-0"
             />
           )}
+
+          {/* YD Logo */}
+          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/25">
+            <span className="text-white font-bold text-sm">YD</span>
+          </div>
+
           <Title level={4} className="!theme-text-primary !mb-0">
             {getPageTitle()}
           </Title>

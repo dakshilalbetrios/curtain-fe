@@ -113,7 +113,7 @@ export const OrderList: React.FC = () => {
   );
 
   return (
-    <MainLayout title="My Orders">
+    <MainLayout title="">
       <div className="space-y-4">
         {/* Order History */}
         <div>

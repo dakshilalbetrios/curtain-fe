@@ -91,7 +91,24 @@ export const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="h-full theme-bg-secondary pt-[4rem]">
+    <div className="h-full theme-bg-secondary">
+      {/* Logo Section - Only visible on small devices */}
+      <div className="block px-4 py-2 ">
+        <div className="flex items-center">
+          {/* Circular YD Logo */}
+          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mr-3 shadow-lg shadow-purple-500/25">
+            <span className="text-white font-bold text-lg">YD</span>
+          </div>
+          {/* Company Name */}
+          <div>
+            <h1 className="text-lg font-bold theme-text-primary">
+              Yamini Drape
+            </h1>
+            <p className="text-xs theme-text-tertiary">Curtain Solutions</p>
+          </div>
+        </div>
+      </div>
+
       <div className="px-4 py-2">
         {menuItems.map((item) => {
           const Icon = item.icon;

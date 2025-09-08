@@ -467,7 +467,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
   );
 
   return (
-    <MainLayout title="Collections" showCart={true}>
+    <MainLayout title="" showCart={true}>
       <div className="space-y-2">
         {/* Enhanced Header Section */}
         <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4">

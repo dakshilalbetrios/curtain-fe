@@ -421,7 +421,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
   );
 
   return (
-    <MainLayout title="Users">
+    <MainLayout title="">
       <div className="space-y-2">
         {/* Enhanced Header Section */}
         <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4">
