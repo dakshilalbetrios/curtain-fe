@@ -422,9 +422,9 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
 
   return (
     <MainLayout title="">
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full min-h-0 max-h-full">
         {/* Fixed Header Section */}
-        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4">
+        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4 flex-shrink-0">
           <div className="space-y-4">
             {/* Main Header Row */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -504,7 +504,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
         </div>
 
         {/* Scrollable Content Area */}
-        <div className="flex-1 overflow-y-auto pt-4">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden pt-4 min-h-0 max-h-full -mr-4 pr-4">
           {/* Retailers Grid */}
           {error && (
             <Card className="theme-card text-center py-8 mb-4">

@@ -35,8 +35,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         <Header title={title} showBack={showBack} showCart={showCart} />
 
         {/* Main Content */}
-        <Content className="flex-1 theme-bg-primary w-full overflow-hidden">
-          <div className="h-full w-full px-4 py-4">{children}</div>
+        <Content className="flex-1 theme-bg-primary w-full overflow-hidden min-h-0">
+          <div className="h-full w-full px-4 py-4 min-h-0 max-h-full overflow-x-hidden">
+            {children}
+          </div>
         </Content>
 
         {/* Mobile Bottom Navigation */}
