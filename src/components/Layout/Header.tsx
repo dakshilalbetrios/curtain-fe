@@ -78,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           <Title level={4} className="!theme-text-primary !mb-0">
-            {getPageTitle()}
+            {title}
           </Title>
         </div>
 
