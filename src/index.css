@@ -356,6 +356,41 @@ body {
   box-shadow: 0 0 0 2px rgba(208, 208, 208, 0.2) !important;
 }
 
+/* Remove hover borders from all buttons globally */
+.ant-btn:hover {
+  border-color: inherit !important;
+}
+
+.ant-btn:focus {
+  border-color: inherit !important;
+  box-shadow: none !important;
+}
+
+.ant-btn:active {
+  border-color: inherit !important;
+}
+
+/* Remove hover borders from specific button types */
+.ant-btn-primary:hover {
+  border-color: inherit !important;
+}
+
+.ant-btn-default:hover {
+  border-color: inherit !important;
+}
+
+.ant-btn-dashed:hover {
+  border-color: inherit !important;
+}
+
+.ant-btn-text:hover {
+  border-color: transparent !important;
+}
+
+.ant-btn-link:hover {
+  border-color: transparent !important;
+}
+
 .theme-input:focus {
   border-color: #8B5CF6;
   box-shadow: 0 0 0 2px rgb(139 92 246 / 0.25);
