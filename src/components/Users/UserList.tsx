@@ -428,64 +428,82 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
   return (
     <MainLayout title="Users">
       <div className="space-y-2">
-        {/* Search and Add Button - Fixed Position */}
-        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4">
-          <div className="flex gap-4 items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Title level={4} className="!theme-text-primary !mb-0">
-                Users
-              </Title>
-              <Tag color="green" className="px-2 py-1 text-sm font-medium">
-                {total}
-              </Tag>
-              <Button
-                icon={<RefreshCw className="w-4 h-4" />}
-                onClick={refresh}
-                loading={loading}
-                size="small"
-                className="theme-button"
-              >
-                Refresh
-              </Button>
-            </div>
-            <div className="flex gap-4 items-center">
-              <AntSearch
-                placeholder="Search by name, mobile, or shop..."
-                onChange={handleSearchChange}
-                className="w-full md:w-80 lg:w-96"
-                size="large"
-                prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
-              />
-              <Dropdown
-                menu={{
-                  items: [
-                    {
-                      key: "single",
-                      label: "Single User",
-                      icon: <Plus className="w-4 h-4" />,
-                      onClick: handleAddRetailer,
-                    },
-                    {
-                      key: "bulk",
-                      label: "Bulk User",
-                      icon: <UploadIcon className="w-4 h-4" />,
-                      onClick: handleBulkUser,
-                    },
-                  ],
-                }}
-                trigger={["click"]}
-                placement="bottomRight"
-              >
-                <Button
-                  type="primary"
+        {/* Enhanced Header Section */}
+        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4">
+          <div className="space-y-4">
+            {/* Main Header Row */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Left Section - Title and Stats */}
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-3">
+                  <div>
+                    <Title
+                      level={3}
+                      className="!theme-text-primary !mb-0 !text-2xl"
+                    >
+                      Users
+                    </Title>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Tag
+                    color="green"
+                    className="px-3 py-1 text-sm font-medium rounded-full"
+                  >
+                    {total} Total
+                  </Tag>
+                  <Button
+                    icon={<RefreshCw className="w-4 h-4" />}
+                    onClick={refresh}
+                    loading={loading}
+                    size="small"
+                    className="theme-button border theme-border-primary hover:theme-bg-tertiary"
+                  >
+                    Refresh
+                  </Button>
+                </div>
+              </div>
+
+              {/* Right Section - Search and Actions */}
+              <div className="flex flex-row gap-3 items-center">
+                <AntSearch
+                  placeholder="Search by name, mobile, or shop..."
+                  onChange={handleSearchChange}
+                  className="flex-1 min-w-0"
                   size="large"
-                  className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+                  prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+                />
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: "single",
+                        label: "Single User",
+                        icon: <Plus className="w-4 h-4" />,
+                        onClick: handleAddRetailer,
+                      },
+                      {
+                        key: "bulk",
+                        label: "Bulk User",
+                        icon: <UploadIcon className="w-4 h-4" />,
+                        onClick: handleBulkUser,
+                      },
+                    ],
+                  }}
+                  trigger={["click"]}
+                  placement="bottomRight"
                 >
-                  <Plus className="w-4 h-4" />
-                  <span className="hidden sm:inline ml-2">Add User</span>
-                  <ChevronDown className="w-4 h-4 ml-1" />
-                </Button>
-              </Dropdown>
+                  <Button
+                    type="primary"
+                    size="large"
+                    className="bg-purple-600 hover:bg-purple-700 border-purple-600 shadow-lg hover:shadow-xl transition-all duration-200"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span className="hidden sm:inline ml-2">Add User</span>
+                    <ChevronDown className="w-4 h-4 ml-1" />
+                  </Button>
+                </Dropdown>
+              </div>
             </div>
           </div>
         </div>

@@ -474,68 +474,86 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
   return (
     <MainLayout title="Collections" showCart={true}>
       <div className="space-y-2">
-        {/* Search and Add Button - Fixed Position */}
-        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4">
-          <div className="flex gap-4 items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Title level={4} className="!theme-text-primary !mb-0">
-                Collections
-              </Title>
-              <Tag color="blue" className="px-2 py-1 text-sm font-medium">
-                {total}
-              </Tag>
-              <Button
-                icon={<RefreshCw className="w-4 h-4" />}
-                onClick={refresh}
-                loading={loading}
-                size="small"
-                className="theme-button"
-              >
-                Refresh
-              </Button>
-            </div>
-            <div className="flex gap-4 items-center">
-              <AntSearch
-                placeholder="Search collections by name..."
-                onChange={handleSearchChange}
-                className="w-full md:w-80 lg:w-96"
-                size="large"
-                prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
-              />
-              {isWholesaler && (
-                <Dropdown
-                  menu={{
-                    items: [
-                      {
-                        key: "single",
-                        label: "Single Collection",
-                        icon: <Plus className="w-4 h-4" />,
-                        onClick: handleAddCollection,
-                      },
-                      {
-                        key: "bulk",
-                        label: "Bulk Collection",
-                        icon: <UploadIcon className="w-4 h-4" />,
-                        onClick: handleBulkCollection,
-                      },
-                    ],
-                  }}
-                  trigger={["click"]}
-                  placement="bottomRight"
-                >
-                  <Button
-                    type="primary"
-                    size="large"
-                    className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+        {/* Enhanced Header Section */}
+        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4">
+          <div className="space-y-4">
+            {/* Main Header Row */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Left Section - Title and Stats */}
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-3">
+                  <div>
+                    <Title
+                      level={3}
+                      className="!theme-text-primary !mb-0 !text-2xl"
+                    >
+                      Collections
+                    </Title>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Tag
+                    color="blue"
+                    className="px-3 py-1 text-sm font-medium rounded-full"
                   >
-                    <Plus className="w-4 h-4" />
-                    <span className="hidden sm:inline ml-2">
-                      Add Collection
-                    </span>
-                    <ChevronDown className="w-4 h-4 ml-1" />
+                    {total} Total
+                  </Tag>
+                  <Button
+                    icon={<RefreshCw className="w-4 h-4" />}
+                    onClick={refresh}
+                    loading={loading}
+                    size="small"
+                    className="theme-button border theme-border-primary hover:theme-bg-tertiary"
+                  >
+                    Refresh
                   </Button>
-                </Dropdown>
-              )}
+                </div>
+              </div>
+
+              {/* Right Section - Search and Actions */}
+              <div className="flex flex-row gap-3 items-center">
+                <AntSearch
+                  placeholder="Search collections by name..."
+                  onChange={handleSearchChange}
+                  className="flex-1 min-w-0"
+                  size="large"
+                  prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+                />
+                {isWholesaler && (
+                  <Dropdown
+                    menu={{
+                      items: [
+                        {
+                          key: "single",
+                          label: "Single Collection",
+                          icon: <Plus className="w-4 h-4" />,
+                          onClick: handleAddCollection,
+                        },
+                        {
+                          key: "bulk",
+                          label: "Bulk Collection",
+                          icon: <UploadIcon className="w-4 h-4" />,
+                          onClick: handleBulkCollection,
+                        },
+                      ],
+                    }}
+                    trigger={["click"]}
+                    placement="bottomRight"
+                  >
+                    <Button
+                      type="primary"
+                      size="large"
+                      className="bg-purple-600 hover:bg-purple-700 border-purple-600 shadow-lg hover:shadow-xl transition-all duration-200"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span className="hidden sm:inline ml-2">
+                        Add Collection
+                      </span>
+                      <ChevronDown className="w-4 h-4 ml-1" />
+                    </Button>
+                  </Dropdown>
+                )}
+              </div>
             </div>
           </div>
         </div>

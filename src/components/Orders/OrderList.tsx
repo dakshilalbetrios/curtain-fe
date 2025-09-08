@@ -11,7 +11,7 @@ import {
   Spin,
   Input,
 } from "antd";
-import { Package, RefreshCw, Search, Truck } from "lucide-react";
+import { Package, RefreshCw, Search, Truck, ShoppingBag } from "lucide-react";
 import { MainLayout } from "../Layout/MainLayout";
 import { OrderDetailDrawer } from "./OrderDetailDrawer";
 import { useOrders } from "../../hooks/useOrders";
@@ -106,47 +106,64 @@ export const OrderList: React.FC = () => {
       <div className="space-y-4">
         {/* Order History */}
         <div>
-          <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4 mb-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-3">
-                <Title level={4} className="!theme-text-primary !mb-0">
-                  Orders
-                </Title>
-                <Tag color="green" className="px-2 py-1 text-sm font-medium">
-                  {total}
-                </Tag>
-                <Button
-                  icon={<RefreshCw className="w-4 h-4" />}
-                  onClick={refresh}
-                  loading={loading}
-                  size="small"
-                  className="theme-button"
-                >
-                  Refresh
-                </Button>
-              </div>
+          <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4 mb-4">
+            <div className="space-y-4">
+              {/* Main Header Row */}
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                {/* Left Section - Title and Stats */}
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-3">
+                    <div>
+                      <Title
+                        level={3}
+                        className="!theme-text-primary !mb-0 !text-2xl"
+                      >
+                        Orders
+                      </Title>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Tag
+                      color="green"
+                      className="px-3 py-1 text-sm font-medium rounded-full"
+                    >
+                      {total} Total
+                    </Tag>
+                    <Button
+                      icon={<RefreshCw className="w-4 h-4" />}
+                      onClick={refresh}
+                      loading={loading}
+                      size="small"
+                      className="theme-button border theme-border-primary hover:theme-bg-tertiary"
+                    >
+                      Refresh
+                    </Button>
+                  </div>
+                </div>
 
-              <div className="flex gap-4 items-center">
-                <AntSearch
-                  placeholder="Search by Order ID or Tracking No..."
-                  onChange={(e) => debouncedSearch(e.target.value)}
-                  className="w-64 theme-input"
-                  size="middle"
-                  prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
-                />
-                <Select
-                  value={statusFilter}
-                  onChange={setStatusFilter}
-                  className="w-32 theme-input"
-                  size="middle"
-                >
-                  <Option value="ALL">All</Option>
-                  <Option value="PENDING">Pending</Option>
-                  <Option value="APPROVED">Approved</Option>
-                  <Option value="SHIPPED">Shipped</Option>
-                  <Option value="DELIVERED">Delivered</Option>
-                  <Option value="CANCELLED">Cancelled</Option>
-                </Select>
+                {/* Right Section - Search and Filters */}
+                <div className="flex flex-row gap-3 items-center">
+                  <AntSearch
+                    placeholder="Search by Order ID or Tracking No..."
+                    onChange={(e) => debouncedSearch(e.target.value)}
+                    className="flex-1 min-w-0"
+                    size="large"
+                    prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+                  />
+                  <Select
+                    value={statusFilter}
+                    onChange={setStatusFilter}
+                    className="w-24 theme-input flex-shrink-0"
+                    size="large"
+                  >
+                    <Option value="ALL">All</Option>
+                    <Option value="PENDING">Pending</Option>
+                    <Option value="APPROVED">Approved</Option>
+                    <Option value="SHIPPED">Shipped</Option>
+                    <Option value="DELIVERED">Delivered</Option>
+                    <Option value="CANCELLED">Cancelled</Option>
+                  </Select>
+                </div>
               </div>
             </div>
           </div>
