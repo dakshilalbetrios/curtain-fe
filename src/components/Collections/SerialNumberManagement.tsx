@@ -305,7 +305,7 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                         <Text className="theme-text-secondary text-sm font-medium">
                           Quantity:
                         </Text>
-                        <Space.Compact className="w-full">
+                        <div className="flex items-center space-x-2">
                           <Button
                             icon={<Minus className="w-4 h-4" />}
                             onClick={() =>
@@ -315,7 +315,8 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                               )
                             }
                             disabled={(quantities[srNo.id] || 0) <= 0}
-                            className="theme-button h-10"
+                            className="w-10 h-10 p-0 flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
+                            style={{ minWidth: "40px", minHeight: "40px" }}
                           />
                           <InputNumber
                             min={0}
@@ -325,8 +326,15 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                             onChange={(value) =>
                               handleQuantityChange(srNo.id, value)
                             }
-                            className="flex-1 text-center theme-input h-10"
+                            className="flex-1 theme-input"
                             controls={false}
+                            style={{
+                              height: "40px",
+                              textAlign: "center",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
                           />
                           <Button
                             icon={<Plus className="w-4 h-4" />}
@@ -343,9 +351,10 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                               (quantities[srNo.id] || 0) >=
                               parseFloat(srNo.current_stock)
                             }
-                            className="theme-button h-10"
+                            className="w-10 h-10 p-0 flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
+                            style={{ minWidth: "40px", minHeight: "40px" }}
                           />
-                        </Space.Compact>
+                        </div>
                       </div>
 
                       <Button

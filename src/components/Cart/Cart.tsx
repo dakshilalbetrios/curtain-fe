@@ -89,7 +89,7 @@ export const Cart: React.FC = () => {
         </Title>
 
         {/* Cart Items */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           {cartItems.map((item) => (
             <Card key={item.collection_sr_no_id} className="theme-card">
               <div className="flex items-center space-x-4">
@@ -99,14 +99,17 @@ export const Cart: React.FC = () => {
                 </div>
 
                 {/* Item Details */}
-                <div className="flex-1 space-y-2">
-                  <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <div className="flex justify-between items-start mb-3">
                     <div>
                       <Title level={5} className="!theme-text-primary !mb-1">
                         {item.sr_no}
                       </Title>
                       <Text className="theme-text-secondary text-sm">
                         {item.collection_name}
+                      </Text>
+                      <Text className="theme-text-tertiary text-sm">
+                        {item.quantity} {item.unit}
                       </Text>
                     </div>
                     <Button
@@ -118,46 +121,51 @@ export const Cart: React.FC = () => {
                     />
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <Text className="theme-text-secondary text-sm">
-                      {item.quantity} {item.unit}
-                    </Text>
-                    <Space.Compact size="small">
-                      <Button
-                        icon={<Minus className="w-3 h-3" />}
-                        onClick={() =>
-                          updateQuantity(
-                            item.collection_sr_no_id,
-                            item.quantity - 0.5
-                          )
-                        }
-                        disabled={item.quantity <= 0.5}
-                        className="theme-button w-8 h-8"
-                      />
-                      <InputNumber
-                        min={0.5}
-                        max={item.available_stock}
-                        step={0.5}
-                        value={item.quantity}
-                        onChange={(value) =>
-                          updateQuantity(item.collection_sr_no_id, value || 0)
-                        }
-                        className="w-16 text-center theme-input"
-                        controls={false}
-                        size="small"
-                      />
-                      <Button
-                        icon={<Plus className="w-3 h-3" />}
-                        onClick={() =>
-                          updateQuantity(
-                            item.collection_sr_no_id,
-                            item.quantity + 0.5
-                          )
-                        }
-                        disabled={item.quantity >= item.available_stock}
-                        className="theme-button w-8 h-8"
-                      />
-                    </Space.Compact>
+                  {/* Quantity Controls */}
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      icon={<Minus className="w-4 h-4" />}
+                      onClick={() =>
+                        updateQuantity(
+                          item.collection_sr_no_id,
+                          item.quantity - 0.5
+                        )
+                      }
+                      disabled={item.quantity <= 0.5}
+                      className="w-10 h-10 p-0 flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
+                      style={{ minWidth: "40px", minHeight: "40px" }}
+                    />
+                    <InputNumber
+                      min={0.5}
+                      max={item.available_stock}
+                      step={0.5}
+                      value={item.quantity}
+                      onChange={(value) =>
+                        updateQuantity(item.collection_sr_no_id, value || 0)
+                      }
+                      className="w-20 theme-input"
+                      controls={false}
+                      size="small"
+                      style={{
+                        height: "40px",
+                        textAlign: "center",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    />
+                    <Button
+                      icon={<Plus className="w-4 h-4" />}
+                      onClick={() =>
+                        updateQuantity(
+                          item.collection_sr_no_id,
+                          item.quantity + 0.5
+                        )
+                      }
+                      disabled={item.quantity >= item.available_stock}
+                      className="w-10 h-10 p-0 flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
+                      style={{ minWidth: "40px", minHeight: "40px" }}
+                    />
                   </div>
                 </div>
               </div>
