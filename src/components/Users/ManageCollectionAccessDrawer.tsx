@@ -232,30 +232,27 @@ export const ManageCollectionAccessDrawer: React.FC<
                 <Tag color="blue">
                   {collection.serial_numbers?.length || 0} Items
                 </Tag>
-                {access && !access.isSelected && (
-                  <Tag color={getStatusColor(access.status)} className="ml-2">
-                    {access.status}
-                  </Tag>
-                )}
               </div>
             </div>
           </div>
         </div>
 
         <div className="flex items-center space-x-2">
-          <Button
-            type={isActive ? "default" : "primary"}
-            size="small"
-            loading={isLoading}
-            onClick={() => handleCollectionToggle(collection.id)}
-            className={
-              isActive
-                ? "!border-red-500 !text-red-500 hover:!bg-red-50 hover:!border-red-600 hover:!text-red-600 focus:!border-red-600 focus:!text-red-600"
-                : "!bg-purple-600 hover:!bg-purple-700 !border-purple-600 !text-white hover:!border-purple-700 focus:!bg-purple-700 focus:!border-purple-700"
-            }
-          >
-            {isActive ? "Deactivate" : "Activate"}
-          </Button>
+          <div className="flex flex-col items-end space-y-1">
+            <Button
+              type={isActive ? "default" : "primary"}
+              size="small"
+              loading={isLoading}
+              onClick={() => handleCollectionToggle(collection.id)}
+              className={
+                isActive
+                  ? "!border-red-500 !text-red-500 hover:!bg-red-50 hover:!border-red-600 hover:!text-red-600 focus:!border-red-600 focus:!text-red-600"
+                  : "!bg-purple-600 hover:!bg-purple-700 !border-purple-600 !text-white hover:!border-purple-700 focus:!bg-purple-700 focus:!border-purple-700"
+              }
+            >
+              {isActive ? "Remove Access" : "Give Access"}
+            </Button>
+          </div>
         </div>
       </div>
     );
