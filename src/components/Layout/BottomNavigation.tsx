@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Package, ShoppingBag, User, Users } from "lucide-react";
+import { Home, Package, ShoppingBag, User, Users, Plus } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 export const BottomNavigation: React.FC = () => {
@@ -17,6 +17,16 @@ export const BottomNavigation: React.FC = () => {
       path: "/collections",
     },
     { key: "orders", icon: ShoppingBag, label: "Orders", path: "/orders" },
+    ...(user?.role === "CUSTOMER"
+      ? [
+          {
+            key: "new-order",
+            icon: Plus,
+            label: "New Order",
+            path: "/new-order",
+          },
+        ]
+      : []),
     ...(user?.role === "ADMIN" || user?.role === "SALES"
       ? [
           {
@@ -51,6 +61,9 @@ export const BottomNavigation: React.FC = () => {
 
       case "orders":
         return currentPath === "/orders" || currentPath.startsWith("/orders/");
+
+      case "new-order":
+        return currentPath === "/new-order";
 
       case "retailers":
         return currentPath === "/users" || currentPath.startsWith("/users/");

@@ -17,6 +17,7 @@ import { CollectionDetail } from "./components/Collections/CollectionDetail";
 import { OrderList } from "./components/Orders/OrderList";
 import { OrderDetail } from "./components/Orders/OrderDetail";
 import { OrderManagement } from "./components/Orders/OrderManagement";
+import { NewOrder } from "./components/Orders/NewOrder";
 import { RetailerList } from "./components/Users/UserList";
 import { Profile } from "./components/Profile/Profile";
 import { Cart } from "./components/Cart/Cart";
@@ -115,6 +116,14 @@ const AppRoutes: React.FC = () => {
           element={
             <PrivateRoute>
               <OrderList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/new-order"
+          element={
+            <PrivateRoute>
+              <NewOrder />
             </PrivateRoute>
           }
         />

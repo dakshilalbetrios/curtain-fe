@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Package, ShoppingBag, Users, User } from "lucide-react";
+import { Home, Package, ShoppingBag, Users, User, Plus } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 export const Sidebar: React.FC = () => {
@@ -22,6 +22,16 @@ export const Sidebar: React.FC = () => {
       label: "Orders",
       path: "/orders",
     },
+    ...(user?.role === "CUSTOMER"
+      ? [
+          {
+            key: "new-order",
+            icon: Plus,
+            label: "New Order",
+            path: "/new-order",
+          },
+        ]
+      : []),
     ...(user?.role === "ADMIN" || user?.role === "SALES"
       ? [
           {
@@ -61,6 +71,9 @@ export const Sidebar: React.FC = () => {
 
       case "orders":
         return currentPath === "/orders" || currentPath.startsWith("/orders/");
+
+      case "new-order":
+        return currentPath === "/new-order";
 
       case "users":
         return currentPath === "/users" || currentPath.startsWith("/users/");
