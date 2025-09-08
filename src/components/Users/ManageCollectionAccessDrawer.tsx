@@ -4,24 +4,17 @@ import {
   Card,
   Typography,
   Button,
-  Checkbox,
-  Select,
-  Modal,
   message,
   Skeleton,
-  Row,
-  Col,
-  Space,
   Tag,
   Input,
   Divider,
 } from "antd";
-import { Save, User, Package, AlertCircle, Search, X } from "lucide-react";
+import { Save, User, Package, Search } from "lucide-react";
 import { userService, UserResponse } from "../../services";
 import { collectionService, CollectionResponse } from "../../services";
 
 const { Title, Text } = Typography;
-const { Option } = Select;
 const { Search: AntSearch } = Input;
 
 interface CollectionAccessStatus {
@@ -46,14 +39,9 @@ export const ManageCollectionAccessDrawer: React.FC<
     CollectionAccessStatus[]
   >([]);
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [showStatusModal, setShowStatusModal] = useState(false);
-  const [selectedCollectionId, setSelectedCollectionId] = useState<
-    number | null
-  >(null);
-  const [selectedStatus, setSelectedStatus] = useState<
-    "INACTIVE" | "PENDING" | "SUSPENDED" | "EXPIRED"
-  >("INACTIVE");
+  const [updatingCollection, setUpdatingCollection] = useState<number | null>(
+    null
+  );
   const [searchText, setSearchText] = useState("");
 
   // Debounced search function
@@ -146,82 +134,63 @@ export const ManageCollectionAccessDrawer: React.FC<
     }
   };
 
-  const handleCollectionToggle = (collectionId: number, checked: boolean) => {
-    if (checked) {
-      // If checking, set to ACTIVE
-      setCollectionAccess((prev) =>
-        prev.map((item) =>
-          item.collectionId === collectionId
-            ? { ...item, isSelected: true, status: "ACTIVE" }
-            : item
-        )
-      );
-    } else {
-      // If unchecking, show status selection modal
-      setSelectedCollectionId(collectionId);
-      setShowStatusModal(true);
-    }
-  };
+  const handleCollectionToggle = async (collectionId: number) => {
+    if (!userId) return;
 
-  const handleStatusConfirm = () => {
-    if (selectedCollectionId) {
-      setCollectionAccess((prev) =>
-        prev.map((item) =>
-          item.collectionId === selectedCollectionId
-            ? { ...item, isSelected: false, status: selectedStatus }
-            : item
-        )
-      );
-      setShowStatusModal(false);
-      setSelectedCollectionId(null);
+    const currentAccess = collectionAccess.find(
+      (item) => item.collectionId === collectionId
+    );
+    const isCurrentlyActive = currentAccess?.isSelected || false;
+
+    setUpdatingCollection(collectionId);
+
+    try {
+      if (isCurrentlyActive) {
+        // Currently active, make it inactive
+        await userService.updateCollectionAccess(userId, {
+          updates: [{ collectionId, status: "INACTIVE" }],
+        });
+
+        setCollectionAccess((prev) =>
+          prev.map((item) =>
+            item.collectionId === collectionId
+              ? { ...item, isSelected: false, status: "INACTIVE" }
+              : item
+          )
+        );
+
+        message.success("Collection access deactivated successfully!");
+      } else {
+        // Currently inactive, make it active
+        await userService.addCollectionAccess(userId, {
+          collectionIds: [collectionId],
+          status: "ACTIVE",
+        });
+
+        setCollectionAccess((prev) =>
+          prev.map((item) =>
+            item.collectionId === collectionId
+              ? { ...item, isSelected: true, status: "ACTIVE" }
+              : item
+          )
+        );
+
+        message.success("Collection access activated successfully!");
+      }
+    } catch (error) {
+      console.error("Failed to update collection access:", error);
+      message.error("Failed to update collection access. Please try again.");
+    } finally {
+      setUpdatingCollection(null);
     }
   };
 
   const handleSave = async () => {
-    if (!userId) return;
-
-    setSaving(true);
-    try {
-      // Prepare updates for collections that are not ACTIVE
-      const updates = collectionAccess
-        .filter((item) => !item.isSelected && item.status !== "INACTIVE")
-        .map((item) => ({
-          collectionId: item.collectionId,
-          status: item.status,
-        }));
-
-      // Prepare new collections to add (ACTIVE ones that weren't previously active)
-      const newCollections = collectionAccess
-        .filter((item) => item.isSelected)
-        .map((item) => item.collectionId);
-
-      // Execute updates and additions
-      const promises = [];
-
-      if (updates.length > 0) {
-        promises.push(userService.updateCollectionAccess(userId, { updates }));
-      }
-
-      if (newCollections.length > 0) {
-        promises.push(
-          userService.addCollectionAccess(userId, {
-            collectionIds: newCollections,
-            status: "ACTIVE",
-          })
-        );
-      }
-
-      await Promise.all(promises);
-
-      message.success("Collection access updated successfully!");
-      onSuccess?.();
-      onClose();
-    } catch (error) {
-      console.error("Failed to save collection access:", error);
-      message.error("Failed to save collection access. Please try again.");
-    } finally {
-      setSaving(false);
-    }
+    // Since we're now making API calls immediately when buttons are clicked,
+    // this function just closes the drawer and calls onSuccess
+    message.success("All changes have been saved!");
+    onSuccess?.();
+    onClose();
   };
 
   const getStatusColor = (status: string) => {
@@ -245,6 +214,8 @@ export const ManageCollectionAccessDrawer: React.FC<
     const access = collectionAccess.find(
       (item) => item.collectionId === collection.id
     );
+    const isActive = access?.isSelected || false;
+    const isLoading = updatingCollection === collection.id;
 
     return (
       <div
@@ -253,21 +224,11 @@ export const ManageCollectionAccessDrawer: React.FC<
       >
         <div className="flex-1">
           <div className="flex items-center space-x-3">
-            <Checkbox
-              checked={access?.isSelected || false}
-              onChange={(e) =>
-                handleCollectionToggle(collection.id, e.target.checked)
-              }
-              className="theme-text-primary"
-            />
-            <div>
+            <div className="flex items-center justify-center space-x-2">
               <Title level={5} className="!theme-text-primary !mb-1">
                 {collection.name}
               </Title>
-              <Text className="theme-text-secondary text-sm">
-                {collection.description}
-              </Text>
-              <div className="mt-2">
+              <div>
                 <Tag color="blue">
                   {collection.serial_numbers?.length || 0} Items
                 </Tag>
@@ -279,6 +240,22 @@ export const ManageCollectionAccessDrawer: React.FC<
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Button
+            type={isActive ? "default" : "primary"}
+            size="small"
+            loading={isLoading}
+            onClick={() => handleCollectionToggle(collection.id)}
+            className={
+              isActive
+                ? "!border-red-500 !text-red-500 hover:!bg-red-50 hover:!border-red-600 hover:!text-red-600 focus:!border-red-600 focus:!text-red-600"
+                : "!bg-purple-600 hover:!bg-purple-700 !border-purple-600 !text-white hover:!border-purple-700 focus:!bg-purple-700 focus:!border-purple-700"
+            }
+          >
+            {isActive ? "Deactivate" : "Activate"}
+          </Button>
         </div>
       </div>
     );
@@ -311,10 +288,9 @@ export const ManageCollectionAccessDrawer: React.FC<
               type="primary"
               icon={<Save className="w-4 h-4" />}
               onClick={handleSave}
-              loading={saving}
               className="bg-purple-600 hover:bg-purple-700 border-purple-600"
             >
-              Save Changes
+              Close
             </Button>
           </div>
         }
@@ -361,7 +337,7 @@ export const ManageCollectionAccessDrawer: React.FC<
               onChange={handleSearchChange}
               className="w-full"
               size="large"
-              prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+              allowClear
             />
           </div>
 
@@ -425,41 +401,6 @@ export const ManageCollectionAccessDrawer: React.FC<
           )}
         </div>
       </Drawer>
-
-      {/* Status Selection Modal */}
-      <Modal
-        title={
-          <div className="flex items-center space-x-2">
-            <AlertCircle className="w-5 h-5 text-orange-400" />
-            <span className="theme-text-primary">
-              Select Status for Unselected Collection
-            </span>
-          </div>
-        }
-        open={showStatusModal}
-        onCancel={() => setShowStatusModal(false)}
-        onOk={handleStatusConfirm}
-        okText="Confirm"
-        cancelText="Cancel"
-        className="collection-status-modal"
-      >
-        <div className="py-4">
-          <Text className="theme-text-secondary mb-4 block">
-            Please select the status for this collection when it's not active:
-          </Text>
-          <Select
-            value={selectedStatus}
-            onChange={setSelectedStatus}
-            className="w-full theme-input"
-            size="large"
-          >
-            <Option value="INACTIVE">Inactive</Option>
-            <Option value="PENDING">Pending</Option>
-            <Option value="SUSPENDED">Suspended</Option>
-            <Option value="EXPIRED">Expired</Option>
-          </Select>
-        </div>
-      </Modal>
     </>
   );
 };
