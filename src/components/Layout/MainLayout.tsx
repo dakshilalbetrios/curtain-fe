@@ -30,13 +30,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         <Sidebar />
       </Sider>
 
-      <Layout className="lg:ml-60">
+      <Layout className="lg:ml-60 flex flex-col h-screen">
         {/* Header */}
         <Header title={title} showBack={showBack} showCart={showCart} />
 
         {/* Main Content */}
-        <Content className="pb-[140px] theme-bg-primary min-h-screen overflow-y-auto w-full">
-          <div className="px-4 py-4 w-full mx-auto">{children}</div>
+        <Content className="flex-1 theme-bg-primary w-full overflow-hidden">
+          <div className="h-full w-full px-4 py-4">{children}</div>
         </Content>
 
         {/* Mobile Bottom Navigation */}

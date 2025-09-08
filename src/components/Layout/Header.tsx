@@ -73,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
           )}
 
           {/* YD Logo */}
-          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/25">
+          <div className="lg:hidden w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/25">
             <span className="text-white font-bold text-sm">YD</span>
           </div>
 

@@ -468,8 +468,8 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
 
   return (
     <MainLayout title="" showCart={true}>
-      <div className="space-y-2">
-        {/* Enhanced Header Section */}
+      <div className="flex flex-col h-full">
+        {/* Fixed Header Section */}
         <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4">
           <div className="space-y-4">
             {/* Main Header Row */}
@@ -553,546 +553,556 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
           </div>
         </div>
 
-        {/* Collections Grid */}
-        {error && (
-          <Card className="theme-card text-center py-8 mb-4">
-            <Title level={4} className="!theme-text-red-500 !mb-2">
-              Error Loading Collections
-            </Title>
-            <Text className="theme-text-tertiary mb-4 block">{error}</Text>
-            <Button
-              onClick={refresh}
-              loading={loading}
-              className="theme-button"
-            >
-              Try Again
-            </Button>
-          </Card>
-        )}
-
-        {loading && collections.length === 0 ? (
-          <Row gutter={[16, 16]}>
-            {[...Array(6)].map((_, index) => (
-              <CollectionSkeleton key={index} />
-            ))}
-          </Row>
-        ) : (
-          <Row gutter={[16, 16]}>
-            {collections.length === 0 && !loading ? (
-              <Col span={24}>
-                <Card className="theme-card text-center py-12">
-                  <Package className="w-16 h-16 theme-text-tertiary mx-auto mb-4" />
-                  <Title level={4} className="!theme-text-secondary !mb-2">
-                    No Collections Found
-                  </Title>
-                  <Text className="theme-text-tertiary">
-                    {searchText
-                      ? "Try adjusting your search terms"
-                      : "No collections available at the moment"}
-                  </Text>
-                </Card>
-              </Col>
-            ) : (
-              <>
-                {collections.map((collection) => {
-                  const lowStockItems =
-                    collection.serial_numbers?.filter(
-                      (sr) =>
-                        parseFloat(sr.current_stock) <= parseFloat(sr.min_stock)
-                    ) || [];
-
-                  return (
-                    <Col xs={24} sm={12} lg={8} xl={6} key={collection.id}>
-                      <Card
-                        hoverable
-                        onClick={() => handleCollectionClick(collection.id)}
-                        className="theme-card-hover cursor-pointer"
-                      >
-                        <div className="space-y-3">
-                          <div>
-                            <div className="flex items-center justify-between">
-                              <Title
-                                level={5}
-                                className="!theme-text-primary !mb-1"
-                              >
-                                {collection.name}
-                              </Title>
-                              <Tag color="blue">
-                                {collection.serial_numbers?.length} Items
-                              </Tag>
-                            </div>
-                            <Text className="theme-text-secondary text-sm">
-                              {collection.description}
-                            </Text>
-                          </div>
-
-                          <div className="flex items-center justify-between">
-                            <div className="flex flex-wrap gap-2">
-                              {isWholesaler && lowStockItems.length > 0 && (
-                                <Tag color="orange">
-                                  Low Stock ({lowStockItems.length})
-                                </Tag>
-                              )}
-                            </div>
-                          </div>
-
-                          {user?.role === "ADMIN" && (
-                            <div className="flex items-center justify-between space-x-2 pt-2 border-t theme-border-secondary">
-                              <Button
-                                type="link"
-                                icon={<Edit className="w-4 h-4" />}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleEditCollection(collection.id);
-                                }}
-                                className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto flex items-center gap-1"
-                              >
-                                Edit
-                              </Button>
-                              <Button
-                                type="link"
-                                icon={<Trash2 className="w-4 h-4" />}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDeleteCollection(
-                                    collection.id,
-                                    collection.name
-                                  );
-                                }}
-                                className="!text-red-400 hover:!text-red-300 !p-0 !h-auto flex items-center gap-1"
-                              >
-                                Delete
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </Card>
-                    </Col>
-                  );
-                })}
-
-                {/* Infinite scroll trigger */}
-                {hasMore && (
-                  <Col span={24} className="text-center py-8">
-                    <div ref={loadMoreRef}>
-                      {loadingMore ? (
-                        <Spin size="large" />
-                      ) : (
-                        <Button
-                          onClick={() => {
-                            // This will be triggered by intersection observer
-                          }}
-                          className="theme-button"
-                        >
-                          Load More Collections
-                        </Button>
-                      )}
-                    </div>
-                  </Col>
-                )}
-
-                {!hasMore && collections.length > 0 && (
-                  <Col span={24} className="text-center py-8">
-                    <Text className="theme-text-tertiary">
-                      You've reached the end of the collections list
-                    </Text>
-                  </Col>
-                )}
-              </>
-            )}
-          </Row>
-        )}
-
-        {/* Bulk Upload Modal */}
-        <Modal
-          title={
-            <div className="flex items-center">
-              <UploadIcon className="w-5 h-5 mr-2 text-purple-400" />
-              <span className="theme-text-primary">
-                Bulk Upload Collections
-              </span>
-            </div>
-          }
-          open={bulkModalVisible}
-          onCancel={() => setBulkModalVisible(false)}
-          footer={null}
-          width={600}
-          className="bulk-upload-modal"
-        >
-          <div className="space-y-4">
-            <div className="flex justify-between items-center mb-4">
-              <Text className="theme-text-secondary">
-                Upload CSV file to add multiple collections at once
-              </Text>
+        {/* Scrollable Content Area */}
+        <div className="flex-1 overflow-y-auto pt-4">
+          {/* Collections Grid */}
+          {error && (
+            <Card className="theme-card text-center py-8 mb-4">
+              <Title level={4} className="!theme-text-red-500 !mb-2">
+                Error Loading Collections
+              </Title>
+              <Text className="theme-text-tertiary mb-4 block">{error}</Text>
               <Button
-                icon={<Download className="w-4 h-4" />}
-                onClick={downloadTemplate}
+                onClick={refresh}
+                loading={loading}
                 className="theme-button"
               >
-                Download Template
+                Try Again
               </Button>
-            </div>
+            </Card>
+          )}
 
-            <Dragger
-              accept=".csv"
-              beforeUpload={(file) => {
-                handleCSVUpload(file);
-                return false; // Prevent default upload
-              }}
-              showUploadList={false}
-              className="theme-input hover:border-purple-500"
-            >
-              <div className="p-6 text-center">
-                <UploadIcon className="w-12 h-12 theme-text-tertiary mx-auto mb-4" />
-                <Text className="theme-text-primary text-lg block mb-2">
-                  Click or drag CSV file to upload
-                </Text>
-                <Text className="theme-text-secondary">
-                  Supports CSV files with collections data
-                </Text>
-              </div>
-            </Dragger>
-
-            {uploading && (
-              <div className="text-center py-4">
-                <Text className="text-purple-400">
-                  Uploading collections...
-                </Text>
-              </div>
-            )}
-
-            <div className="mt-4 p-3 theme-bg-tertiary rounded-lg">
-              <Text className="theme-text-secondary text-sm">
-                <strong>CSV Format Requirements:</strong>
-              </Text>
-              <ul className="theme-text-tertiary text-xs mt-2 space-y-1">
-                <li>
-                  • Required columns: collection_name, description, sr_no,
-                  min_stock, max_stock, current_stock, unit
-                </li>
-                <li>• Unit must be either "mtr" or "pcs"</li>
-                <li>• Stock values must be numeric</li>
-                <li>• Download template for reference</li>
-              </ul>
-            </div>
-          </div>
-        </Modal>
-
-        {/* Single Collection Modal */}
-        <Modal
-          title={
-            <div className="flex items-center mb-2">
-              {editingCollection ? (
-                <Edit className="w-5 h-5 mr-2 text-purple-400" />
-              ) : (
-                <Plus className="w-5 h-5 mr-2 text-purple-400" />
-              )}
-              <span className="theme-text-primary">
-                {editingCollection ? "Edit Collection" : "Add New Collection"}
-              </span>
-            </div>
-          }
-          open={singleModalVisible}
-          onCancel={() => {
-            setSingleModalVisible(false);
-            setEditingCollection(null);
-            form.resetFields();
-          }}
-          footer={null}
-          width={900}
-          className="single-collection-modal"
-        >
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleSingleCollectionSubmit}
-            initialValues={{
-              serial_numbers: [
-                {
-                  sr_no: "",
-                  min_stock: "",
-                  max_stock: "",
-                  current_stock: "",
-                  unit: "pcs",
-                  isExisting: false,
-                },
-              ],
-            }}
-            autoComplete="off"
-          >
-            <Row gutter={16}>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label={
-                    <span className="theme-text-secondary">
-                      Collection Name
-                    </span>
-                  }
-                  name="name"
-                  rules={[
-                    { required: true, message: "Please enter collection name" },
-                    { min: 2, message: "Name must be at least 2 characters" },
-                  ]}
-                >
-                  <Input
-                    placeholder="Enter collection name"
-                    className="theme-input"
-                    size="large"
-                    autoComplete="off"
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label={
-                    <span className="theme-text-secondary">Description</span>
-                  }
-                  name="description"
-                  rules={[
-                    { required: true, message: "Please enter description" },
-                    {
-                      min: 5,
-                      message: "Description must be at least 5 characters",
-                    },
-                  ]}
-                >
-                  <TextArea
-                    placeholder="Enter collection description"
-                    className="theme-input"
-                    size="large"
-                    rows={3}
-                  />
-                </Form.Item>
-              </Col>
+          {loading && collections.length === 0 ? (
+            <Row gutter={[16, 16]}>
+              {[...Array(6)].map((_, index) => (
+                <CollectionSkeleton key={index} />
+              ))}
             </Row>
+          ) : (
+            <Row gutter={[16, 16]}>
+              {collections.length === 0 && !loading ? (
+                <Col span={24}>
+                  <Card className="theme-card text-center py-12">
+                    <Package className="w-16 h-16 theme-text-tertiary mx-auto mb-4" />
+                    <Title level={4} className="!theme-text-secondary !mb-2">
+                      No Collections Found
+                    </Title>
+                    <Text className="theme-text-tertiary">
+                      {searchText
+                        ? "Try adjusting your search terms"
+                        : "No collections available at the moment"}
+                    </Text>
+                  </Card>
+                </Col>
+              ) : (
+                <>
+                  {collections.map((collection) => {
+                    const lowStockItems =
+                      collection.serial_numbers?.filter(
+                        (sr) =>
+                          parseFloat(sr.current_stock) <=
+                          parseFloat(sr.min_stock)
+                      ) || [];
 
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <Title level={5} className="!theme-text-primary !mb-0">
-                  Serial Numbers
-                </Title>
+                    return (
+                      <Col xs={24} sm={12} lg={8} xl={6} key={collection.id}>
+                        <Card
+                          hoverable
+                          onClick={() => handleCollectionClick(collection.id)}
+                          className="theme-card-hover cursor-pointer"
+                        >
+                          <div className="space-y-3">
+                            <div>
+                              <div className="flex items-center justify-between">
+                                <Title
+                                  level={5}
+                                  className="!theme-text-primary !mb-1"
+                                >
+                                  {collection.name}
+                                </Title>
+                                <Tag color="blue">
+                                  {collection.serial_numbers?.length} Items
+                                </Tag>
+                              </div>
+                              <Text className="theme-text-secondary text-sm">
+                                {collection.description}
+                              </Text>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                              <div className="flex flex-wrap gap-2">
+                                {isWholesaler && lowStockItems.length > 0 && (
+                                  <Tag color="orange">
+                                    Low Stock ({lowStockItems.length})
+                                  </Tag>
+                                )}
+                              </div>
+                            </div>
+
+                            {user?.role === "ADMIN" && (
+                              <div className="flex items-center justify-between space-x-2 pt-2 border-t theme-border-secondary">
+                                <Button
+                                  type="link"
+                                  icon={<Edit className="w-4 h-4" />}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEditCollection(collection.id);
+                                  }}
+                                  className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto flex items-center gap-1"
+                                >
+                                  Edit
+                                </Button>
+                                <Button
+                                  type="link"
+                                  icon={<Trash2 className="w-4 h-4" />}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteCollection(
+                                      collection.id,
+                                      collection.name
+                                    );
+                                  }}
+                                  className="!text-red-400 hover:!text-red-300 !p-0 !h-auto flex items-center gap-1"
+                                >
+                                  Delete
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        </Card>
+                      </Col>
+                    );
+                  })}
+
+                  {/* Infinite scroll trigger */}
+                  {hasMore && (
+                    <Col span={24} className="text-center py-8">
+                      <div ref={loadMoreRef}>
+                        {loadingMore ? (
+                          <Spin size="large" />
+                        ) : (
+                          <Button
+                            onClick={() => {
+                              // This will be triggered by intersection observer
+                            }}
+                            className="theme-button"
+                          >
+                            Load More Collections
+                          </Button>
+                        )}
+                      </div>
+                    </Col>
+                  )}
+
+                  {!hasMore && collections.length > 0 && (
+                    <Col span={24} className="text-center py-8">
+                      <Text className="theme-text-tertiary">
+                        You've reached the end of the collections list
+                      </Text>
+                    </Col>
+                  )}
+                </>
+              )}
+            </Row>
+          )}
+
+          {/* Bulk Upload Modal */}
+          <Modal
+            title={
+              <div className="flex items-center">
+                <UploadIcon className="w-5 h-5 mr-2 text-purple-400" />
+                <span className="theme-text-primary">
+                  Bulk Upload Collections
+                </span>
+              </div>
+            }
+            open={bulkModalVisible}
+            onCancel={() => setBulkModalVisible(false)}
+            footer={null}
+            width={600}
+            className="bulk-upload-modal"
+          >
+            <div className="space-y-4">
+              <div className="flex justify-between items-center mb-4">
+                <Text className="theme-text-secondary">
+                  Upload CSV file to add multiple collections at once
+                </Text>
                 <Button
-                  type="dashed"
-                  icon={<Plus className="w-4 h-4" />}
-                  onClick={() => {
-                    const currentSerialNumbers =
-                      form.getFieldValue("serial_numbers") || [];
-                    form.setFieldsValue({
-                      serial_numbers: [
-                        ...currentSerialNumbers,
-                        {
-                          sr_no: "",
-                          min_stock: "",
-                          max_stock: "",
-                          current_stock: "",
-                          unit: "pcs",
-                          isExisting: false,
-                        },
-                      ],
-                    });
-                  }}
-                  className="border-purple-500 text-purple-400 hover:border-purple-400"
+                  icon={<Download className="w-4 h-4" />}
+                  onClick={downloadTemplate}
+                  className="theme-button"
                 >
-                  Add Serial Number
+                  Download Template
                 </Button>
               </div>
 
-              <Form.List name="serial_numbers">
-                {(fields, { remove }) => (
-                  <div className="space-y-4">
-                    {fields.map(({ key, name, ...restField }) => (
-                      <Card
-                        key={key}
-                        className="theme-card"
-                        title={
-                          <div className="flex items-center justify-between">
-                            <Text className="theme-text-primary">
-                              Serial Number {name + 1}
-                            </Text>
-                            {fields.length > 1 && (
-                              <Button
-                                type="text"
-                                icon={<Trash2 className="w-4 h-4" />}
-                                onClick={() => remove(name)}
-                                className="text-red-400 hover:text-red-300"
-                              />
-                            )}
-                          </div>
-                        }
-                      >
-                        <Row gutter={16}>
-                          <Col xs={24} sm={12} md={6}>
-                            <Form.Item
-                              {...restField}
-                              name={[name, "sr_no"]}
-                              label={
-                                <span className="theme-text-secondary">
-                                  Serial Number
-                                </span>
-                              }
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please enter serial number",
-                                },
-                              ]}
-                            >
-                              <Input
-                                placeholder="e.g., SR-001"
-                                className="theme-input"
-                              />
-                            </Form.Item>
-                          </Col>
-                          <Col xs={24} sm={12} md={6}>
-                            <Form.Item
-                              {...restField}
-                              name={[name, "unit"]}
-                              label={
-                                <span className="theme-text-secondary">
-                                  Unit
-                                </span>
-                              }
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please select unit",
-                                },
-                              ]}
-                            >
-                              <Select
-                                placeholder="Select unit"
-                                className="theme-input"
+              <Dragger
+                accept=".csv"
+                beforeUpload={(file) => {
+                  handleCSVUpload(file);
+                  return false; // Prevent default upload
+                }}
+                showUploadList={false}
+                className="theme-input hover:border-purple-500"
+              >
+                <div className="p-6 text-center">
+                  <UploadIcon className="w-12 h-12 theme-text-tertiary mx-auto mb-4" />
+                  <Text className="theme-text-primary text-lg block mb-2">
+                    Click or drag CSV file to upload
+                  </Text>
+                  <Text className="theme-text-secondary">
+                    Supports CSV files with collections data
+                  </Text>
+                </div>
+              </Dragger>
+
+              {uploading && (
+                <div className="text-center py-4">
+                  <Text className="text-purple-400">
+                    Uploading collections...
+                  </Text>
+                </div>
+              )}
+
+              <div className="mt-4 p-3 theme-bg-tertiary rounded-lg">
+                <Text className="theme-text-secondary text-sm">
+                  <strong>CSV Format Requirements:</strong>
+                </Text>
+                <ul className="theme-text-tertiary text-xs mt-2 space-y-1">
+                  <li>
+                    • Required columns: collection_name, description, sr_no,
+                    min_stock, max_stock, current_stock, unit
+                  </li>
+                  <li>• Unit must be either "mtr" or "pcs"</li>
+                  <li>• Stock values must be numeric</li>
+                  <li>• Download template for reference</li>
+                </ul>
+              </div>
+            </div>
+          </Modal>
+
+          {/* Single Collection Modal */}
+          <Modal
+            title={
+              <div className="flex items-center mb-2">
+                {editingCollection ? (
+                  <Edit className="w-5 h-5 mr-2 text-purple-400" />
+                ) : (
+                  <Plus className="w-5 h-5 mr-2 text-purple-400" />
+                )}
+                <span className="theme-text-primary">
+                  {editingCollection ? "Edit Collection" : "Add New Collection"}
+                </span>
+              </div>
+            }
+            open={singleModalVisible}
+            onCancel={() => {
+              setSingleModalVisible(false);
+              setEditingCollection(null);
+              form.resetFields();
+            }}
+            footer={null}
+            width={900}
+            className="single-collection-modal"
+          >
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleSingleCollectionSubmit}
+              initialValues={{
+                serial_numbers: [
+                  {
+                    sr_no: "",
+                    min_stock: "",
+                    max_stock: "",
+                    current_stock: "",
+                    unit: "pcs",
+                    isExisting: false,
+                  },
+                ],
+              }}
+              autoComplete="off"
+            >
+              <Row gutter={16}>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    label={
+                      <span className="theme-text-secondary">
+                        Collection Name
+                      </span>
+                    }
+                    name="name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter collection name",
+                      },
+                      { min: 2, message: "Name must be at least 2 characters" },
+                    ]}
+                  >
+                    <Input
+                      placeholder="Enter collection name"
+                      className="theme-input"
+                      size="large"
+                      autoComplete="off"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    label={
+                      <span className="theme-text-secondary">Description</span>
+                    }
+                    name="description"
+                    rules={[
+                      { required: true, message: "Please enter description" },
+                      {
+                        min: 5,
+                        message: "Description must be at least 5 characters",
+                      },
+                    ]}
+                  >
+                    <TextArea
+                      placeholder="Enter collection description"
+                      className="theme-input"
+                      size="large"
+                      rows={3}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <Title level={5} className="!theme-text-primary !mb-0">
+                    Serial Numbers
+                  </Title>
+                  <Button
+                    type="dashed"
+                    icon={<Plus className="w-4 h-4" />}
+                    onClick={() => {
+                      const currentSerialNumbers =
+                        form.getFieldValue("serial_numbers") || [];
+                      form.setFieldsValue({
+                        serial_numbers: [
+                          ...currentSerialNumbers,
+                          {
+                            sr_no: "",
+                            min_stock: "",
+                            max_stock: "",
+                            current_stock: "",
+                            unit: "pcs",
+                            isExisting: false,
+                          },
+                        ],
+                      });
+                    }}
+                    className="border-purple-500 text-purple-400 hover:border-purple-400"
+                  >
+                    Add Serial Number
+                  </Button>
+                </div>
+
+                <Form.List name="serial_numbers">
+                  {(fields, { remove }) => (
+                    <div className="space-y-4">
+                      {fields.map(({ key, name, ...restField }) => (
+                        <Card
+                          key={key}
+                          className="theme-card"
+                          title={
+                            <div className="flex items-center justify-between">
+                              <Text className="theme-text-primary">
+                                Serial Number {name + 1}
+                              </Text>
+                              {fields.length > 1 && (
+                                <Button
+                                  type="text"
+                                  icon={<Trash2 className="w-4 h-4" />}
+                                  onClick={() => remove(name)}
+                                  className="text-red-400 hover:text-red-300"
+                                />
+                              )}
+                            </div>
+                          }
+                        >
+                          <Row gutter={16}>
+                            <Col xs={24} sm={12} md={6}>
+                              <Form.Item
+                                {...restField}
+                                name={[name, "sr_no"]}
+                                label={
+                                  <span className="theme-text-secondary">
+                                    Serial Number
+                                  </span>
+                                }
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please enter serial number",
+                                  },
+                                ]}
                               >
-                                <Option value="pcs">Pieces</Option>
-                                <Option value="mtr">Meters</Option>
-                              </Select>
-                            </Form.Item>
-                          </Col>
-                          <Col xs={24} sm={12} md={4}>
-                            <Form.Item
-                              {...restField}
-                              name={[name, "min_stock"]}
-                              label={
-                                <span className="theme-text-secondary">
-                                  Min Stock
-                                </span>
-                              }
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please enter min stock",
-                                },
-                                {
-                                  pattern: /^\d+(\.\d+)?$/,
-                                  message: "Please enter valid number",
-                                },
-                              ]}
-                            >
-                              <Input placeholder="0" className="theme-input" />
-                            </Form.Item>
-                          </Col>
-                          <Col xs={24} sm={12} md={4}>
-                            <Form.Item
-                              {...restField}
-                              name={[name, "max_stock"]}
-                              label={
-                                <span className="theme-text-secondary">
-                                  Max Stock
-                                </span>
-                              }
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please enter max stock",
-                                },
-                                {
-                                  pattern: /^\d+(\.\d+)?$/,
-                                  message: "Please enter valid number",
-                                },
-                              ]}
-                            >
-                              <Input
-                                placeholder="100"
-                                className="theme-input"
-                              />
-                            </Form.Item>
-                          </Col>
-                          <Col xs={24} sm={12} md={4}>
-                            <Form.Item
-                              {...restField}
-                              name={[name, "current_stock"]}
-                              label={
-                                <span className="theme-text-secondary">
-                                  Current Stock
-                                </span>
-                              }
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please enter current stock",
-                                },
-                                {
-                                  pattern: /^\d+(\.\d+)?$/,
-                                  message: "Please enter valid number",
-                                },
-                              ]}
-                            >
-                              <Input
-                                placeholder="50"
-                                className="theme-input"
-                                disabled={form.getFieldValue([
-                                  "serial_numbers",
-                                  name,
-                                  "isExisting",
-                                ])}
-                                title={
-                                  form.getFieldValue([
+                                <Input
+                                  placeholder="e.g., SR-001"
+                                  className="theme-input"
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={12} md={6}>
+                              <Form.Item
+                                {...restField}
+                                name={[name, "unit"]}
+                                label={
+                                  <span className="theme-text-secondary">
+                                    Unit
+                                  </span>
+                                }
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please select unit",
+                                  },
+                                ]}
+                              >
+                                <Select
+                                  placeholder="Select unit"
+                                  className="theme-input"
+                                >
+                                  <Option value="pcs">Pieces</Option>
+                                  <Option value="mtr">Meters</Option>
+                                </Select>
+                              </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={12} md={4}>
+                              <Form.Item
+                                {...restField}
+                                name={[name, "min_stock"]}
+                                label={
+                                  <span className="theme-text-secondary">
+                                    Min Stock
+                                  </span>
+                                }
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please enter min stock",
+                                  },
+                                  {
+                                    pattern: /^\d+(\.\d+)?$/,
+                                    message: "Please enter valid number",
+                                  },
+                                ]}
+                              >
+                                <Input
+                                  placeholder="0"
+                                  className="theme-input"
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={12} md={4}>
+                              <Form.Item
+                                {...restField}
+                                name={[name, "max_stock"]}
+                                label={
+                                  <span className="theme-text-secondary">
+                                    Max Stock
+                                  </span>
+                                }
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please enter max stock",
+                                  },
+                                  {
+                                    pattern: /^\d+(\.\d+)?$/,
+                                    message: "Please enter valid number",
+                                  },
+                                ]}
+                              >
+                                <Input
+                                  placeholder="100"
+                                  className="theme-input"
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={12} md={4}>
+                              <Form.Item
+                                {...restField}
+                                name={[name, "current_stock"]}
+                                label={
+                                  <span className="theme-text-secondary">
+                                    Current Stock
+                                  </span>
+                                }
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please enter current stock",
+                                  },
+                                  {
+                                    pattern: /^\d+(\.\d+)?$/,
+                                    message: "Please enter valid number",
+                                  },
+                                ]}
+                              >
+                                <Input
+                                  placeholder="50"
+                                  className="theme-input"
+                                  disabled={form.getFieldValue([
                                     "serial_numbers",
                                     name,
                                     "isExisting",
-                                  ])
-                                    ? "Current stock cannot be edited for existing items"
-                                    : ""
-                                }
-                              />
-                            </Form.Item>
-                          </Col>
-                        </Row>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </Form.List>
-            </div>
-
-            <Form.Item className="mb-0">
-              <div className="flex gap-3 justify-end">
-                <Button
-                  onClick={() => {
-                    setSingleModalVisible(false);
-                    setEditingCollection(null);
-                    form.resetFields();
-                  }}
-                  size="large"
-                  className="theme-button"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={formLoading}
-                  size="large"
-                  className="bg-purple-600 hover:bg-purple-700 border-purple-600"
-                >
-                  {editingCollection
-                    ? "Update Collection"
-                    : "Create Collection"}
-                </Button>
+                                  ])}
+                                  title={
+                                    form.getFieldValue([
+                                      "serial_numbers",
+                                      name,
+                                      "isExisting",
+                                    ])
+                                      ? "Current stock cannot be edited for existing items"
+                                      : ""
+                                  }
+                                />
+                              </Form.Item>
+                            </Col>
+                          </Row>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </Form.List>
               </div>
-            </Form.Item>
-          </Form>
-        </Modal>
+
+              <Form.Item className="mb-0">
+                <div className="flex gap-3 justify-end">
+                  <Button
+                    onClick={() => {
+                      setSingleModalVisible(false);
+                      setEditingCollection(null);
+                      form.resetFields();
+                    }}
+                    size="large"
+                    className="theme-button"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={formLoading}
+                    size="large"
+                    className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+                  >
+                    {editingCollection
+                      ? "Update Collection"
+                      : "Create Collection"}
+                  </Button>
+                </div>
+              </Form.Item>
+            </Form>
+          </Modal>
+        </div>
       </div>
     </MainLayout>
   );
