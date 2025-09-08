@@ -32,6 +32,12 @@ export interface SearchParams extends PaginationParams {
   search?: string;
 }
 
+// Filter parameters for orders
+export interface OrderFilterParams extends PaginationParams {
+  search?: string;
+  status_in?: string;
+}
+
 // Collection Access Management Types
 export interface CollectionAccess {
   id: number;

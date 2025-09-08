@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Card,
   Typography,
@@ -11,10 +11,11 @@ import {
   Spin,
   Input,
 } from "antd";
-import { Package, RefreshCw, Search, Truck, ShoppingBag } from "lucide-react";
+import { Package, RefreshCw, Search, Truck, X } from "lucide-react";
 import { MainLayout } from "../Layout/MainLayout";
 import { OrderDetailDrawer } from "./OrderDetailDrawer";
-import { useOrders } from "../../hooks/useOrders";
+import { useOrdersFiltered } from "../../hooks/useOrders";
+import { useSearchParams } from "react-router-dom";
 import moment from "moment";
 
 const { Title, Text } = Typography;
@@ -22,8 +23,13 @@ const { Option } = Select;
 const { Search: AntSearch } = Input;
 
 export const OrderList: React.FC = () => {
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
-  const [searchText, setSearchText] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [statusFilter, setStatusFilter] = useState<string>(
+    searchParams.get("status_in") || "ALL"
+  );
+  const [searchText, setSearchText] = useState(
+    searchParams.get("search") || ""
+  );
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
 
@@ -50,13 +56,17 @@ export const OrderList: React.FC = () => {
     total,
     refresh,
     loadMoreRef,
-  } = useOrders(searchText);
+  } = useOrdersFiltered(searchText, statusFilter);
 
-  const filteredOrders = useMemo(() => {
-    return orders.filter(
-      (order) => statusFilter === "ALL" || order.status === statusFilter
-    );
-  }, [orders, statusFilter]);
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchText("");
+    setStatusFilter("ALL");
+  };
+
+  // Check if any filters are active
+  const hasActiveFilters =
+    searchText || (statusFilter && statusFilter !== "ALL");
 
   const handleOrderClick = (orderId: number) => {
     setSelectedOrderId(orderId);
@@ -108,8 +118,8 @@ export const OrderList: React.FC = () => {
         <div>
           <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4 mb-4">
             <div className="space-y-4">
-              {/* Main Header Row */}
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Large Screen: All in one row */}
+              <div className="hidden xl:flex xl:items-center xl:justify-between gap-4">
                 {/* Left Section - Title and Stats */}
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-3">
@@ -141,10 +151,84 @@ export const OrderList: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Right Section - Search and Filters */}
+                {/* Right Section - Search, Filter, Clear */}
                 <div className="flex flex-row gap-3 items-center">
                   <AntSearch
                     placeholder="Search by Order ID or Tracking No..."
+                    value={searchText}
+                    onChange={(e) => debouncedSearch(e.target.value)}
+                    className="w-80"
+                    size="large"
+                    prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+                  />
+                  <Select
+                    value={statusFilter}
+                    onChange={setStatusFilter}
+                    className="w-32 theme-input"
+                    size="large"
+                    placeholder="Filter by status"
+                  >
+                    <Option value="ALL">All Status</Option>
+                    <Option value="PENDING">Pending</Option>
+                    <Option value="APPROVED">Approved</Option>
+                    <Option value="SHIPPED">Shipped</Option>
+                    <Option value="DELIVERED">Delivered</Option>
+                    <Option value="CANCELLED">Cancelled</Option>
+                  </Select>
+                  {hasActiveFilters && (
+                    <Button
+                      icon={<X className="w-4 h-4" />}
+                      onClick={clearFilters}
+                      size="large"
+                      className="theme-button border theme-border-primary hover:theme-bg-tertiary"
+                      title="Clear all filters"
+                    >
+                      Clear
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Medium Screen: Search, Filter, Clear in one row */}
+              <div className="hidden md:block xl:hidden">
+                {/* Title and Stats Row */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-3">
+                      <div>
+                        <Title
+                          level={3}
+                          className="!theme-text-primary !mb-0 !text-2xl"
+                        >
+                          Orders
+                        </Title>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Tag
+                        color="green"
+                        className="px-3 py-1 text-sm font-medium rounded-full"
+                      >
+                        {total} Total
+                      </Tag>
+                      <Button
+                        icon={<RefreshCw className="w-4 h-4" />}
+                        onClick={refresh}
+                        loading={loading}
+                        size="small"
+                        className="theme-button border theme-border-primary hover:theme-bg-tertiary"
+                      >
+                        Refresh
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Search, Filter, Clear Row */}
+                <div className="flex flex-row gap-3 items-center">
+                  <AntSearch
+                    placeholder="Search by Order ID or Tracking No..."
+                    value={searchText}
                     onChange={(e) => debouncedSearch(e.target.value)}
                     className="flex-1 min-w-0"
                     size="large"
@@ -153,16 +237,105 @@ export const OrderList: React.FC = () => {
                   <Select
                     value={statusFilter}
                     onChange={setStatusFilter}
-                    className="w-24 theme-input flex-shrink-0"
+                    className="w-32 theme-input flex-shrink-0"
                     size="large"
+                    placeholder="Filter by status"
                   >
-                    <Option value="ALL">All</Option>
+                    <Option value="ALL">All Status</Option>
                     <Option value="PENDING">Pending</Option>
                     <Option value="APPROVED">Approved</Option>
                     <Option value="SHIPPED">Shipped</Option>
                     <Option value="DELIVERED">Delivered</Option>
                     <Option value="CANCELLED">Cancelled</Option>
                   </Select>
+                  {hasActiveFilters && (
+                    <Button
+                      icon={<X className="w-4 h-4" />}
+                      onClick={clearFilters}
+                      size="large"
+                      className="theme-button border theme-border-primary hover:theme-bg-tertiary flex-shrink-0"
+                      title="Clear all filters"
+                    >
+                      Clear
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Small Screen: Search and Filter in different rows */}
+              <div className="block md:hidden">
+                {/* Title and Stats Row */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-3">
+                      <div>
+                        <Title
+                          level={3}
+                          className="!theme-text-primary !mb-0 !text-2xl"
+                        >
+                          Orders
+                        </Title>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Tag
+                        color="green"
+                        className="px-3 py-1 text-sm font-medium rounded-full"
+                      >
+                        {total} Total
+                      </Tag>
+                      <Button
+                        icon={<RefreshCw className="w-4 h-4" />}
+                        onClick={refresh}
+                        loading={loading}
+                        size="small"
+                        className="theme-button border theme-border-primary hover:theme-bg-tertiary"
+                      >
+                        Refresh
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Search Row */}
+                <div className="mb-3">
+                  <AntSearch
+                    placeholder="Search by Order ID or Tracking No..."
+                    value={searchText}
+                    onChange={(e) => debouncedSearch(e.target.value)}
+                    className="w-full"
+                    size="large"
+                    prefix={<Search className="w-4 h-4 theme-text-tertiary" />}
+                  />
+                </div>
+
+                {/* Filter and Clear Row */}
+                <div className="flex flex-row gap-3 items-center">
+                  <Select
+                    value={statusFilter}
+                    onChange={setStatusFilter}
+                    className="flex-1 theme-input"
+                    size="large"
+                    placeholder="Filter by status"
+                  >
+                    <Option value="ALL">All Status</Option>
+                    <Option value="PENDING">Pending</Option>
+                    <Option value="APPROVED">Approved</Option>
+                    <Option value="SHIPPED">Shipped</Option>
+                    <Option value="DELIVERED">Delivered</Option>
+                    <Option value="CANCELLED">Cancelled</Option>
+                  </Select>
+                  {hasActiveFilters && (
+                    <Button
+                      icon={<X className="w-4 h-4" />}
+                      onClick={clearFilters}
+                      size="large"
+                      className="theme-button border theme-border-primary hover:theme-bg-tertiary flex-shrink-0"
+                      title="Clear all filters"
+                    >
+                      Clear
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -194,7 +367,7 @@ export const OrderList: React.FC = () => {
             </Row>
           ) : (
             <>
-              {filteredOrders.length === 0 && !loading ? (
+              {orders.length === 0 && !loading ? (
                 <Card className="theme-card text-center py-12">
                   <Title level={4} className="!theme-text-secondary !mb-2">
                     No Orders Found
@@ -208,7 +381,7 @@ export const OrderList: React.FC = () => {
               ) : (
                 <>
                   <Row gutter={[16, 16]}>
-                    {filteredOrders.map((order) => (
+                    {orders.map((order) => (
                       <Col xs={24} sm={12} lg={8} xl={6} key={order.id}>
                         <Card
                           hoverable
