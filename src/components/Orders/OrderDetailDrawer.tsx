@@ -22,6 +22,7 @@ import {
   XCircle,
   Package,
   Settings,
+  MapPin,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { orderService, OrderResponse } from "../../services";
@@ -499,6 +500,84 @@ export const OrderDetailDrawer: React.FC<OrderDetailDrawerProps> = ({
                   </Tag>
                 </div>
               </Card>
+
+              {/* Courier Information */}
+              {(order.courier_tracking_no || order.courier_company) && (
+                <Card className="theme-card">
+                  <Title level={4} className="!theme-text-primary !mb-4">
+                    Shipping Information
+                  </Title>
+                  <div className="space-y-4">
+                    {/* Mobile Layout - Stacked */}
+                    <div className="block sm:hidden space-y-3">
+                      {order.courier_company && (
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Truck className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <Text className="theme-text-secondary text-sm">
+                              Courier Company
+                            </Text>
+                            <Text className="theme-text-primary font-medium block truncate">
+                              {order.courier_company}
+                            </Text>
+                          </div>
+                        </div>
+                      )}
+                      {order.courier_tracking_no && (
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <MapPin className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <Text className="theme-text-secondary text-sm">
+                              Tracking Number
+                            </Text>
+                            <Text className="theme-text-primary font-medium block truncate">
+                              {order.courier_tracking_no}
+                            </Text>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Desktop Layout - Side by Side */}
+                    <div className="hidden sm:grid sm:grid-cols-2 gap-4">
+                      {order.courier_company && (
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Truck className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <Text className="theme-text-secondary text-sm">
+                              Courier Company
+                            </Text>
+                            <Text className="theme-text-primary font-medium block truncate">
+                              {order.courier_company}
+                            </Text>
+                          </div>
+                        </div>
+                      )}
+                      {order.courier_tracking_no && (
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <MapPin className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <Text className="theme-text-secondary text-sm">
+                              Tracking Number
+                            </Text>
+                            <Text className="theme-text-primary font-medium block truncate">
+                              {order.courier_tracking_no}
+                            </Text>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              )}
 
               {/* Order Status Timeline */}
               <Card className="theme-card">

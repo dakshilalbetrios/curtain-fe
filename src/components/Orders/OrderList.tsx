@@ -11,7 +11,7 @@ import {
   Spin,
   Input,
 } from "antd";
-import { Package, RefreshCw, Search } from "lucide-react";
+import { Package, RefreshCw, Search, Truck } from "lucide-react";
 import { MainLayout } from "../Layout/MainLayout";
 import { OrderDetailDrawer } from "./OrderDetailDrawer";
 import { useOrders } from "../../hooks/useOrders";
@@ -243,6 +243,65 @@ export const OrderList: React.FC = () => {
                                     )}
                                 </div>
                               )}
+
+                            {/* Courier Information */}
+                            {(order.courier_tracking_no ||
+                              order.courier_company) && (
+                              <div className="pt-2 border-t theme-border-secondary">
+                                <div className="flex items-start space-x-2">
+                                  <Truck className="w-4 h-4 theme-text-tertiary mt-0.5 flex-shrink-0" />
+                                  <div className="flex-1 min-w-0">
+                                    {/* Mobile Layout - Stacked */}
+                                    <div className="block sm:hidden space-y-1">
+                                      {order.courier_company && (
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-xs theme-text-tertiary">
+                                            Company:
+                                          </span>
+                                          <Text className="theme-text-secondary text-xs truncate">
+                                            {order.courier_company}
+                                          </Text>
+                                        </div>
+                                      )}
+                                      {order.courier_tracking_no && (
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-xs theme-text-tertiary">
+                                            Tracking:
+                                          </span>
+                                          <Text className="theme-text-primary text-xs font-medium truncate">
+                                            {order.courier_tracking_no}
+                                          </Text>
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    {/* Desktop Layout - Side by Side */}
+                                    <div className="hidden sm:flex items-center justify-between gap-4">
+                                      {order.courier_company && (
+                                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                                          <span className="text-xs theme-text-tertiary whitespace-nowrap">
+                                            Company:
+                                          </span>
+                                          <Text className="theme-text-secondary text-xs truncate">
+                                            {order.courier_company}
+                                          </Text>
+                                        </div>
+                                      )}
+                                      {order.courier_tracking_no && (
+                                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                                          <span className="text-xs theme-text-tertiary whitespace-nowrap">
+                                            Tracking:
+                                          </span>
+                                          <Text className="theme-text-primary text-xs font-medium truncate">
+                                            {order.courier_tracking_no}
+                                          </Text>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
 
                             {/* Order Total (if available) */}
                             {/* <div className="pt-2 border-t border-gray-700">

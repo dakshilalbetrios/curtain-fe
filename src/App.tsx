@@ -15,7 +15,6 @@ import { Dashboard } from "./components/Dashboard/Dashboard";
 import { CollectionList } from "./components/Collections/CollectionList";
 import { CollectionDetail } from "./components/Collections/CollectionDetail";
 import { OrderList } from "./components/Orders/OrderList";
-import { OrderDetail } from "./components/Orders/OrderDetail";
 import { OrderManagement } from "./components/Orders/OrderManagement";
 import { NewOrder } from "./components/Orders/NewOrder";
 import { RetailerList } from "./components/Users/UserList";
@@ -124,14 +123,6 @@ const AppRoutes: React.FC = () => {
           element={
             <PrivateRoute>
               <NewOrder />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/orders/:id"
-          element={
-            <PrivateRoute>
-              <OrderDetail />
             </PrivateRoute>
           }
         />
