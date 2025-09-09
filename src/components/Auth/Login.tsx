@@ -111,7 +111,7 @@ export const Login: React.FC = () => {
         message.success("Login successful!");
         // Small delay to show success message before redirect
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/orders");
         }, 500);
       } else {
         message.error("Invalid mobile number or password");

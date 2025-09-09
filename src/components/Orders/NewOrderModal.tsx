@@ -168,10 +168,12 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
         `Added ${quantity} ${serialNumber.unit} of ${serialNumber.sr_no} to cart`
       );
 
-      // Reset form
+      // Reset form and close modal
       setSelectedCollection(null);
       setSelectedSerialNumber(null);
       setQuantity(1);
+      setQuantityError("");
+      onClose();
     } catch (error) {
       console.error("Failed to add to cart:", error);
       message.error("Failed to add item to cart");

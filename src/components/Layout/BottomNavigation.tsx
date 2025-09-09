@@ -1,6 +1,14 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Package, ShoppingBag, User, Users, Plus } from "lucide-react";
+import {
+  Home,
+  Package,
+  ShoppingBag,
+  User,
+  Users,
+  Plus,
+  TrendingUp,
+} from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 export const BottomNavigation: React.FC = () => {
@@ -9,13 +17,28 @@ export const BottomNavigation: React.FC = () => {
   const { user } = useAuth();
 
   const navItems = [
-    { key: "dashboard", icon: Home, label: "Dashboard", path: "/dashboard" },
-    {
-      key: "collections",
-      icon: Package,
-      label: "Collections",
-      path: "/collections",
-    },
+    // { key: "dashboard", icon: Home, label: "Dashboard", path: "/dashboard" },
+    ...(user?.role === "ADMIN" || user?.role === "SALES"
+      ? [
+          {
+            key: "Reports",
+            icon: TrendingUp,
+            label: "Reports",
+            path: "/reports",
+          },
+        ]
+      : []),
+    ...(user?.role === "ADMIN" || user?.role === "SALES"
+      ? [
+          {
+            key: "collections",
+            icon: Package,
+            label: "Collections",
+            path: "/collections",
+          },
+        ]
+      : []),
+
     { key: "orders", icon: ShoppingBag, label: "Orders", path: "/orders" },
     ...(user?.role === "CUSTOMER"
       ? [
@@ -49,8 +72,8 @@ export const BottomNavigation: React.FC = () => {
     const currentPath = location.pathname;
 
     switch (navItem.key) {
-      case "dashboard":
-        return currentPath === "/dashboard";
+      // case "dashboard":
+      //   return currentPath === "/dashboard";
 
       case "collections":
         return (

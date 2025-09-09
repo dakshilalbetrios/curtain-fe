@@ -38,27 +38,6 @@ export const Header: React.FC<HeaderProps> = ({
     navigate("/login");
   };
 
-  const getPageTitle = () => {
-    if (title) return title;
-
-    switch (location.pathname) {
-      case "/dashboard":
-        return "";
-      case "/collections":
-        return "";
-      case "/orders":
-        return "";
-      case "/users":
-        return "";
-      case "/profile":
-        return "";
-      case "/cart":
-        return "";
-      default:
-        return "Dashboard";
-    }
-  };
-
   return (
     <div className="sticky top-0 left-0 right-0 z-50 px-4 py-3 theme-shadow-md theme-bg-elevated theme-text-primary border-b theme-border-primary">
       <div className="flex items-center justify-between mx-auto">

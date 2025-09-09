@@ -1,6 +1,13 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Package, ShoppingBag, Users, User, Plus } from "lucide-react";
+import {
+  Package,
+  ShoppingBag,
+  Users,
+  User,
+  Plus,
+  TrendingUp,
+} from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 export const Sidebar: React.FC = () => {
@@ -9,13 +16,28 @@ export const Sidebar: React.FC = () => {
   const { user } = useAuth();
 
   const menuItems = [
-    { key: "dashboard", icon: Home, label: "Dashboard", path: "/dashboard" },
-    {
-      key: "collections",
-      icon: Package,
-      label: "Collections",
-      path: "/collections",
-    },
+    // { key: "dashboard", icon: Home, label: "Dashboard", path: "/dashboard" },
+    ...(user?.role === "ADMIN" || user?.role === "SALES"
+      ? [
+          {
+            key: "Reports",
+            icon: TrendingUp,
+            label: "Reports",
+            path: "/reports",
+          },
+        ]
+      : []),
+
+    ...(user?.role === "ADMIN" || user?.role === "SALES"
+      ? [
+          {
+            key: "collections",
+            icon: Package,
+            label: "Collections",
+            path: "/collections",
+          },
+        ]
+      : []),
     {
       key: "orders",
       icon: ShoppingBag,
@@ -59,8 +81,8 @@ export const Sidebar: React.FC = () => {
     const currentPath = location.pathname;
 
     switch (navItem.key) {
-      case "dashboard":
-        return currentPath === "/dashboard";
+      // case "dashboard":
+      //   return currentPath === "/dashboard";
 
       case "collections":
         return (
@@ -83,6 +105,9 @@ export const Sidebar: React.FC = () => {
           currentPath === "/profile/edit" ||
           currentPath === "/profile/change-password"
         );
+
+      case "Reports":
+        return currentPath === "/reports";
 
       default:
         return currentPath === navItem.path;

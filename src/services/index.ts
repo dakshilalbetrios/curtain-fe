@@ -4,9 +4,10 @@ import { userService, type UserResponse, type CreateRetailerRequest, type Update
 import { collectionService, type CollectionResponse, type CollectionSerialNumber, type CreateCollectionRequest, type UpdateCollectionRequest, type UpdateStockRequest } from './collection';
 import { type ApiResponse } from './types';
 import { orderService, type OrderResponse, type OrderItem, type CreateOrderRequest, type UpdateOrderStatusRequest } from './order';
+import { reportService, type ReportRequest, type ReportResponse, type MostOrderedSerialNumbersReport, type CustomerCollectionOrdersReport, type CustomerOrderSummaryReport, type CollectionPerformanceReport } from './report';
 
 // Re-export services
-export { authService, userService, collectionService, orderService };
+export { authService, userService, collectionService, orderService, reportService };
 
 // Re-export types
 export type {
@@ -25,6 +26,12 @@ export type {
   OrderItem,
   CreateOrderRequest,
   UpdateOrderStatusRequest,
+  ReportRequest,
+  ReportResponse,
+  MostOrderedSerialNumbersReport,
+  CustomerCollectionOrdersReport,
+  CustomerOrderSummaryReport,
+  CollectionPerformanceReport,
   ApiResponse,
 };
 

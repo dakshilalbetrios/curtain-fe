@@ -10,7 +10,7 @@ import {
   Input,
   Divider,
 } from "antd";
-import { Save, User, Package, Search } from "lucide-react";
+import { User, Package } from "lucide-react";
 import { userService, UserResponse } from "../../services";
 import { collectionService, CollectionResponse } from "../../services";
 
@@ -27,12 +27,11 @@ interface ManageCollectionAccessDrawerProps {
   visible: boolean;
   onClose: () => void;
   userId: number | null;
-  onSuccess?: () => void;
 }
 
 export const ManageCollectionAccessDrawer: React.FC<
   ManageCollectionAccessDrawerProps
-> = ({ visible, onClose, userId, onSuccess }) => {
+> = ({ visible, onClose, userId }) => {
   const [user, setUser] = useState<UserResponse | null>(null);
   const [collections, setCollections] = useState<CollectionResponse[]>([]);
   const [collectionAccess, setCollectionAccess] = useState<
@@ -185,31 +184,6 @@ export const ManageCollectionAccessDrawer: React.FC<
     }
   };
 
-  const handleSave = async () => {
-    // Since we're now making API calls immediately when buttons are clicked,
-    // this function just closes the drawer and calls onSuccess
-    message.success("All changes have been saved!");
-    onSuccess?.();
-    onClose();
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "ACTIVE":
-        return "green";
-      case "INACTIVE":
-        return "red";
-      case "PENDING":
-        return "orange";
-      case "SUSPENDED":
-        return "purple";
-      case "EXPIRED":
-        return "gray";
-      default:
-        return "default";
-    }
-  };
-
   const renderCollectionItem = (collection: CollectionResponse) => {
     const access = collectionAccess.find(
       (item) => item.collectionId === collection.id
@@ -276,23 +250,8 @@ export const ManageCollectionAccessDrawer: React.FC<
         open={visible}
         width={600}
         className="collection-access-drawer"
-        footer={
-          <div className="flex justify-end space-x-2">
-            <Button onClick={onClose} className="theme-button">
-              Cancel
-            </Button>
-            <Button
-              type="primary"
-              icon={<Save className="w-4 h-4" />}
-              onClick={handleSave}
-              className="bg-purple-600 hover:bg-purple-700 border-purple-600"
-            >
-              Close
-            </Button>
-          </div>
-        }
       >
-        <div className="space-y-6">
+        <div className="space-y-3">
           {/* User Info */}
           {loading ? (
             <Card className="theme-card">
@@ -324,18 +283,17 @@ export const ManageCollectionAccessDrawer: React.FC<
             </Card>
           ) : null}
 
-          {/* Search */}
-          <div className="space-y-2">
-            <Text className="theme-text-secondary font-medium">
-              Search Collections
-            </Text>
-            <AntSearch
-              placeholder="Search collections by name..."
-              onChange={handleSearchChange}
-              className="w-full"
-              size="large"
-              allowClear
-            />
+          {/* Sticky Search */}
+          <div className="sticky -top-6 z-10 bg-white dark:bg-gray-900 pt-4 pb-4 -mx-6 px-6">
+            <div className="space-y-2">
+              <AntSearch
+                placeholder="Search collections by name..."
+                onChange={handleSearchChange}
+                className="w-full"
+                size="large"
+                allowClear
+              />
+            </div>
           </div>
 
           {/* Active Collections Section */}

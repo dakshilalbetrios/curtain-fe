@@ -11,15 +11,14 @@ import { CartProvider } from "./context/CartContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { Login } from "./components/Auth/Login";
 import { SetPassword } from "./components/Auth/SetPassword";
-import { Dashboard } from "./components/Dashboard/Dashboard";
 import { CollectionList } from "./components/Collections/CollectionList";
-import { CollectionDetail } from "./components/Collections/CollectionDetail";
 import { OrderList } from "./components/Orders/OrderList";
 import { OrderManagement } from "./components/Orders/OrderManagement";
 import { NewOrder } from "./components/Orders/NewOrder";
 import { RetailerList } from "./components/Users/UserList";
 import { Profile } from "./components/Profile/Profile";
 import { Cart } from "./components/Cart/Cart";
+import { Reports } from "./components/Reports/Reports";
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -66,7 +65,7 @@ const AppRoutes: React.FC = () => {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
               </div>
             ) : isAuthenticated ? (
-              <Navigate to="/dashboard" />
+              <Navigate to="/orders" />
             ) : (
               <Login />
             )
@@ -80,33 +79,25 @@ const AppRoutes: React.FC = () => {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
               </div>
             ) : isAuthenticated ? (
-              <Navigate to="/dashboard" />
+              <Navigate to="/orders" />
             ) : (
               <SetPassword />
             )
           }
         />
-        <Route
+        {/* <Route
           path="/dashboard"
           element={
             <PrivateRoute>
               <Dashboard />
             </PrivateRoute>
           }
-        />
+        /> */}
         <Route
           path="/collections"
           element={
             <PrivateRoute>
               <CollectionList />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/collections/:id"
-          element={
-            <PrivateRoute>
-              <CollectionDetail />
             </PrivateRoute>
           }
         />
@@ -159,6 +150,14 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
+          path="/reports"
+          element={
+            <PrivateRoute>
+              <Reports />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/"
           element={
             loading ? (
@@ -166,7 +165,7 @@ const AppRoutes: React.FC = () => {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
               </div>
             ) : (
-              <Navigate to="/dashboard" />
+              <Navigate to="/orders" />
             )
           }
         />
