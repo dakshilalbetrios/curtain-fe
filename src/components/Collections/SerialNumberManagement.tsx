@@ -14,17 +14,10 @@ import {
   message,
   Space,
 } from "antd";
-import {
-  Plus,
-  Trash2,
-  Package,
-  Minus,
-  ShoppingCart,
-  PlusCircle,
-} from "lucide-react";
+import { Plus, Trash2, Package, PlusCircle } from "lucide-react";
 import { collectionService, CollectionSerialNumber } from "../../services";
 import { useAuth } from "../../context/AuthContext";
-import { useCart } from "../../context/CartContext";
+
 const { Title, Text } = Typography;
 const { Option } = Select;
 const { TextArea } = Input;
@@ -62,12 +55,9 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
   const { user } = useAuth();
-  const { addToCart } = useCart();
 
   const isWholesaler = user?.role === "ADMIN" || user?.role === "SALES";
-  const isRetailer = user?.role === "CUSTOMER";
 
   const handleAddSerialNumber = async (values: AddSerialNumberFormData) => {
     setLoading(true);
@@ -134,37 +124,6 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
     setEditModalVisible(true);
   };
 
-  const handleQuantityChange = (srNoId: number, value: number | null) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [srNoId]: value || 0,
-    }));
-  };
-
-  const handleAddToCart = (srNo: CollectionSerialNumber) => {
-    const quantity = quantities[srNo.id] || 0;
-    if (quantity <= 0) {
-      message.error("Please enter a valid quantity");
-      return;
-    }
-    if (quantity > parseFloat(srNo.current_stock)) {
-      message.error("Quantity exceeds available stock");
-      return;
-    }
-
-    addToCart({
-      collection_sr_no_id: srNo.id,
-      sr_no: srNo.sr_no,
-      collection_name: collectionName,
-      quantity: quantity,
-      unit: srNo.unit,
-      available_stock: parseFloat(srNo.current_stock),
-    });
-
-    message.success("Added to cart successfully");
-    setQuantities((prev) => ({ ...prev, [srNo.id]: 0 }));
-  };
-
   const getStockStatus = (
     currentStock: string,
     minStock: string,
@@ -184,69 +143,73 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
   };
 
   return (
-    <div className="space-y-4">
-      {/* Header with Add Button */}
+    <div className="flex flex-col h-full min-h-0 max-h-full">
+      {/* Fixed Header Section */}
       {isWholesaler && (
-        <div className="flex justify-between items-center sticky top-0 z-10 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 pt-4 -mx-4 px-4">
-          <Title level={4} className="!theme-text-primary !mb-0">
-            Serial Numbers ({serialNumbers.length})
-          </Title>
-          <Button
-            type="primary"
-            icon={<Plus className="w-4 h-4" />}
-            onClick={() => setAddModalVisible(true)}
-            className="bg-purple-600 hover:bg-purple-700 border-purple-600"
-          >
-            Add Serial Number
-          </Button>
+        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 -mx-4 px-4 flex-shrink-0">
+          <div className="flex justify-between items-center">
+            <Title level={4} className="!theme-text-primary !mb-0">
+              {collectionName} ({serialNumbers.length})
+            </Title>
+            <Button
+              type="primary"
+              icon={<Plus className="w-4 h-4" />}
+              onClick={() => setAddModalVisible(true)}
+              className="bg-purple-600 hover:bg-purple-700 border-purple-600"
+            >
+              Add Serial Number
+            </Button>
+          </div>
         </div>
       )}
 
-      {/* Serial Numbers Grid */}
-      <Row gutter={[16, 16]}>
-        {serialNumbers.map((srNo) => {
-          const stockStatus = getStockStatus(
-            srNo.current_stock,
-            srNo.min_stock,
-            srNo.max_stock
-          );
-          const stockPercentage =
-            (parseFloat(srNo.current_stock) / parseFloat(srNo.max_stock)) * 100;
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden pt-4 min-h-0 max-h-full -mr-4 pr-4 pb-16 lg:pb-6">
+        {/* Serial Numbers Grid */}
+        <Row gutter={[16, 16]}>
+          {serialNumbers.map((srNo) => {
+            const stockStatus = getStockStatus(
+              srNo.current_stock,
+              srNo.min_stock,
+              srNo.max_stock
+            );
+            const stockPercentage =
+              (parseFloat(srNo.current_stock) / parseFloat(srNo.max_stock)) *
+              100;
 
-          return (
-            <Col xs={24} sm={12} lg={8} key={srNo.id}>
-              <Card className="theme-card h-full">
-                <div className="space-y-4 h-full flex flex-col">
-                  {/* Header */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-                        <Package className="w-4 h-4 text-white" />
+            return (
+              <Col xs={24} sm={12} lg={8} key={srNo.id}>
+                <Card className="theme-card h-full">
+                  <div className="space-y-4 h-full flex flex-col">
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                          <Package className="w-4 h-4 text-white" />
+                        </div>
+                        <Title level={5} className="!theme-text-primary !mb-0">
+                          {srNo.sr_no}
+                        </Title>
                       </div>
-                      <Title level={5} className="!theme-text-primary !mb-0">
-                        {srNo.sr_no}
-                      </Title>
+                      {isWholesaler && (
+                        <Space>
+                          <Button
+                            type="link"
+                            icon={<PlusCircle className="w-4 h-4" />}
+                            onClick={() => openEditModal(srNo)}
+                            className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto"
+                          />
+                          <Button
+                            type="link"
+                            icon={<Trash2 className="w-4 h-4" />}
+                            onClick={() => handleDeleteSerialNumber(srNo)}
+                            className="!text-red-400 hover:!text-red-300 !p-0 !h-auto"
+                          />
+                        </Space>
+                      )}
                     </div>
-                    {isWholesaler && (
-                      <Space>
-                        <Button
-                          type="link"
-                          icon={<PlusCircle className="w-4 h-4" />}
-                          onClick={() => openEditModal(srNo)}
-                          className="!text-purple-400 hover:!text-purple-300 !p-0 !h-auto"
-                        />
-                        <Button
-                          type="link"
-                          icon={<Trash2 className="w-4 h-4" />}
-                          onClick={() => handleDeleteSerialNumber(srNo)}
-                          className="!text-red-400 hover:!text-red-300 !p-0 !h-auto"
-                        />
-                      </Space>
-                    )}
-                  </div>
 
-                  {/* Stock Status and Unit */}
-                  {isWholesaler && (
+                    {/* Stock Status and Unit */}
                     <div className="flex items-center justify-between">
                       <Tag
                         color={stockStatus.color}
@@ -258,10 +221,8 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                         {srNo.unit.toUpperCase()}
                       </Text>
                     </div>
-                  )}
 
-                  {/* Stock Progress */}
-                  {isWholesaler && (
+                    {/* Stock Progress */}
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
                         <Text className="theme-text-secondary text-sm">
@@ -296,95 +257,13 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
                         </div>
                       </div>
                     </div>
-                  )}
-
-                  {/* Cart Functionality for Retailers */}
-                  {isRetailer && parseFloat(srNo.current_stock) > 0 && (
-                    <div className="space-y-4 pt-4 border-t theme-border-secondary mt-auto">
-                      <div className="space-y-2">
-                        <Text className="theme-text-secondary text-sm font-medium">
-                          Quantity:
-                        </Text>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            icon={<Minus className="w-4 h-4" />}
-                            onClick={() =>
-                              handleQuantityChange(
-                                srNo.id,
-                                Math.max(0, (quantities[srNo.id] || 0) - 1)
-                              )
-                            }
-                            disabled={(quantities[srNo.id] || 0) <= 0}
-                            className="w-10 h-10 p-0 rounded-full flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
-                            style={{ minWidth: "40px", minHeight: "40px" }}
-                          />
-                          <InputNumber
-                            min={0}
-                            max={parseFloat(srNo.current_stock)}
-                            step={0.5}
-                            value={quantities[srNo.id] || 0}
-                            onChange={(value) =>
-                              handleQuantityChange(srNo.id, value)
-                            }
-                            className="flex-1 theme-input !align-center !justify-center !border-none"
-                            controls={false}
-                            style={{
-                              height: "40px",
-                              textAlign: "center",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          />
-                          <Button
-                            icon={<Plus className="w-4 h-4" />}
-                            onClick={() =>
-                              handleQuantityChange(
-                                srNo.id,
-                                Math.min(
-                                  parseFloat(srNo.current_stock),
-                                  (quantities[srNo.id] || 0) + 1
-                                )
-                              )
-                            }
-                            disabled={
-                              (quantities[srNo.id] || 0) >=
-                              parseFloat(srNo.current_stock)
-                            }
-                            className="w-10 h-10 p-0 rounded-full flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
-                            style={{ minWidth: "40px", minHeight: "40px" }}
-                          />
-                        </div>
-                      </div>
-
-                      <Button
-                        type="primary"
-                        icon={<ShoppingCart className="w-4 h-4" />}
-                        onClick={() => handleAddToCart(srNo)}
-                        disabled={(quantities[srNo.id] || 0) <= 0}
-                        className="w-full bg-purple-600 hover:bg-purple-700 border-purple-600 h-10 font-medium"
-                      >
-                        Add to Cart
-                      </Button>
-                    </div>
-                  )}
-
-                  {isRetailer && parseFloat(srNo.current_stock) === 0 && (
-                    <div className="pt-4 border-t theme-border-secondary mt-auto">
-                      <Button
-                        disabled
-                        className="w-full h-10 theme-bg-tertiary theme-text-tertiary theme-border-secondary"
-                      >
-                        Out of Stock
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </Card>
-            </Col>
-          );
-        })}
-      </Row>
+                  </div>
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+      </div>
 
       {/* Add Serial Number Modal */}
       <Modal

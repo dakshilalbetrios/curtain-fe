@@ -82,16 +82,14 @@ export const CollectionDetail: React.FC = () => {
   const serialNumbers = collection.serial_numbers || [];
 
   return (
-    <MainLayout title={collection.name} showBack={true} showCart={true}>
-      <div className="space-y-6">
-        {/* Serial Numbers */}
-        <SerialNumberManagement
-          collectionId={collection?.id || 0}
-          serialNumbers={serialNumbers}
-          onSerialNumbersUpdate={fetchCollection}
-          collectionName={collection?.name || ""}
-        />
-      </div>
+    <MainLayout title="" showBack={true} showCart={true}>
+      {/* Serial Numbers */}
+      <SerialNumberManagement
+        collectionId={collection?.id || 0}
+        serialNumbers={serialNumbers}
+        onSerialNumbersUpdate={fetchCollection}
+        collectionName={collection?.name || ""}
+      />
     </MainLayout>
   );
 };

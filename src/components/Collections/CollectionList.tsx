@@ -25,8 +25,6 @@ import {
   Upload as UploadIcon,
   Download,
   RefreshCw,
-  Search,
-  X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";

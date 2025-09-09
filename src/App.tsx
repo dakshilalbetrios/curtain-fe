@@ -12,6 +12,7 @@ import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { Login } from "./components/Auth/Login";
 import { SetPassword } from "./components/Auth/SetPassword";
 import { CollectionList } from "./components/Collections/CollectionList";
+import { CollectionDetail } from "./components/Collections/CollectionDetail";
 import { OrderList } from "./components/Orders/OrderList";
 import { OrderManagement } from "./components/Orders/OrderManagement";
 import { NewOrder } from "./components/Orders/NewOrder";
@@ -98,6 +99,14 @@ const AppRoutes: React.FC = () => {
           element={
             <PrivateRoute>
               <CollectionList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/collections/:id"
+          element={
+            <PrivateRoute>
+              <CollectionDetail />
             </PrivateRoute>
           }
         />
