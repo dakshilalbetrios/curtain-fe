@@ -4,7 +4,7 @@ import { ArrowLeft, ShoppingCart, Bell, LogOut, Sun, Moon } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { useTheme } from "../../context/ThemeContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -23,7 +23,6 @@ export const Header: React.FC<HeaderProps> = ({
   const { getTotalItems } = useCart();
   const { toggleTheme, isDark } = useTheme();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleBack = () => {
     navigate(-1);
@@ -39,8 +38,11 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <div className="sticky top-0 left-0 right-0 z-50 px-4 py-3 theme-shadow-md theme-bg-elevated theme-text-primary border-b theme-border-primary">
-      <div className="flex items-center justify-between mx-auto">
+    <div
+      className="w-full px-4 py-3 theme-shadow-md theme-bg-elevated theme-text-primary border-b theme-border-primary"
+      style={{ height: "64px" }}
+    >
+      <div className="flex items-center justify-between w-full">
         <div className="flex items-center space-x-3">
           {showBack && (
             <Button
@@ -51,14 +53,29 @@ export const Header: React.FC<HeaderProps> = ({
             />
           )}
 
-          {/* YD Logo */}
-          <div className="lg:hidden w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/25">
-            <span className="text-white font-bold text-sm">YD</span>
+          {/* Responsive Logo */}
+          <div className="flex items-center space-x-3">
+            {/* YD Logo - Always visible */}
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/25">
+              <span className="text-white font-bold text-sm">YD</span>
+            </div>
+
+            {/* Full Logo - Only visible on lg screens and up */}
+            <div className="hidden lg:block">
+              <h1 className="text-lg font-bold theme-text-primary">
+                Yamini Drape
+              </h1>
+              <p className="text-xs theme-text-tertiary -mt-1">
+                Curtain Solutions
+              </p>
+            </div>
           </div>
 
-          <Title level={4} className="!theme-text-primary !mb-0">
-            {title}
-          </Title>
+          {title && (
+            <Title level={4} className="!theme-text-primary !mb-0">
+              {title}
+            </Title>
+          )}
         </div>
 
         <div className="flex items-center space-x-2">
