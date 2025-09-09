@@ -697,7 +697,7 @@ export const OrderList: React.FC = () => {
                 <>
                   <Row gutter={[16, 16]}>
                     {orders.map((order) => (
-                      <Col xs={24} sm={12} lg={8} xl={6} key={order.id}>
+                      <Col xs={24} sm={12} lg={8} xl={8} xxl={6} key={order.id}>
                         <Card
                           hoverable
                           onClick={() => handleOrderClick(order.id)}
