@@ -10,13 +10,7 @@ import {
   Empty,
   InputNumber,
 } from "antd";
-import {
-  Edit,
-  Trash2,
-  Plus,
-  Minus,
-  Package,
-} from "lucide-react";
+import { Edit, Trash2, Plus, Minus, Package } from "lucide-react";
 import { OrderResponse, CollectionResponse } from "../../services";
 
 const { Title, Text } = Typography;
@@ -83,9 +77,7 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
         </div>
       ) : accessibleCollections.length === 0 ? (
         <Empty
-          image={
-            <Package className="w-16 h-16 theme-text-tertiary mx-auto" />
-          }
+          image={<Package className="w-16 h-16 theme-text-tertiary mx-auto" />}
           description={
             <div className="text-center">
               <Title level={5} className="!theme-text-secondary !mb-2">
@@ -195,10 +187,7 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
                               ? collections
                               : accessibleCollections
                             ).map((collection) => (
-                              <Option
-                                key={collection.id}
-                                value={collection.id}
-                              >
+                              <Option key={collection.id} value={collection.id}>
                                 {collection.name}
                               </Option>
                             ))}
@@ -212,14 +201,9 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
                           </Text>
                           <Select
                             placeholder="Select serial number"
-                            value={
-                              selectedSerialNumbers[name] ?? undefined
-                            }
+                            value={selectedSerialNumbers[name] ?? undefined}
                             onChange={(serialNumberId) =>
-                              onSerialNumberChange(
-                                name,
-                                serialNumberId
-                              )
+                              onSerialNumberChange(name, serialNumberId)
                             }
                             className="w-full theme-input"
                             size="large"
@@ -231,16 +215,16 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
                                 .includes(input.toLowerCase())
                             }
                           >
-                            {selectedCollections[
-                              name
-                            ]?.serial_numbers?.map((serialNumber) => (
-                              <Option
-                                key={serialNumber.id}
-                                value={serialNumber.id}
-                              >
-                                {serialNumber.sr_no}
-                              </Option>
-                            ))}
+                            {selectedCollections[name]?.serial_numbers?.map(
+                              (serialNumber) => (
+                                <Option
+                                  key={serialNumber.id}
+                                  value={serialNumber.id}
+                                >
+                                  {serialNumber.sr_no}
+                                </Option>
+                              )
+                            )}
                           </Select>
                         </div>
 
@@ -355,8 +339,7 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
                                     name
                                   ]?.serial_numbers?.find(
                                     (sr) =>
-                                      sr.id ===
-                                      selectedSerialNumbers[name]
+                                      sr.id === selectedSerialNumbers[name]
                                   )?.current_stock
                                 }{" "}
                                 {
@@ -364,8 +347,7 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
                                     name
                                   ]?.serial_numbers?.find(
                                     (sr) =>
-                                      sr.id ===
-                                      selectedSerialNumbers[name]
+                                      sr.id === selectedSerialNumbers[name]
                                   )?.unit
                                 }
                               </Text>
@@ -380,12 +362,8 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
           </div>
 
           <Form.Item className="mb-0">
-            <div className="flex gap-3 justify-end">
-              <Button
-                onClick={onClose}
-                size="large"
-                className="theme-button"
-              >
+            <div className="flex gap-3 justify-end mt-4">
+              <Button onClick={onClose} size="large" className="theme-button">
                 Cancel
               </Button>
               <Button
