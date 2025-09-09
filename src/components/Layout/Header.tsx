@@ -72,7 +72,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {title && (
-            <Title level={4} className="!theme-text-primary !mb-0">
+            <Title level={4} className="!theme-text-primary !mb-0 lg:hidden">
               {title}
             </Title>
           )}
