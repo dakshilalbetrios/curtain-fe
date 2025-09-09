@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Modal,
   Form,
@@ -55,6 +55,31 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
   getAvailableStockFor,
   getUnitFor,
 }) => {
+  // Force form re-render when selectedCollections or selectedSerialNumbers change
+  useEffect(() => {
+    if (visible && editingOrder) {
+      console.log("🔍 [DEBUG] EditOrderModal useEffect triggered");
+      console.log("🔍 [DEBUG] selectedCollections:", selectedCollections);
+      console.log("🔍 [DEBUG] selectedSerialNumbers:", selectedSerialNumbers);
+      console.log("🔍 [DEBUG] Current form values:", form.getFieldsValue());
+
+      // Trigger form re-render to update the Select values
+      form.validateFields().catch(() => {
+        // Ignore validation errors, we just want to trigger a re-render
+      });
+    }
+  }, [visible, editingOrder, selectedCollections, selectedSerialNumbers, form]);
+
+  // Debug logging for modal render
+  console.log("🔍 [DEBUG] EditOrderModal rendering with:", {
+    visible,
+    editingOrderId: editingOrder?.id,
+    selectedCollections,
+    selectedSerialNumbers,
+    collectionsCount: collections.length,
+    accessibleCollectionsCount: accessibleCollections.length,
+  });
+
   return (
     <Modal
       title={
@@ -118,7 +143,6 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
                 onClick={() => {
                   const currentOrderItems =
                     form.getFieldValue("order_items") || [];
-                  const newIndex = currentOrderItems.length;
                   form.setFieldsValue({
                     order_items: [
                       ...currentOrderItems,
@@ -169,9 +193,13 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
                           <Select
                             placeholder="Select a collection"
                             value={selectedCollections[name]?.id}
-                            onChange={(collectionId) =>
-                              onCollectionChange(name, collectionId)
-                            }
+                            onChange={(collectionId) => {
+                              console.log(
+                                `🔍 [DEBUG] Collection changed for item ${name}:`,
+                                collectionId
+                              );
+                              onCollectionChange(name, collectionId);
+                            }}
                             className="w-full theme-input"
                             size="large"
                             showSearch
@@ -181,6 +209,19 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
                                 ?.toLowerCase()
                                 .includes(input.toLowerCase())
                             }
+                            onFocus={() => {
+                              console.log(
+                                `🔍 [DEBUG] Collection Select focused for item ${name}`
+                              );
+                              console.log(
+                                `🔍 [DEBUG] selectedCollections[${name}]:`,
+                                selectedCollections[name]
+                              );
+                              console.log(
+                                `🔍 [DEBUG] Current value:`,
+                                selectedCollections[name]?.id
+                              );
+                            }}
                           >
                             {(form.getFieldValue("order_items")[name]
                               ?.isExisting
@@ -202,9 +243,13 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
                           <Select
                             placeholder="Select serial number"
                             value={selectedSerialNumbers[name] ?? undefined}
-                            onChange={(serialNumberId) =>
-                              onSerialNumberChange(name, serialNumberId)
-                            }
+                            onChange={(serialNumberId) => {
+                              console.log(
+                                `🔍 [DEBUG] Serial number changed for item ${name}:`,
+                                serialNumberId
+                              );
+                              onSerialNumberChange(name, serialNumberId);
+                            }}
                             className="w-full theme-input"
                             size="large"
                             showSearch
@@ -214,6 +259,19 @@ export const EditOrderModal: React.FC<EditOrderModalProps> = ({
                                 ?.toLowerCase()
                                 .includes(input.toLowerCase())
                             }
+                            onFocus={() => {
+                              console.log(
+                                `🔍 [DEBUG] Serial Number Select focused for item ${name}`
+                              );
+                              console.log(
+                                `🔍 [DEBUG] selectedSerialNumbers[${name}]:`,
+                                selectedSerialNumbers[name]
+                              );
+                              console.log(
+                                `🔍 [DEBUG] Current value:`,
+                                selectedSerialNumbers[name]
+                              );
+                            }}
                           >
                             {selectedCollections[name]?.serial_numbers?.map(
                               (serialNumber) => (

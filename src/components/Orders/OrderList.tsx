@@ -117,14 +117,23 @@ export const OrderList: React.FC = () => {
     refresh();
   };
 
-  const fetchCollections = async () => {
-    if (collections.length > 0) return; // Already loaded
+  const fetchCollections = async (): Promise<{
+    allCollections: CollectionResponse[];
+    accessibleCollections: CollectionResponse[];
+  }> => {
+    // If already loaded, return from state immediately
+    if (collections.length > 0) {
+      return {
+        allCollections: collections,
+        accessibleCollections,
+      };
+    }
 
     setLoadingCollections(true);
     try {
       if (!user?.id) {
         message.error("User not authenticated");
-        return;
+        return { allCollections: [], accessibleCollections: [] };
       }
 
       // Get user's collection access and all collections in parallel
@@ -142,11 +151,15 @@ export const OrderList: React.FC = () => {
         activeCollectionIds.includes(collection.id)
       );
 
+      // Update state for UI rendering
       setCollections(allCollections); // Keep all collections for existing order items
       setAccessibleCollections(accessible); // Only accessible collections for new items
+
+      return { allCollections, accessibleCollections: accessible };
     } catch (error) {
       console.error("Failed to load collections:", error);
       message.error("Failed to load collections");
+      return { allCollections: [], accessibleCollections: [] };
     } finally {
       setLoadingCollections(false);
     }
@@ -258,31 +271,32 @@ export const OrderList: React.FC = () => {
 
   const handleEditOrder = async (orderId: number) => {
     try {
-      // Fetch collections first if not already loaded
-      await fetchCollections();
+      // Fetch collections and use the returned arrays (avoid stale state)
+      const { allCollections } = await fetchCollections();
 
       const { orderService } = await import("../../services");
       const order = await orderService.getOrderById(orderId);
+
       setEditingOrder(order);
       setEditModalVisible(true);
+
+      // Initialize collections and serial numbers state first
+      const newSelectedCollections: {
+        [key: number]: CollectionResponse | null;
+      } = {};
+      const newSelectedSerialNumbers: { [key: number]: number | null } = {};
 
       // Initialize form with new structure
       const orderItems =
         order.order_items?.map((item, index) => {
           // Find the collection for this serial number
-          const collection = collections.find((col) =>
+          const collection = allCollections.find((col) =>
             col.serial_numbers?.some((sr) => sr.id === item.collection_sr_no_id)
           );
 
           if (collection) {
-            setSelectedCollections((prev) => ({
-              ...prev,
-              [index]: collection,
-            }));
-            setSelectedSerialNumbers((prev) => ({
-              ...prev,
-              [index]: item.collection_sr_no_id,
-            }));
+            newSelectedCollections[index] = collection;
+            newSelectedSerialNumbers[index] = item.collection_sr_no_id;
           }
 
           return {
@@ -293,6 +307,10 @@ export const OrderList: React.FC = () => {
             isExisting: true,
           };
         }) || [];
+
+      // Set state and form values
+      setSelectedCollections(newSelectedCollections);
+      setSelectedSerialNumbers(newSelectedSerialNumbers);
 
       form.setFieldsValue({
         order_items: orderItems,
