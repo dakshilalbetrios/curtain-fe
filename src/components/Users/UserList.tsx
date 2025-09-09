@@ -9,13 +9,11 @@ import {
   Input,
   Avatar,
   Skeleton,
-  Modal,
   message,
   Dropdown,
-  Upload,
   Form,
-  Select,
   Spin,
+  Modal,
 } from "antd";
 import {
   Users,
@@ -27,15 +25,14 @@ import {
   Trash2,
   ChevronDown,
   Upload as UploadIcon,
-  Download,
   RefreshCw,
-  Search,
 } from "lucide-react";
 import { UserResponse, CreateRetailerRequest } from "../../services";
 import { MainLayout } from "../Layout/MainLayout";
-import { TelephoneField } from "../Common/TelephoneField";
 import { useUsers } from "../../hooks/useUsers";
 import { ManageCollectionAccessDrawer } from "./ManageCollectionAccessDrawer";
+import { BulkUploadModal } from "./BulkUploadModal";
+import { SingleUserModal } from "./SingleUserModal";
 import {
   USER_ROLE,
   USER_STATUS,
@@ -47,8 +44,6 @@ import {
 
 const { Title, Text } = Typography;
 const { Search: AntSearch } = Input;
-const { Option } = Select;
-const { Dragger } = Upload;
 
 export const RetailerList: React.FC = () => {
   const [searchText, setSearchText] = useState("");
@@ -390,11 +385,6 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
     setSelectedUserId(null);
   };
 
-  const handleCollectionAccessSuccess = () => {
-    // Optionally refresh user data or show success message
-    message.success("Collection access updated successfully!");
-  };
-
   const handleDeleteRetailer = (retailerId: number, retailerName: string) => {
     Modal.confirm({
       title: "Delete Retailer",
@@ -720,222 +710,26 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
           )}
 
           {/* Bulk Upload Modal */}
-          <Modal
-            title={
-              <div className="flex items-center">
-                <UploadIcon className="w-5 h-5 mr-2 text-purple-400" />
-                <span className="theme-text-primary">Bulk Upload Users</span>
-              </div>
-            }
-            open={bulkModalVisible}
-            onCancel={() => setBulkModalVisible(false)}
-            footer={null}
-            width={600}
-            className="bulk-upload-modal"
-          >
-            <div className="space-y-4">
-              <div className="flex justify-between items-center mb-4">
-                <Text className="theme-text-secondary hidden md:block">
-                  Upload CSV file to add multiple users at once
-                </Text>
-                <Button
-                  icon={<Download className="w-4 h-4" />}
-                  onClick={downloadTemplate}
-                  className="theme-button"
-                >
-                  Download Template
-                </Button>
-              </div>
-
-              <Dragger
-                accept=".csv"
-                beforeUpload={(file) => {
-                  handleCSVUpload(file);
-                  return false; // Prevent default upload
-                }}
-                showUploadList={false}
-                className="theme-input !border-none hover:border-purple-500"
-              >
-                <div className="p-6 text-center">
-                  <UploadIcon className="w-12 h-12 theme-text-tertiary mx-auto mb-4" />
-                  <Text className="theme-text-primary text-lg block mb-2">
-                    Click or drag CSV file to upload
-                  </Text>
-                  <Text className="theme-text-secondary">
-                    Supports CSV files with users data
-                  </Text>
-                </div>
-              </Dragger>
-
-              {uploading && (
-                <div className="text-center py-4">
-                  <Text className="text-purple-400">Uploading users...</Text>
-                </div>
-              )}
-
-              <div className="mt-4 p-3 theme-bg-tertiary rounded-lg">
-                <Text className="theme-text-secondary text-sm">
-                  <strong>CSV Format Requirements:</strong>
-                </Text>
-                <ul className="theme-text-tertiary text-xs mt-2 space-y-1">
-                  <li>
-                    • Required columns: name, mobile_no, shop_name, role, status
-                  </li>
-                  <li>
-                    • Role must be one of: {Object.values(USER_ROLE).join(", ")}
-                  </li>
-                  <li>
-                    • Status must be one of:{" "}
-                    {Object.values(USER_STATUS).join(", ")}
-                  </li>
-                  <li>• Mobile number must be 10 digits</li>
-                  <li>• Download template for reference</li>
-                </ul>
-              </div>
-            </div>
-          </Modal>
+          <BulkUploadModal
+            visible={bulkModalVisible}
+            onClose={() => setBulkModalVisible(false)}
+            onUpload={handleCSVUpload}
+            uploading={uploading}
+            onDownloadTemplate={downloadTemplate}
+          />
 
           {/* Single User Modal */}
-          <Modal
-            title={
-              <div className="flex items-center mb-2">
-                {editingUser ? (
-                  <Edit className="w-5 h-5 mr-2 text-purple-400" />
-                ) : (
-                  <Plus className="w-5 h-5 mr-2 text-purple-400" />
-                )}
-                <span className="theme-text-primary">
-                  {editingUser ? "Edit User" : "Add New User"}
-                </span>
-              </div>
-            }
-            open={singleModalVisible}
-            onCancel={() => {
+          <SingleUserModal
+            visible={singleModalVisible}
+            onClose={() => {
               setSingleModalVisible(false);
               setEditingUser(null);
               form.resetFields();
             }}
-            footer={null}
-            width={600}
-            className="single-user-modal"
-          >
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleSingleUserSubmit}
-              initialValues={{
-                role: USER_ROLE.CUSTOMER,
-                status: USER_STATUS.ACTIVE,
-              }}
-              autoComplete="off"
-            >
-              <Form.Item
-                label={<span className="theme-text-secondary">Name</span>}
-                name="name"
-                rules={[{ required: true, message: "Please enter user name" }]}
-              >
-                <Input
-                  placeholder="Enter user name"
-                  className="theme-input"
-                  size="large"
-                  autoComplete="off"
-                />
-              </Form.Item>
-
-              <Form.Item
-                label={
-                  <span className="theme-text-secondary">Mobile Number</span>
-                }
-                name="mobile_no"
-                rules={[
-                  { required: true, message: "Please enter mobile number" },
-                  {
-                    pattern: /^\d{10}$/,
-                    message: "Please enter valid 10-digit mobile number",
-                  },
-                ]}
-              >
-                <TelephoneField
-                  placeholder="Enter mobile number"
-                  size="large"
-                  maxLength={10}
-                  className="h-11 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-lg"
-                />
-              </Form.Item>
-
-              <Form.Item
-                label={<span className="theme-text-secondary">Shop Name</span>}
-                name="shop_name"
-                rules={[{ required: true, message: "Please enter shop name" }]}
-              >
-                <Input
-                  placeholder="Enter shop name"
-                  className="theme-input"
-                  size="large"
-                />
-              </Form.Item>
-
-              <Form.Item
-                label={<span className="theme-text-secondary">Role</span>}
-                name="role"
-                rules={[{ required: true, message: "Please select role" }]}
-              >
-                <Select
-                  placeholder="Select role"
-                  className="theme-input"
-                  size="large"
-                >
-                  {Object.entries(USER_ROLE).map(([key, value]) => (
-                    <Option key={value} value={value}>
-                      {ROLE_LABELS[value]}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                label={<span className="theme-text-secondary">Status</span>}
-                name="status"
-                rules={[{ required: true, message: "Please select status" }]}
-              >
-                <Select
-                  placeholder="Select status"
-                  className="theme-input"
-                  size="large"
-                >
-                  {Object.entries(USER_STATUS).map(([key, value]) => (
-                    <Option key={value} value={value}>
-                      {STATUS_LABELS[value]}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-
-              <Form.Item className="mb-0">
-                <div className="flex gap-3 justify-end">
-                  <Button
-                    onClick={() => {
-                      setSingleModalVisible(false);
-                      setEditingUser(null);
-                      form.resetFields();
-                    }}
-                    size="large"
-                    className="theme-button"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    size="large"
-                    className="bg-purple-600 hover:bg-purple-700 border-purple-600"
-                  >
-                    {editingUser ? "Update User" : "Add User"}
-                  </Button>
-                </div>
-              </Form.Item>
-            </Form>
-          </Modal>
+            onSubmit={handleSingleUserSubmit}
+            editingUser={editingUser}
+            form={form}
+          />
 
           {/* Collection Access Management Drawer */}
           <ManageCollectionAccessDrawer

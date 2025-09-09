@@ -11,9 +11,7 @@ import {
   Modal,
   message,
   Dropdown,
-  Upload,
   Form,
-  Select,
   Spin,
 } from "antd";
 import {
@@ -22,9 +20,8 @@ import {
   Edit,
   Trash2,
   ChevronDown,
-  Upload as UploadIcon,
-  Download,
   RefreshCw,
+  UploadIcon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -36,12 +33,11 @@ import {
 } from "../../services";
 import { MainLayout } from "../Layout/MainLayout";
 import { useCollections } from "../../hooks/useCollections";
+import { BulkUploadModal } from "./BulkUploadModal";
+import { SingleCollectionModal } from "./SingleCollectionModal";
 
 const { Title, Text } = Typography;
 const { Search: AntSearch } = Input;
-const { Option } = Select;
-const { TextArea } = Input;
-const { Dragger } = Upload;
 
 export const CollectionList: React.FC = () => {
   const [searchText, setSearchText] = useState("");
@@ -711,401 +707,27 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
           )}
 
           {/* Bulk Upload Modal */}
-          <Modal
-            title={
-              <div className="flex items-center">
-                <UploadIcon className="w-5 h-5 mr-2 text-purple-400" />
-                <span className="theme-text-primary">
-                  Bulk Upload Collections
-                </span>
-              </div>
-            }
-            open={bulkModalVisible}
-            onCancel={() => setBulkModalVisible(false)}
-            footer={null}
-            width={600}
-            className="bulk-upload-modal"
-          >
-            <div className="space-y-4">
-              <div className="flex justify-between items-center mb-4">
-                <Text className="theme-text-secondary hidden md:block">
-                  Upload CSV file to add multiple collections at once
-                </Text>
-                <Button
-                  icon={<Download className="w-4 h-4" />}
-                  onClick={downloadTemplate}
-                  className="theme-button"
-                >
-                  Download Template
-                </Button>
-              </div>
-
-              <Dragger
-                accept=".csv"
-                beforeUpload={(file) => {
-                  handleCSVUpload(file);
-                  return false; // Prevent default upload
-                }}
-                showUploadList={false}
-                className="theme-input !border-none hover:border-purple-500"
-              >
-                <div className="p-6 text-center">
-                  <UploadIcon className="w-12 h-12 theme-text-tertiary mx-auto mb-4" />
-                  <Text className="theme-text-primary text-lg block mb-2">
-                    Click or drag CSV file to upload
-                  </Text>
-                  <Text className="theme-text-secondary">
-                    Supports CSV files with collections data
-                  </Text>
-                </div>
-              </Dragger>
-
-              {uploading && (
-                <div className="text-center py-4">
-                  <Text className="text-purple-400">
-                    Uploading collections...
-                  </Text>
-                </div>
-              )}
-
-              <div className="mt-4 p-3 theme-bg-tertiary rounded-lg">
-                <Text className="theme-text-secondary text-sm">
-                  <strong>CSV Format Requirements:</strong>
-                </Text>
-                <ul className="theme-text-tertiary text-xs mt-2 space-y-1">
-                  <li>
-                    • Required columns: collection_name, description, sr_no,
-                    min_stock, max_stock, current_stock, unit
-                  </li>
-                  <li>• Unit must be either "mtr" or "pcs"</li>
-                  <li>• Stock values must be numeric</li>
-                  <li>• Download template for reference</li>
-                </ul>
-              </div>
-            </div>
-          </Modal>
+          <BulkUploadModal
+            visible={bulkModalVisible}
+            onClose={() => setBulkModalVisible(false)}
+            onUpload={handleCSVUpload}
+            uploading={uploading}
+            onDownloadTemplate={downloadTemplate}
+          />
 
           {/* Single Collection Modal */}
-          <Modal
-            title={
-              <div className="flex items-center mb-2">
-                {editingCollection ? (
-                  <Edit className="w-5 h-5 mr-2 text-purple-400" />
-                ) : (
-                  <Plus className="w-5 h-5 mr-2 text-purple-400" />
-                )}
-                <span className="theme-text-primary">
-                  {editingCollection ? "Edit Collection" : "Add New Collection"}
-                </span>
-              </div>
-            }
-            open={singleModalVisible}
-            onCancel={() => {
+          <SingleCollectionModal
+            visible={singleModalVisible}
+            onClose={() => {
               setSingleModalVisible(false);
               setEditingCollection(null);
               form.resetFields();
             }}
-            footer={null}
-            width={900}
-            className="single-collection-modal"
-          >
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleSingleCollectionSubmit}
-              initialValues={{
-                serial_numbers: [
-                  {
-                    sr_no: "",
-                    min_stock: "",
-                    max_stock: "",
-                    current_stock: "",
-                    unit: "pcs",
-                    isExisting: false,
-                  },
-                ],
-              }}
-              autoComplete="off"
-            >
-              <Row gutter={16}>
-                <Col xs={24} md={12}>
-                  <Form.Item
-                    label={
-                      <span className="theme-text-secondary">
-                        Collection Name
-                      </span>
-                    }
-                    name="name"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter collection name",
-                      },
-                      { min: 2, message: "Name must be at least 2 characters" },
-                    ]}
-                  >
-                    <Input
-                      placeholder="Enter collection name"
-                      className="theme-input"
-                      size="large"
-                      autoComplete="off"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={12}>
-                  <Form.Item
-                    label={
-                      <span className="theme-text-secondary">Description</span>
-                    }
-                    name="description"
-                    rules={[
-                      { required: true, message: "Please enter description" },
-                      {
-                        min: 5,
-                        message: "Description must be at least 5 characters",
-                      },
-                    ]}
-                  >
-                    <TextArea
-                      placeholder="Enter collection description"
-                      className="theme-input"
-                      size="large"
-                      rows={3}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <Title level={5} className="!theme-text-primary !mb-0">
-                    Serial Numbers
-                  </Title>
-                  <Button
-                    type="dashed"
-                    icon={<Plus className="w-4 h-4" />}
-                    onClick={() => {
-                      const currentSerialNumbers =
-                        form.getFieldValue("serial_numbers") || [];
-                      form.setFieldsValue({
-                        serial_numbers: [
-                          ...currentSerialNumbers,
-                          {
-                            sr_no: "",
-                            min_stock: "",
-                            max_stock: "",
-                            current_stock: "",
-                            unit: "pcs",
-                            isExisting: false,
-                          },
-                        ],
-                      });
-                    }}
-                    className="border-purple-500 text-purple-400 hover:border-purple-400"
-                  >
-                    Add Serial Number
-                  </Button>
-                </div>
-
-                <Form.List name="serial_numbers">
-                  {(fields, { remove }) => (
-                    <div className="space-y-4">
-                      {fields.map(({ key, name, ...restField }) => (
-                        <Card
-                          key={key}
-                          className="theme-card"
-                          title={
-                            <div className="flex items-center justify-between">
-                              <Text className="theme-text-primary">
-                                Serial Number {name + 1}
-                              </Text>
-                              {fields.length > 1 && (
-                                <Button
-                                  type="text"
-                                  icon={<Trash2 className="w-4 h-4" />}
-                                  onClick={() => remove(name)}
-                                  className="text-red-400 hover:text-red-300"
-                                />
-                              )}
-                            </div>
-                          }
-                        >
-                          <Row gutter={16}>
-                            <Col xs={24} sm={12} md={6}>
-                              <Form.Item
-                                {...restField}
-                                name={[name, "sr_no"]}
-                                label={
-                                  <span className="theme-text-secondary">
-                                    Serial Number
-                                  </span>
-                                }
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please enter serial number",
-                                  },
-                                ]}
-                              >
-                                <Input
-                                  placeholder="e.g., SR-001"
-                                  className="theme-input"
-                                />
-                              </Form.Item>
-                            </Col>
-                            <Col xs={24} sm={12} md={6}>
-                              <Form.Item
-                                {...restField}
-                                name={[name, "unit"]}
-                                label={
-                                  <span className="theme-text-secondary">
-                                    Unit
-                                  </span>
-                                }
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please select unit",
-                                  },
-                                ]}
-                              >
-                                <Select
-                                  placeholder="Select unit"
-                                  className="theme-input"
-                                >
-                                  <Option value="pcs">Pieces</Option>
-                                  <Option value="mtr">Meters</Option>
-                                </Select>
-                              </Form.Item>
-                            </Col>
-                            <Col xs={24} sm={12} md={4}>
-                              <Form.Item
-                                {...restField}
-                                name={[name, "min_stock"]}
-                                label={
-                                  <span className="theme-text-secondary">
-                                    Min Stock
-                                  </span>
-                                }
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please enter min stock",
-                                  },
-                                  {
-                                    pattern: /^\d+(\.\d+)?$/,
-                                    message: "Please enter valid number",
-                                  },
-                                ]}
-                              >
-                                <Input
-                                  placeholder="0"
-                                  className="theme-input"
-                                />
-                              </Form.Item>
-                            </Col>
-                            <Col xs={24} sm={12} md={4}>
-                              <Form.Item
-                                {...restField}
-                                name={[name, "max_stock"]}
-                                label={
-                                  <span className="theme-text-secondary">
-                                    Max Stock
-                                  </span>
-                                }
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please enter max stock",
-                                  },
-                                  {
-                                    pattern: /^\d+(\.\d+)?$/,
-                                    message: "Please enter valid number",
-                                  },
-                                ]}
-                              >
-                                <Input
-                                  placeholder="100"
-                                  className="theme-input"
-                                />
-                              </Form.Item>
-                            </Col>
-                            <Col xs={24} sm={12} md={4}>
-                              <Form.Item
-                                {...restField}
-                                name={[name, "current_stock"]}
-                                label={
-                                  <span className="theme-text-secondary">
-                                    Current Stock
-                                  </span>
-                                }
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: "Please enter current stock",
-                                  },
-                                  {
-                                    pattern: /^\d+(\.\d+)?$/,
-                                    message: "Please enter valid number",
-                                  },
-                                ]}
-                              >
-                                <Input
-                                  placeholder="50"
-                                  className="theme-input"
-                                  disabled={form.getFieldValue([
-                                    "serial_numbers",
-                                    name,
-                                    "isExisting",
-                                  ])}
-                                  title={
-                                    form.getFieldValue([
-                                      "serial_numbers",
-                                      name,
-                                      "isExisting",
-                                    ])
-                                      ? "Current stock cannot be edited for existing items"
-                                      : ""
-                                  }
-                                />
-                              </Form.Item>
-                            </Col>
-                          </Row>
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-                </Form.List>
-              </div>
-
-              <Form.Item className="mb-0">
-                <div className="flex gap-3 justify-end">
-                  <Button
-                    onClick={() => {
-                      setSingleModalVisible(false);
-                      setEditingCollection(null);
-                      form.resetFields();
-                    }}
-                    size="large"
-                    className="theme-button"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={formLoading}
-                    size="large"
-                    className="bg-purple-600 hover:bg-purple-700 border-purple-600"
-                  >
-                    {editingCollection
-                      ? "Update Collection"
-                      : "Create Collection"}
-                  </Button>
-                </div>
-              </Form.Item>
-            </Form>
-          </Modal>
+            onSubmit={handleSingleCollectionSubmit}
+            editingCollection={editingCollection}
+            form={form}
+            formLoading={formLoading}
+          />
         </div>
       </div>
     </MainLayout>
