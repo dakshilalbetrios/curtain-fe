@@ -17,6 +17,7 @@ import {
 import { Plus, Trash2, Package, PlusCircle } from "lucide-react";
 import { collectionService, CollectionSerialNumber } from "../../services";
 import { useAuth } from "../../context/AuthContext";
+import { USER_ROLE } from "../../constants";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -57,7 +58,8 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
-  const isWholesaler = user?.role === "ADMIN" || user?.role === "SALES";
+  const isWholesaler =
+    user?.role === USER_ROLE.ADMIN || user?.role === USER_ROLE.SALES;
 
   const handleAddSerialNumber = async (values: AddSerialNumberFormData) => {
     setLoading(true);

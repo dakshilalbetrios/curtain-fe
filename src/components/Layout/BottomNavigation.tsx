@@ -10,6 +10,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { USER_ROLE } from "../../constants";
 
 export const BottomNavigation: React.FC = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export const BottomNavigation: React.FC = () => {
 
   const navItems = [
     // { key: "dashboard", icon: Home, label: "Dashboard", path: "/dashboard" },
-    ...(user?.role === "ADMIN" || user?.role === "SALES"
+    ...(user?.role === USER_ROLE.ADMIN || user?.role === USER_ROLE.SALES
       ? [
           {
             key: "Reports",
@@ -28,7 +29,7 @@ export const BottomNavigation: React.FC = () => {
           },
         ]
       : []),
-    ...(user?.role === "ADMIN" || user?.role === "SALES"
+    ...(user?.role === USER_ROLE.ADMIN || user?.role === USER_ROLE.SALES
       ? [
           {
             key: "collections",
@@ -50,7 +51,7 @@ export const BottomNavigation: React.FC = () => {
           },
         ]
       : []),
-    ...(user?.role === "ADMIN" || user?.role === "SALES"
+    ...(user?.role === USER_ROLE.ADMIN || user?.role === USER_ROLE.SALES
       ? [
           {
             key: "retailers",

@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { USER_ROLE } from "../../constants";
 import {
   CollectionResponse,
   CreateCollectionRequest,
@@ -54,7 +55,8 @@ export const CollectionList: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const isWholesaler = user?.role === "ADMIN" || user?.role === "SALES";
+  const isWholesaler =
+    user?.role === USER_ROLE.ADMIN || user?.role === USER_ROLE.SALES;
 
   // Debounced search function
   const debouncedSearch = useCallback(
@@ -641,7 +643,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                               </div>
                             </div>
 
-                            {user?.role === "ADMIN" && (
+                            {user?.role === USER_ROLE.ADMIN && (
                               <div className="flex items-center justify-between space-x-2 pt-2 border-t theme-border-secondary">
                                 <Button
                                   type="link"

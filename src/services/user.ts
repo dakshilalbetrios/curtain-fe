@@ -1,4 +1,5 @@
 import { BaseService, ApiResponse, PaginatedApiResponse, PaginationParams, SearchParams, CollectionAccess, CollectionAccessResponse, AddCollectionAccessRequest, UpdateCollectionAccessRequest } from './types';
+import { UserStatus, UserRole } from '../constants';
 
 // User interfaces
 export interface UserResponse {
@@ -6,8 +7,8 @@ export interface UserResponse {
   name: string;
   mobile_no: string;
   shop_name: string;
-  status: 'ACTIVE' | 'INACTIVE';
-  role: 'ADMIN' | 'SALES' | 'CUSTOMER';
+  status: UserStatus;
+  role: UserRole;
   created_at: string;
   created_by: number;
   updated_at: string | null;

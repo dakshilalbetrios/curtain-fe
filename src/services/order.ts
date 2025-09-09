@@ -1,5 +1,5 @@
 import { BaseService, ApiResponse, PaginatedApiResponse, PaginationParams, SearchParams, OrderFilterParams } from './types';
-import { ORDER_DELIVERED_DAY } from '../constants';
+import { ORDER_DELIVERED_DAY, ORDER_STATUS, OrderStatus } from '../constants';
 
 // Order interfaces
 export interface OrderItem {
@@ -24,7 +24,7 @@ export interface OrderItem {
 
 export interface OrderResponse {
   id: number;
-  status: 'PENDING' | 'APPROVED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
+  status: OrderStatus;
   created_by: number;
   created_at: string;
   updated_by: number | null;
@@ -44,7 +44,7 @@ export interface CreateOrderRequest {
 }
 
 export interface UpdateOrderStatusRequest {
-  status: 'PENDING' | 'APPROVED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
+  status: OrderStatus;
   courier_tracking_no?: string;
   courier_company?: string;
 }
@@ -167,14 +167,14 @@ export class OrderService extends BaseService {
       }
 
       if (params.status_in && params.status_in !== 'ALL') {
-        if (params.status_in === 'OVER_DUE') {
+        if (params.status_in === ORDER_STATUS.OVER_DUE) {
           // Calculate the date that is ORDER_DELIVERED_DAY days ago
           const overdueDate = new Date();
           overdueDate.setDate(overdueDate.getDate() - ORDER_DELIVERED_DAY);
 
           queryParams.append('created_at_lt', overdueDate.toISOString());
           // For overdue orders, we want PENDING, APPROVED, or SHIPPED status
-          queryParams.append('status_in', 'PENDING,APPROVED,SHIPPED');
+          queryParams.append('status_in', `${ORDER_STATUS.PENDING},${ORDER_STATUS.APPROVED},${ORDER_STATUS.SHIPPED}`);
         } else {
           queryParams.append('status_in', params.status_in);
         }
@@ -285,7 +285,7 @@ export class OrderService extends BaseService {
   }
 
   async cancelOrder(id: number): Promise<OrderResponse> {
-    return this.updateOrderStatus(id, { status: 'CANCELLED' });
+    return this.updateOrderStatus(id, { status: ORDER_STATUS.CANCELLED });
   }
 
   async getOrdersByStatus(status: OrderResponse['status']): Promise<OrderResponse[]> {

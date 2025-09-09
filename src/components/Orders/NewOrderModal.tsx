@@ -16,6 +16,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { userService } from "../../services";
 import { collectionService, CollectionResponse } from "../../services";
+import { USER_STATUS } from "../../constants";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -67,14 +68,14 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
 
       // Filter collections that user has ACTIVE access to
       const activeCollectionIds = accessData
-        .filter((access) => access.status === "ACTIVE")
+        .filter((access) => access.status === USER_STATUS.ACTIVE)
         .map((access) => access.collection_id);
 
       const accessible = allCollections
         .filter((collection) => activeCollectionIds.includes(collection.id))
         .map((collection) => ({
           ...collection,
-          accessStatus: "ACTIVE" as const,
+          accessStatus: USER_STATUS.ACTIVE,
         }));
 
       setAccessibleCollections(accessible);

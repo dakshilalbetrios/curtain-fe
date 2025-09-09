@@ -18,6 +18,7 @@ import {
   Eye,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { USER_ROLE } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { orderService, userService, collectionService } from "../../services";
 import { MainLayout } from "../Layout/MainLayout";
@@ -65,8 +66,9 @@ export const Dashboard: React.FC = () => {
     fetchDashboardData();
   }, []);
 
-  const isWholesaler = user?.role === "ADMIN" || user?.role === "SALES";
-  const isRetailer = user?.role === "CUSTOMER";
+  const isWholesaler =
+    user?.role === USER_ROLE.ADMIN || user?.role === USER_ROLE.SALES;
+  const isRetailer = user?.role === USER_ROLE.CUSTOMER;
 
   // Chart data for visualization
   const chartData = [

@@ -36,6 +36,14 @@ import { MainLayout } from "../Layout/MainLayout";
 import { TelephoneField } from "../Common/TelephoneField";
 import { useUsers } from "../../hooks/useUsers";
 import { ManageCollectionAccessDrawer } from "./ManageCollectionAccessDrawer";
+import {
+  USER_ROLE,
+  USER_STATUS,
+  ROLE_LABELS,
+  STATUS_LABELS,
+  STATUS_COLORS,
+  ROLE_COLORS,
+} from "../../constants";
 
 const { Title, Text } = Typography;
 const { Search: AntSearch } = Input;
@@ -86,7 +94,8 @@ export const RetailerList: React.FC = () => {
 
   const retailers = useMemo(() => {
     return users.filter(
-      (user) => user.role === "CUSTOMER" || user.role === "SALES"
+      (user) =>
+        user.role === USER_ROLE.CUSTOMER || user.role === USER_ROLE.SALES
     );
   }, [users]);
 
@@ -268,13 +277,13 @@ export const RetailerList: React.FC = () => {
       }
 
       // Validate role
-      if (!["ADMIN", "SALES", "CUSTOMER"].includes(role.toUpperCase())) {
+      if (!Object.values(USER_ROLE).includes(role.toUpperCase() as any)) {
         console.warn(`Skipping row ${i + 1}: invalid role ${role}`);
         continue;
       }
 
       // Validate status
-      if (!["ACTIVE", "INACTIVE"].includes(status.toUpperCase())) {
+      if (!Object.values(USER_STATUS).includes(status.toUpperCase() as any)) {
         console.warn(`Skipping row ${i + 1}: invalid status ${status}`);
         continue;
       }
@@ -283,8 +292,8 @@ export const RetailerList: React.FC = () => {
         name,
         mobile_no: `91${mobileNo}`,
         shop_name: shopName,
-        role: role.toUpperCase() as "ADMIN" | "SALES" | "CUSTOMER",
-        status: status.toUpperCase() as "ACTIVE" | "INACTIVE",
+        role: role.toUpperCase() as any,
+        status: status.toUpperCase() as any,
       });
     }
 
@@ -574,20 +583,11 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                               </Title>
                             </div>
                             <div className="flex items-center mt-1">
-                              <Tag
-                                color={
-                                  retailer.status === "ACTIVE" ? "green" : "red"
-                                }
-                              >
-                                {retailer.status}
+                              <Tag color={STATUS_COLORS[retailer.status]}>
+                                {STATUS_LABELS[retailer.status]}
                               </Tag>
-                              <Tag
-                                color={
-                                  retailer.role === "ADMIN" ? "green" : "red"
-                                }
-                              >
-                                {retailer.role.charAt(0) +
-                                  retailer.role.slice(1).toLowerCase()}
+                              <Tag color={ROLE_COLORS[retailer.role]}>
+                                {ROLE_LABELS[retailer.role]}
                               </Tag>
                             </div>
                           </div>
@@ -781,8 +781,13 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                   <li>
                     • Required columns: name, mobile_no, shop_name, role, status
                   </li>
-                  <li>• Role must be one of: ADMIN, SALES, CUSTOMER</li>
-                  <li>• Status must be one of: ACTIVE, INACTIVE</li>
+                  <li>
+                    • Role must be one of: {Object.values(USER_ROLE).join(", ")}
+                  </li>
+                  <li>
+                    • Status must be one of:{" "}
+                    {Object.values(USER_STATUS).join(", ")}
+                  </li>
                   <li>• Mobile number must be 10 digits</li>
                   <li>• Download template for reference</li>
                 </ul>
@@ -818,7 +823,10 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
               form={form}
               layout="vertical"
               onFinish={handleSingleUserSubmit}
-              initialValues={{ role: "CUSTOMER", status: "ACTIVE" }}
+              initialValues={{
+                role: USER_ROLE.CUSTOMER,
+                status: USER_STATUS.ACTIVE,
+              }}
               autoComplete="off"
             >
               <Form.Item
@@ -877,9 +885,11 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                   className="theme-input"
                   size="large"
                 >
-                  <Option value="ADMIN">Administrator</Option>
-                  <Option value="SALES">Sales Manager</Option>
-                  <Option value="CUSTOMER">Retailer</Option>
+                  {Object.entries(USER_ROLE).map(([key, value]) => (
+                    <Option key={value} value={value}>
+                      {ROLE_LABELS[value]}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
 
@@ -893,8 +903,11 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                   className="theme-input"
                   size="large"
                 >
-                  <Option value="ACTIVE">Active</Option>
-                  <Option value="INACTIVE">Inactive</Option>
+                  {Object.entries(USER_STATUS).map(([key, value]) => (
+                    <Option key={value} value={value}>
+                      {STATUS_LABELS[value]}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
 

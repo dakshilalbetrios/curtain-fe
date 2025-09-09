@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { USER_ROLE } from "../../constants";
 import {
   Package,
   ShoppingBag,
@@ -17,7 +18,7 @@ export const Sidebar: React.FC = () => {
 
   const menuItems = [
     // { key: "dashboard", icon: Home, label: "Dashboard", path: "/dashboard" },
-    ...(user?.role === "ADMIN" || user?.role === "SALES"
+    ...(user?.role === USER_ROLE.ADMIN || user?.role === USER_ROLE.SALES
       ? [
           {
             key: "Reports",
@@ -28,7 +29,7 @@ export const Sidebar: React.FC = () => {
         ]
       : []),
 
-    ...(user?.role === "ADMIN" || user?.role === "SALES"
+    ...(user?.role === USER_ROLE.ADMIN || user?.role === USER_ROLE.SALES
       ? [
           {
             key: "collections",
@@ -54,7 +55,7 @@ export const Sidebar: React.FC = () => {
           },
         ]
       : []),
-    ...(user?.role === "ADMIN" || user?.role === "SALES"
+    ...(user?.role === USER_ROLE.ADMIN || user?.role === USER_ROLE.SALES
       ? [
           {
             key: "users",

@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { orderService, OrderResponse } from "../../services";
+import { USER_ROLE } from "../../constants";
 import moment from "moment";
 
 const { Title, Text } = Typography;
@@ -54,7 +55,8 @@ export const OrderDetailDrawer: React.FC<OrderDetailDrawerProps> = ({
   const [courierCompany, setCourierCompany] = useState<string>("");
   const [form] = Form.useForm();
 
-  const isAdmin = user?.role === "ADMIN" || user?.role === "SALES";
+  const isAdmin =
+    user?.role === USER_ROLE.ADMIN || user?.role === USER_ROLE.SALES;
 
   useEffect(() => {
     const fetchOrder = async () => {

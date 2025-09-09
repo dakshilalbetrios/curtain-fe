@@ -13,6 +13,12 @@ import {
 import { User, Package } from "lucide-react";
 import { userService, UserResponse } from "../../services";
 import { collectionService, CollectionResponse } from "../../services";
+import {
+  USER_ROLE,
+  ROLE_COLORS,
+  USER_STATUS,
+  STATUS_COLORS,
+} from "../../constants";
 
 const { Title, Text } = Typography;
 const { Search: AntSearch } = Input;
@@ -121,7 +127,7 @@ export const ManageCollectionAccessDrawer: React.FC<
           status: accessMap.get(collection.id) || "INACTIVE",
           isSelected:
             accessMap.has(collection.id) &&
-            accessMap.get(collection.id) === "ACTIVE",
+            accessMap.get(collection.id) === USER_STATUS.ACTIVE,
         }));
 
       setCollectionAccess(collectionAccessStatus);
@@ -163,13 +169,13 @@ export const ManageCollectionAccessDrawer: React.FC<
         // Currently inactive, make it active
         await userService.addCollectionAccess(userId, {
           collectionIds: [collectionId],
-          status: "ACTIVE",
+          status: USER_STATUS.ACTIVE,
         });
 
         setCollectionAccess((prev) =>
           prev.map((item) =>
             item.collectionId === collectionId
-              ? { ...item, isSelected: true, status: "ACTIVE" }
+              ? { ...item, isSelected: true, status: USER_STATUS.ACTIVE }
               : item
           )
         );
@@ -271,12 +277,8 @@ export const ManageCollectionAccessDrawer: React.FC<
                     {user.shop_name} +{user.mobile_no}
                   </Text>
                   <div className="mt-1">
-                    <Tag color={user.status === "ACTIVE" ? "green" : "red"}>
-                      {user.status}
-                    </Tag>
-                    <Tag color={user.role === "ADMIN" ? "green" : "blue"}>
-                      {user.role}
-                    </Tag>
+                    <Tag color={STATUS_COLORS[user.status]}>{user.status}</Tag>
+                    <Tag color={ROLE_COLORS[user.role]}>{user.role}</Tag>
                   </div>
                 </div>
               </div>

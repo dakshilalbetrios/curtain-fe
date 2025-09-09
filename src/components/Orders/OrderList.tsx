@@ -30,7 +30,14 @@ import { MainLayout } from "../Layout/MainLayout";
 import { OrderDetailDrawer } from "./OrderDetailDrawer";
 import { useOrdersFiltered } from "../../hooks/useOrders";
 import { useSearchParams } from "react-router-dom";
-import { ORDER_DELIVERED_DAY } from "../../constants";
+import {
+  ORDER_DELIVERED_DAY,
+  ORDER_STATUS,
+  USER_ROLE,
+  USER_STATUS,
+  STATUS_LABELS,
+  STATUS_COLORS,
+} from "../../constants";
 import moment from "moment";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -139,7 +146,7 @@ export const OrderList: React.FC = () => {
 
       // Filter collections that user has ACTIVE access to
       const activeCollectionIds = accessData
-        .filter((access) => access.status === "ACTIVE")
+        .filter((access) => access.status === USER_STATUS.ACTIVE)
         .map((access) => access.collection_id);
 
       const accessible = allCollections.filter((collection) =>
@@ -399,20 +406,7 @@ export const OrderList: React.FC = () => {
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "PENDING":
-        return "orange";
-      case "APPROVED":
-        return "green";
-      case "SHIPPED":
-        return "blue";
-      case "DELIVERED":
-        return "purple";
-      case "CANCELLED":
-        return "red";
-      default:
-        return "gray";
-    }
+    return STATUS_COLORS[status as keyof typeof STATUS_COLORS] || "gray";
   };
 
   // Skeleton loading component
@@ -476,12 +470,11 @@ export const OrderList: React.FC = () => {
                   placeholder="Filter by status"
                 >
                   <Option value="ALL">All Status</Option>
-                  <Option value="OVER_DUE">Over Due</Option>
-                  <Option value="PENDING">Pending</Option>
-                  <Option value="APPROVED">Approved</Option>
-                  <Option value="SHIPPED">Shipped</Option>
-                  <Option value="DELIVERED">Delivered</Option>
-                  <Option value="CANCELLED">Cancelled</Option>
+                  {Object.entries(ORDER_STATUS).map(([key, value]) => (
+                    <Option key={value} value={value}>
+                      {STATUS_LABELS[value]}
+                    </Option>
+                  ))}
                 </Select>
                 {hasActiveFilters && (
                   <Button
@@ -550,12 +543,11 @@ export const OrderList: React.FC = () => {
                   placeholder="Filter by status"
                 >
                   <Option value="ALL">All Status</Option>
-                  <Option value="OVER_DUE">Over Due</Option>
-                  <Option value="PENDING">Pending</Option>
-                  <Option value="APPROVED">Approved</Option>
-                  <Option value="SHIPPED">Shipped</Option>
-                  <Option value="DELIVERED">Delivered</Option>
-                  <Option value="CANCELLED">Cancelled</Option>
+                  {Object.entries(ORDER_STATUS).map(([key, value]) => (
+                    <Option key={value} value={value}>
+                      {STATUS_LABELS[value]}
+                    </Option>
+                  ))}
                 </Select>
                 {hasActiveFilters && (
                   <Button
@@ -628,12 +620,11 @@ export const OrderList: React.FC = () => {
                   placeholder="Filter by status"
                 >
                   <Option value="ALL">All Status</Option>
-                  <Option value="OVER_DUE">Over Due</Option>
-                  <Option value="PENDING">Pending</Option>
-                  <Option value="APPROVED">Approved</Option>
-                  <Option value="SHIPPED">Shipped</Option>
-                  <Option value="DELIVERED">Delivered</Option>
-                  <Option value="CANCELLED">Cancelled</Option>
+                  {Object.entries(ORDER_STATUS).map(([key, value]) => (
+                    <Option key={value} value={value}>
+                      {STATUS_LABELS[value]}
+                    </Option>
+                  ))}
                 </Select>
                 {hasActiveFilters && (
                   <Button
@@ -753,9 +744,9 @@ export const OrderList: React.FC = () => {
                                     const isOverdue =
                                       daysDiff >= ORDER_DELIVERED_DAY;
                                     const isEligibleStatus =
-                                      order.status === "PENDING" ||
-                                      order.status === "APPROVED" ||
-                                      order.status === "SHIPPED";
+                                      order.status === ORDER_STATUS.PENDING ||
+                                      order.status === ORDER_STATUS.APPROVED ||
+                                      order.status === ORDER_STATUS.SHIPPED;
 
                                     return (
                                       isOverdue &&
@@ -827,7 +818,7 @@ export const OrderList: React.FC = () => {
                             )}
 
                             {/* Admin Actions - Only show for pending orders */}
-                            {order.status === "PENDING" && (
+                            {order.status === ORDER_STATUS.PENDING && (
                               <div className="flex items-center justify-between space-x-2 pt-2 border-t theme-border-secondary">
                                 <Button
                                   type="link"

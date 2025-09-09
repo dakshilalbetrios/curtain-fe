@@ -6,14 +6,16 @@ export interface LoginRequest {
   password: string;
 }
 
+import { UserStatus, UserRole } from '../constants';
+
 export interface AuthUser {
   id: number;
   name: string;
   mobile_no: string;
   shop_name: string;
   hashed_password: string;
-  status: 'ACTIVE' | 'INACTIVE';
-  role: 'ADMIN' | 'SALES' | 'CUSTOMER';
+  status: UserStatus;
+  role: UserRole;
   created_at: string;
   created_by: number;
   updated_at: string | null;

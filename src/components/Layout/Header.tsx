@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { useTheme } from "../../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
+import { USER_ROLE } from "../../constants";
 
 const { Title } = Typography;
 
@@ -99,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="theme-text-primary hover:theme-bg-tertiary border-0"
           />
 
-          {showCart && user?.role === "CUSTOMER" && (
+          {showCart && user?.role === USER_ROLE.CUSTOMER && (
             <Badge count={getTotalItems()} size="small">
               <Button
                 type="text"

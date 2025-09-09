@@ -25,6 +25,7 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { MainLayout } from "../Layout/MainLayout";
+import { STATUS_COLORS } from "../../constants";
 import { userService } from "../../services";
 import { TelephoneField } from "../Common/TelephoneField";
 import moment from "moment";
@@ -278,7 +279,7 @@ export const Profile: React.FC = () => {
                     {getRoleName(user.role)}
                   </Tag>
                   <br />
-                  <Tag color={user.status === "ACTIVE" ? "green" : "red"}>
+                  <Tag color={STATUS_COLORS[user.status]}>
                     {user.status}
                   </Tag>
                 </div>
