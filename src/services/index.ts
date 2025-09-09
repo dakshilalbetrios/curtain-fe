@@ -3,7 +3,7 @@ import { authService, type AuthUser, type LoginRequest, type LoginResponse } fro
 import { userService, type UserResponse, type CreateRetailerRequest, type UpdateProfileRequest } from './user';
 import { collectionService, type CollectionResponse, type CollectionSerialNumber, type CreateCollectionRequest, type UpdateCollectionRequest, type UpdateStockRequest } from './collection';
 import { type ApiResponse } from './types';
-import { orderService, type OrderResponse, type OrderItem, type CreateOrderRequest, type UpdateOrderStatusRequest } from './order';
+import { orderService, type OrderResponse, type OrderItem, type CreateOrderRequest, type UpdateOrderStatusRequest, type UpdateOrderRequest } from './order';
 import { reportService, type ReportRequest, type ReportResponse, type MostOrderedSerialNumbersReport, type CustomerCollectionOrdersReport, type CustomerOrderSummaryReport, type CollectionPerformanceReport } from './report';
 
 // Re-export services
@@ -26,6 +26,7 @@ export type {
   OrderItem,
   CreateOrderRequest,
   UpdateOrderStatusRequest,
+  UpdateOrderRequest,
   ReportRequest,
   ReportResponse,
   MostOrderedSerialNumbersReport,

@@ -49,6 +49,15 @@ export interface UpdateOrderStatusRequest {
   courier_company?: string;
 }
 
+export interface UpdateOrderRequest {
+  order_items: {
+    id?: number; // For existing items
+    collection_sr_no_id: number;
+    quantity: number;
+    _action?: 'create' | 'update' | 'delete'; // For tracking changes
+  }[];
+}
+
 
 // Order service
 export class OrderService extends BaseService {
@@ -328,6 +337,51 @@ export class OrderService extends BaseService {
         throw error;
       }
       throw new Error('An unexpected error occurred while fetching orders by user');
+    }
+  }
+
+  async updateOrder(id: number, payload: UpdateOrderRequest): Promise<OrderResponse> {
+    try {
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/orders/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const apiResponse: ApiResponse<OrderResponse> = await response.json();
+
+      if (apiResponse.error) {
+        throw new Error(apiResponse.message);
+      }
+
+      return apiResponse.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while updating order');
+    }
+  }
+
+  async deleteOrder(id: number): Promise<void> {
+    try {
+      const response = await this.makeAuthenticatedRequest(`${this.BASE_URL}/orders/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while deleting order');
     }
   }
 }

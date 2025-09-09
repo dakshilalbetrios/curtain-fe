@@ -332,7 +332,7 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                     <div className="flex items-center space-x-2">
                       <Button
                         icon={<Minus className="w-4 h-4" />}
-                        onClick={() => handleQuantityChange(quantity - 1)}
+                        onClick={() => handleQuantityChange(quantity - 0.5)}
                         disabled={quantity <= 1}
                         className="w-10 h-10 rounded-full p-0 flex items-center justify-center theme-button border theme-border-primary hover:theme-bg-tertiary"
                         style={{ minWidth: "40px", minHeight: "40px" }}
@@ -341,7 +341,7 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                         min={1}
                         value={quantity}
                         onChange={handleQuantityChange}
-                        className="w-8 theme-input !align-center !justify-center !border-none"
+                        className="w-15 theme-input !align-center !justify-center"
                         controls={false}
                         size="small"
                         status={quantityError ? "error" : ""}
@@ -355,7 +355,7 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                       />
                       <Button
                         icon={<Plus className="w-4 h-4" />}
-                        onClick={() => handleQuantityChange(quantity + 1)}
+                        onClick={() => handleQuantityChange(quantity + 0.5)}
                         disabled={
                           quantity >=
                           parseFloat(
