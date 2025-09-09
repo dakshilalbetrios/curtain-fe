@@ -457,7 +457,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
 
   // Skeleton loading component
   const CollectionSkeleton = () => (
-    <Col xs={24} sm={12} lg={8} xl={6} className="mb-4">
+    <Col xs={24} sm={12} lg={8} xl={8} xxl={6} className="mb-4">
       <Card className="theme-card h-48">
         <Skeleton active paragraph={{ rows: 3 }} />
       </Card>
@@ -468,7 +468,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
     <MainLayout title="" showCart={true}>
       <div className="flex flex-col h-full min-h-0 max-h-full">
         {/* Fixed Header Section */}
-        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4 flex-shrink-0">
+        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 -mx-4 px-4 flex-shrink-0">
           <div className="space-y-4">
             {/* Main Header Row */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -485,11 +485,8 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Tag
-                    color="blue"
-                    className="px-3 py-1 text-sm font-medium rounded-full"
-                  >
-                    {total} Total
+                  <Tag color="blue" className="px-3 py-1 text-sm font-medium">
+                    {total}
                   </Tag>
                   <Button
                     icon={<RefreshCw className="w-4 h-4" />}
@@ -603,11 +600,18 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
                       ) || [];
 
                     return (
-                      <Col xs={24} sm={12} lg={8} xl={6} key={collection.id}>
+                      <Col
+                        xs={24}
+                        sm={12}
+                        lg={8}
+                        xl={8}
+                        xxl={6}
+                        key={collection.id}
+                      >
                         <Card
                           hoverable
                           onClick={() => handleCollectionClick(collection.id)}
-                          className="theme-card-hover cursor-pointer"
+                          className="theme-card-hover cursor-pointer transition-all duration-300 hover:border-purple-500 h-full"
                         >
                           <div className="space-y-3">
                             <div>
@@ -722,7 +726,7 @@ Kitchen,Modern and functional kitchen curtains,KT002,8,40,25,mtr`;
           >
             <div className="space-y-4">
               <div className="flex justify-between items-center mb-4">
-                <Text className="theme-text-secondary">
+                <Text className="theme-text-secondary hidden md:block">
                   Upload CSV file to add multiple collections at once
                 </Text>
                 <Button

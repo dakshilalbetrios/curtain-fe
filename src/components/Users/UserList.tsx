@@ -413,7 +413,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
 
   // Skeleton loading component
   const RetailerSkeleton = () => (
-    <Col xs={24} sm={12} lg={8} xl={6} className="mb-4">
+    <Col xs={24} sm={12} md={12} lg={12} xl={8} xxl={6} className="mb-4">
       <Card className="theme-card h-64">
         <Skeleton active paragraph={{ rows: 4 }} />
       </Card>
@@ -424,7 +424,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
     <MainLayout title="">
       <div className="flex flex-col h-full min-h-0 max-h-full">
         {/* Fixed Header Section */}
-        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-6 -mx-4 px-4 flex-shrink-0">
+        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 -mx-4 px-4 flex-shrink-0">
           <div className="space-y-4">
             {/* Main Header Row */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -441,11 +441,8 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Tag
-                    color="green"
-                    className="px-3 py-1 text-sm font-medium rounded-full"
-                  >
-                    {total} Total
+                  <Tag color="green" className="px-3 py-1 text-sm font-medium">
+                    {total}
                   </Tag>
                   <Button
                     icon={<RefreshCw className="w-4 h-4" />}
@@ -553,12 +550,13 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
                       md={12}
                       lg={12}
                       xl={8}
+                      xxl={6}
                       key={retailer.id}
                     >
                       <Card
                         hoverable
                         // onClick={() => handleRetailerClick(retailer.id)}
-                        className="theme-card-hover cursor-pointer"
+                        className="theme-card-hover cursor-pointer transition-all duration-300 hover:border-purple-500 h-full"
                       >
                         <div className="space-y-4">
                           <div className="flex items-center justify-between space-x-2">
@@ -737,7 +735,7 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
           >
             <div className="space-y-4">
               <div className="flex justify-between items-center mb-4">
-                <Text className="theme-text-secondary">
+                <Text className="theme-text-secondary hidden md:block">
                   Upload CSV file to add multiple users at once
                 </Text>
                 <Button
@@ -931,7 +929,6 @@ Sales Rep,9876543214,Sales Shop,SALES,ACTIVE`;
             visible={collectionAccessDrawerVisible}
             onClose={handleCollectionAccessDrawerClose}
             userId={selectedUserId}
-            onSuccess={handleCollectionAccessSuccess}
           />
         </div>
       </div>

@@ -148,16 +148,21 @@ export const SerialNumberManagement: React.FC<SerialNumberManagementProps> = ({
       {isWholesaler && (
         <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 pb-4 -mx-4 px-4 flex-shrink-0">
           <div className="flex justify-between items-center">
-            <Title level={4} className="!theme-text-primary !mb-0">
-              {collectionName} ({serialNumbers.length})
-            </Title>
+            <div className="flex items-center space-x-2">
+              <Title level={4} className="!theme-text-primary !mb-0">
+                {collectionName}
+              </Title>
+              <Tag color="blue" className="px-3 py-1 text-sm font-medium">
+                {serialNumbers.length}
+              </Tag>
+            </div>
             <Button
               type="primary"
               icon={<Plus className="w-4 h-4" />}
               onClick={() => setAddModalVisible(true)}
               className="bg-purple-600 hover:bg-purple-700 border-purple-600"
             >
-              Add Serial Number
+              <span className="hidden md:inline">Add Serial Number</span>
             </Button>
           </div>
         </div>

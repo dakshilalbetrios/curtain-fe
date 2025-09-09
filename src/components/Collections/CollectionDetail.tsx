@@ -42,7 +42,7 @@ export const CollectionDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <MainLayout title="Loading..." showBack={true}>
+      <MainLayout title="" showBack={true}>
         <div className="space-y-6">
           {/* Collection Header Skeleton */}
           <Card className="theme-card">

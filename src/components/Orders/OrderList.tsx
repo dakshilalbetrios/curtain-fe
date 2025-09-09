@@ -426,7 +426,7 @@ export const OrderList: React.FC = () => {
     <MainLayout title="">
       <div className="flex flex-col h-full min-h-0 max-h-full">
         {/* Fixed Header Section */}
-        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 -mx-4 px-4 pb-6 flex-shrink-0">
+        <div className="sticky top-0 z-50 theme-bg-primary backdrop-blur-sm border-b theme-border-primary/50 -mx-4 px-4 pb-4 flex-shrink-0">
           <div className="space-y-4">
             {/* Large Screen: All in one row */}
             <div className="hidden xl:flex xl:items-center xl:justify-between gap-4">
@@ -443,11 +443,8 @@ export const OrderList: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Tag
-                    color="green"
-                    className="px-3 py-1 text-sm font-medium rounded-full"
-                  >
-                    {total} Total
+                  <Tag color="green" className="px-3 py-1 text-sm font-medium">
+                    {total}
                   </Tag>
                   <Button
                     icon={<RefreshCw className="w-4 h-4" />}
@@ -675,7 +672,7 @@ export const OrderList: React.FC = () => {
           {loading && orders.length === 0 ? (
             <Row gutter={[16, 16]}>
               {[...Array(20)].map((_, index) => (
-                <Col xs={24} sm={12} lg={8} xl={6} key={index}>
+                <Col xs={24} sm={12} lg={8} xl={8} xxl={6} key={index}>
                   <OrderSkeleton />
                 </Col>
               ))}
